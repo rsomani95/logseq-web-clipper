@@ -7,6 +7,8 @@ export type { Settings, ModelConfig, PropertyType, HistoryEntry, Provider, Ratin
 
 export let generalSettings: Settings = {
 	vaults: [],
+	logseqApiBaseUrl: 'http://127.0.0.1:12315',
+	logseqApiToken: '',
 	betaFeatures: false,
 	legacyMode: false,
 	silentOpen: false,
@@ -67,6 +69,10 @@ interface StorageData {
 		openBehavior?: boolean | 'popup' | 'embedded';
 		saveBehavior?: 'addToObsidian' | 'copyToClipboard' | 'saveFile';
 	};
+	logseq_settings?: {
+		baseUrl?: string;
+		token?: string;
+	};
 	vaults?: string[];
 	highlighter_settings?: {
 		highlighterEnabled?: boolean;
@@ -118,6 +124,8 @@ export async function loadSettings(): Promise<Settings> {
 	// Load default settings first
 	const defaultSettings: Settings = {
 		vaults: [],
+		logseqApiBaseUrl: 'http://127.0.0.1:12315',
+		logseqApiToken: '',
 		showMoreActionsButton: false,
 		betaFeatures: false,
 		legacyMode: false,
@@ -179,6 +187,8 @@ export async function loadSettings(): Promise<Settings> {
 	// Load user settings
 	const loadedSettings: Settings = {
 		vaults: sanitizedVaults.length > 0 ? sanitizedVaults : defaultSettings.vaults,
+		logseqApiBaseUrl: data.logseq_settings?.baseUrl ?? defaultSettings.logseqApiBaseUrl,
+		logseqApiToken: data.logseq_settings?.token ?? defaultSettings.logseqApiToken,
 		showMoreActionsButton: data.general_settings?.showMoreActionsButton ?? defaultSettings.showMoreActionsButton,
 		betaFeatures: data.general_settings?.betaFeatures ?? defaultSettings.betaFeatures,
 		legacyMode: data.general_settings?.legacyMode ?? defaultSettings.legacyMode,
@@ -231,6 +241,10 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 
 	await browser.storage.sync.set({
 		vaults: generalSettings.vaults,
+		logseq_settings: {
+			baseUrl: generalSettings.logseqApiBaseUrl,
+			token: generalSettings.logseqApiToken,
+		},
 		general_settings: {
 			showMoreActionsButton: generalSettings.showMoreActionsButton,
 			betaFeatures: generalSettings.betaFeatures,

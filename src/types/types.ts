@@ -72,6 +72,8 @@ export interface ReaderSettings {
 
 export interface Settings {
 	vaults: string[];
+	logseqApiBaseUrl: string;
+	logseqApiToken: string;
 	showMoreActionsButton: boolean;
 	betaFeatures: boolean;
 	legacyMode: boolean;

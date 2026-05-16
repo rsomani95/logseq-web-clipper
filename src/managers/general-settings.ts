@@ -4,6 +4,7 @@ import { getCommands } from '../utils/hotkeys';
 import { initializeToggles, updateToggleState, initializeSettingToggle } from '../utils/ui-utils';
 import { generalSettings, loadSettings, saveSettings, setLocalStorage, getLocalStorage } from '../utils/storage-utils';
 import { detectBrowser } from '../utils/browser-detection';
+import { createLogseqAPI, LogseqAPIError } from '../utils/logseq-api';
 import { createElementWithClass, createElementWithHTML } from '../utils/dom-utils';
 import { createDefaultTemplate, getTemplates, saveTemplateSettings } from '../managers/template-manager';
 import { updateTemplateList, showTemplateEditor } from '../managers/template-ui';
@@ -212,6 +213,7 @@ export function initializeGeneralSettings(): void {
 		}
 
 		updateVaultList();
+		initializeLogseqSettings();
 		initializeShowMoreActionsToggle();
 		initializeBetaFeaturesToggle();
 		initializeLegacyModeToggle();
@@ -270,6 +272,52 @@ function saveSettingsFromForm(): void {
 	};
 
 	saveSettings(updatedSettings);
+}
+
+function initializeLogseqSettings(): void {
+	const baseUrlInput = document.getElementById('logseq-base-url') as HTMLInputElement | null;
+	const tokenInput = document.getElementById('logseq-token') as HTMLInputElement | null;
+	const testBtn = document.getElementById('logseq-test-btn') as HTMLButtonElement | null;
+	const status = document.getElementById('logseq-test-status') as HTMLDivElement | null;
+
+	if (baseUrlInput) {
+		baseUrlInput.value = generalSettings.logseqApiBaseUrl;
+		baseUrlInput.addEventListener('change', () => {
+			saveSettings({ logseqApiBaseUrl: baseUrlInput.value.trim() });
+		});
+	}
+
+	if (tokenInput) {
+		tokenInput.value = generalSettings.logseqApiToken;
+		tokenInput.addEventListener('change', () => {
+			saveSettings({ logseqApiToken: tokenInput.value.trim() });
+		});
+	}
+
+	if (testBtn && status) {
+		testBtn.addEventListener('click', async () => {
+			const baseUrl = (baseUrlInput?.value || generalSettings.logseqApiBaseUrl).trim();
+			const token = (tokenInput?.value || generalSettings.logseqApiToken).trim();
+			if (!baseUrl || !token) {
+				status.textContent = getMessage('logseqConnectionMissing');
+				return;
+			}
+			testBtn.disabled = true;
+			status.textContent = getMessage('logseqConnectionTesting');
+			try {
+				const api = createLogseqAPI({ baseUrl, token });
+				const { graphName, isDbGraph } = await api.testConnection();
+				status.textContent = isDbGraph
+					? getMessage('logseqConnectionOk', [graphName])
+					: getMessage('logseqConnectionFileGraph', [graphName]);
+			} catch (err) {
+				const msg = err instanceof LogseqAPIError ? err.message : String(err);
+				status.textContent = getMessage('logseqConnectionFailed', [msg]);
+			} finally {
+				testBtn.disabled = false;
+			}
+		});
+	}
 }
 
 function initializeShowMoreActionsToggle(): void {

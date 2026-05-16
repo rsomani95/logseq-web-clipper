@@ -128,6 +128,39 @@
 								</div>
 							</div>
 							<div class="setting-group">
+								<div class="setting-item setting-item-heading"><h3 data-i18n="logseqSection">Logseq</h3></div>
+								<div class="setting-items">
+									<div class="setting-item-description" data-i18n="logseqDescription">Web Clipper sends clips to a running Logseq desktop instance over its local HTTP API. Enable the server in Logseq <strong>Settings &gt; Features &gt; HTTP APIs Server</strong>, then paste an authorization token below.</div>
+									<div class="setting-item mod-horizontal">
+										<div class="setting-item-info">
+											<label for="logseq-base-url" data-i18n="logseqBaseUrl">Base URL</label>
+											<div class="setting-item-description" data-i18n="logseqBaseUrlDescription">Default <strong>http://127.0.0.1:12315</strong>. Change if you run Logseq on a different host or port.</div>
+										</div>
+										<div class="setting-item-control">
+											<input type="text" id="logseq-base-url" placeholder="http://127.0.0.1:12315" autocomplete="off" spellcheck="false" />
+										</div>
+									</div>
+									<div class="setting-item mod-horizontal">
+										<div class="setting-item-info">
+											<label for="logseq-token" data-i18n="logseqToken">Token</label>
+											<div class="setting-item-description" data-i18n="logseqTokenDescription">Authorization token created in Logseq's HTTP server panel.</div>
+										</div>
+										<div class="setting-item-control">
+											<input type="password" id="logseq-token" autocomplete="off" spellcheck="false" />
+										</div>
+									</div>
+									<div class="setting-item mod-horizontal">
+										<div class="setting-item-info">
+											<div data-i18n="logseqConnection">Connection</div>
+											<div class="setting-item-description" id="logseq-test-status" data-i18n="logseqConnectionUntested">Not yet tested.</div>
+										</div>
+										<div class="setting-item-control">
+											<button type="button" id="logseq-test-btn" class="btn" data-i18n="logseqTest">Test connection</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="setting-group">
 								<div class="setting-item setting-item-heading"><h3 data-i18n="vaults">Vaults</h3></div>
 								<div class="setting-items">
 								<div class="setting-item-description" data-i18n="vaultsDescription">By default, clipped notes are saved to the currently open vault. You can add vaults here if you want the option to save to different vaults. Vault names must exactly match the name of the Obsidian vault. Press <strong>enter</strong> to add a&nbsp;vault.</div>

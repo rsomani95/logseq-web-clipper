@@ -8,6 +8,8 @@ export default {} as any;
 
 export const generalSettings: Settings = {
 	vaults: [],
+	logseqApiBaseUrl: 'http://127.0.0.1:12315',
+	logseqApiToken: '',
 	betaFeatures: false,
 	legacyMode: false,
 	silentOpen: false,

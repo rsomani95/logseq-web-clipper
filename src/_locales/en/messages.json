@@ -475,6 +475,48 @@
 	"loading": {
 		"message": "Loading…"
 	},
+	"logseqSection": {
+		"message": "Logseq"
+	},
+	"logseqDescription": {
+		"message": "Web Clipper sends clips to a running Logseq desktop instance over its local HTTP API. Enable the server in Logseq <strong>Settings &gt; Features &gt; HTTP APIs Server</strong>, then paste an authorization token below."
+	},
+	"logseqBaseUrl": {
+		"message": "Base URL"
+	},
+	"logseqBaseUrlDescription": {
+		"message": "Default <strong>http://127.0.0.1:12315</strong>. Change if you run Logseq on a different host or port."
+	},
+	"logseqToken": {
+		"message": "Token"
+	},
+	"logseqTokenDescription": {
+		"message": "Authorization token created in Logseq's HTTP server panel."
+	},
+	"logseqConnection": {
+		"message": "Connection"
+	},
+	"logseqConnectionUntested": {
+		"message": "Not yet tested."
+	},
+	"logseqConnectionMissing": {
+		"message": "Set both base URL and token before testing."
+	},
+	"logseqConnectionTesting": {
+		"message": "Testing…"
+	},
+	"logseqConnectionOk": {
+		"message": "Connected to DB graph: $1"
+	},
+	"logseqConnectionFileGraph": {
+		"message": "Connected, but '$1' is a file graph — the Web Clipper requires a DB graph."
+	},
+	"logseqConnectionFailed": {
+		"message": "Failed: $1"
+	},
+	"logseqTest": {
+		"message": "Test connection"
+	},
 	"modelName": {
 		"message": "Display name"
 	},
