@@ -111,22 +111,26 @@ async function prepareTemplateForSave(template: Template): Promise<[string[], st
 }
 
 export function createDefaultTemplate(): Template {
+	// Property names match #WebClipping schema fields (see
+	// @logseq-web-clipper/shared); anything that doesn't match is silently
+	// skipped by the page creator. `authors` and `tags` are node-typed in the
+	// schema, so they're left out of the default template for now and will
+	// be wired in when the page creator gains node-property support.
+	const newId = () => Date.now().toString() + Math.random().toString(36).slice(2, 11);
 	return {
-		id: Date.now().toString() + Math.random().toString(36).slice(2, 11),
+		id: newId(),
 		name: getMessage('defaultTemplateName'),
 		behavior: 'create',
 		noteNameFormat: '{{title}}',
-		path: 'Clippings',
+		path: '',
 		noteContentFormat: '{{content}}',
-		context: "",
+		context: '',
 		properties: [
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'title', value: '{{title}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'source', value: '{{url}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'author', value: '{{author|split:", "|wikilink|join}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'published', value: '{{published}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'created', value: '{{date}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'description', value: '{{description}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'tags', value: 'clippings' }
+			{ id: newId(), name: 'title', value: '{{title}}' },
+			{ id: newId(), name: 'url', value: '{{url}}' },
+			{ id: newId(), name: 'date', value: '{{published}}' },
+			{ id: newId(), name: 'dateAdded', value: '{{date}}' },
+			{ id: newId(), name: 'excerpt', value: '{{description}}' },
 		],
 		triggers: []
 	};

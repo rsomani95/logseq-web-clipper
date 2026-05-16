@@ -6,7 +6,7 @@
 // #WebClipping schema, append the markdown body as one block per paragraph.
 // Append-to-page and append-to-journal modes land in Phase 3.
 
-import { PROPERTIES, WEB_CLIPPING_TAG, ident, type PropertyName } from '@logseq-web-clipper/shared'
+import { PROPERTIES, WEB_CLIPPING_TAG, getProperty, ident, type PropertyName } from '@logseq-web-clipper/shared'
 
 import type { Property } from '../types/types'
 import type { LogseqAPI } from './logseq-api'
@@ -72,11 +72,18 @@ export async function saveToLogseq(
 
 	// Property writes are best-effort per field. One bad value (a malformed
 	// date, an unset schema entry) shouldn't abort the whole save — the page
-	// + tag already exist, the user can fix the field manually.
+	// + tag already exist, the user can fix the field manually. Node-typed
+	// properties (authors, tags) are skipped here pending Phase 3 support
+	// for "create-page-per-value-and-link-by-uuid" writes.
 	let matched = 0
 	for (const prop of properties) {
 		if (!isSchemaName(prop.name)) continue
 		if (!prop.value || prop.value.trim() === '') continue
+		const def = getProperty(prop.name)
+		if (def.type === 'node') {
+			console.info(`[logseq-web-clipper] skipping node-typed property ${prop.name} (not yet supported)`)
+			continue
+		}
 		try {
 			await api.upsertBlockProperty(page.uuid, ident(prop.name), prop.value)
 			matched++
