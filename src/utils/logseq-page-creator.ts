@@ -124,8 +124,15 @@ export async function saveToLogseq(
 				console.warn(`[logseq-web-clipper] could not parse ${prop.name} as date: "${prop.value}"`)
 				continue
 			}
+			// Anchor to local noon, not bare YYYY-MM-DD. Logseq's
+			// `create_journal_page` calls `new Date(input)`, and JS parses
+			// bare `2026-05-16` as midnight UTC — which is the previous day
+			// in any negative-offset timezone. Appending `T12:00:00` (no
+			// offset) is parsed as local noon, so the journal lands on the
+			// intended local day regardless of timezone.
+			const localNoon = `${ymd}T12:00:00`
 			try {
-				const journalPage = await api.createJournalPage(ymd)
+				const journalPage = await api.createJournalPage(localNoon)
 				if (typeof journalPage?.id !== 'number') {
 					console.warn(`[logseq-web-clipper] createJournalPage(${ymd}) returned no id for ${prop.name}`)
 					continue
