@@ -23,9 +23,9 @@ async function main(): Promise<void> {
 		{ key: 'logseq-web-clipper-about', label: 'Web Clipper: About' },
 		async () => {
 			await logseq.UI.showMsg(
-				`Logseq Web Clipper is a browser extension that pushes clipped pages into this graph and tags them with #${WEB_CLIPPING_TAG}. Run "Web Clipper: Set up schema" once to create the tag and its properties.`,
+				`Logseq Web Clipper pushes clipped pages from the browser into this graph as #${WEB_CLIPPING_TAG}. Shared metadata (title, authors, url, etc.) reuses the zoterolocal plugin's properties so #${WEB_CLIPPING_TAG} and #Zotero unify. Run "Web Clipper: Set up schema" after Zotero's schema is in place.`,
 				'info',
-				{ timeout: 6000 },
+				{ timeout: 8000 },
 			)
 		},
 	)

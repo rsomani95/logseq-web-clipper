@@ -2,22 +2,31 @@
 // browser extension (which writes values via the Logseq HTTP API) and the
 // companion Logseq plugin (which creates the properties + tag via the SDK).
 //
-// Field naming follows zoterolocal's convention: camelCase property names,
-// kebab-case as the actual Logseq ident — except `DOI`/`ISSN`/`ISBN` which
-// stay uppercase. Display labels and descriptions mirror zoterolocal's
-// `PROP_DISPLAY_NAMES` / `PROP_DESCRIPTIONS` exactly where a field overlaps,
-// so eventual unification with the Zotero plugin is a rename-only operation.
+// Unification with zoterolocal: shared fields (everything except `excerpt`)
+// reuse the Zotero plugin's properties directly — same `:db/ident`, same
+// display name. A page tagged #WebClipping and a page tagged #Zotero share
+// the same `title`, `authors`, etc., so queries union naturally.
+//
+// Assumption: the user runs zoterolocal's "Add Zotero schema to Logseq"
+// command BEFORE running our "Set up schema". If not, schema setup will warn
+// for each missing Zotero property. Future work: a real wizard that detects
+// missing Zotero schema and either creates the properties under Zotero's
+// namespace or falls back to web-only ownership.
 
 export const PLUGIN_ID = 'logseq-web-clipper'
+export const ZOTERO_PLUGIN_ID = 'logseq-zoterolocal-plugin'
 export const WEB_CLIPPING_TAG = 'WebClipping'
 
-// The qualified namespace plugins write under. `upsertProperty('title', ...)`
-// from inside the plugin actually creates `:plugin.property.logseq-web-clipper/title`.
-// The browser extension targets the same idents over the HTTP API.
+// Qualified namespaces. `upsertProperty('foo', ...)` from inside our plugin
+// creates `:plugin.property.logseq-web-clipper/foo`. Shared fields write/read
+// at the Zotero namespace instead — see `ident()` below.
 export const PROPERTY_NAMESPACE = `:plugin.property.${PLUGIN_ID}` as const
+export const ZOTERO_PROPERTY_NAMESPACE = `:plugin.property.${ZOTERO_PLUGIN_ID}` as const
 
 export type LogseqPropertyType = 'default' | 'date' | 'datetime' | 'node' | 'url'
 export type LogseqCardinality = 'one' | 'many'
+/** Which plugin owns this property's `:db/ident`. */
+export type PropertyOwner = 'zotero' | 'web'
 
 export interface PropertyDef {
 	/** camelCase name. The Logseq ident is derived via `kebab()`. */
@@ -28,8 +37,9 @@ export interface PropertyDef {
 	description: string
 	type: LogseqPropertyType
 	cardinality: LogseqCardinality
-	/** Marks this property as web-clipper-only (no zoterolocal equivalent). */
-	webOnly?: boolean
+	/** 'zotero' → reuse the Zotero plugin's property (assumes it's been
+	 * created already). 'web' → owned and created by this plugin. */
+	ownedBy: PropertyOwner
 }
 
 // Order matters: it determines the order properties appear on the #WebClipping
@@ -42,6 +52,7 @@ export const PROPERTIES = [
 		description: '',
 		type: 'default',
 		cardinality: 'one',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'authors',
@@ -49,6 +60,7 @@ export const PROPERTIES = [
 		description: '',
 		type: 'node',
 		cardinality: 'many',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'url',
@@ -56,6 +68,7 @@ export const PROPERTIES = [
 		description: '',
 		type: 'url',
 		cardinality: 'one',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'date',
@@ -63,6 +76,7 @@ export const PROPERTIES = [
 		description: 'Publication date of the item',
 		type: 'date',
 		cardinality: 'one',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'dateAdded',
@@ -70,6 +84,7 @@ export const PROPERTIES = [
 		description: 'Date the item was added to the graph',
 		type: 'date',
 		cardinality: 'one',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'itemType',
@@ -77,6 +92,7 @@ export const PROPERTIES = [
 		description: 'Inferred type (article, blog post, video, …)',
 		type: 'default',
 		cardinality: 'one',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'publisher',
@@ -84,6 +100,7 @@ export const PROPERTIES = [
 		description: 'Publisher of the item',
 		type: 'default',
 		cardinality: 'one',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'publicationTitle',
@@ -91,6 +108,7 @@ export const PROPERTIES = [
 		description: 'Title of the publication (journal, magazine, etc.)',
 		type: 'default',
 		cardinality: 'one',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'websiteTitle',
@@ -98,6 +116,7 @@ export const PROPERTIES = [
 		description: '',
 		type: 'default',
 		cardinality: 'one',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'blogTitle',
@@ -105,6 +124,7 @@ export const PROPERTIES = [
 		description: '',
 		type: 'default',
 		cardinality: 'one',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'language',
@@ -112,6 +132,7 @@ export const PROPERTIES = [
 		description: '',
 		type: 'default',
 		cardinality: 'one',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'tags',
@@ -119,6 +140,7 @@ export const PROPERTIES = [
 		description: 'Tags applied to the item',
 		type: 'node',
 		cardinality: 'many',
+		ownedBy: 'zotero',
 	},
 	{
 		name: 'excerpt',
@@ -126,7 +148,7 @@ export const PROPERTIES = [
 		description: 'Article excerpt or meta description',
 		type: 'default',
 		cardinality: 'one',
-		webOnly: true,
+		ownedBy: 'web',
 	},
 ] as const satisfies readonly PropertyDef[]
 
@@ -146,9 +168,15 @@ export function kebab(name: string): string {
 	return name.replace(/[A-Z]/g, (m, i: number) => (i === 0 ? m.toLowerCase() : `-${m.toLowerCase()}`))
 }
 
-/** Returns the fully qualified Logseq property ident for a schema field. */
+/**
+ * Returns the fully qualified Logseq property `:db/ident` for a schema field.
+ * Shared fields resolve to the Zotero plugin's namespace so #WebClipping and
+ * #Zotero pages share the same property entities.
+ */
 export function ident(name: PropertyName): string {
-	return `${PROPERTY_NAMESPACE}/${kebab(name)}`
+	const def = getProperty(name)
+	const ns = def.ownedBy === 'zotero' ? ZOTERO_PROPERTY_NAMESPACE : PROPERTY_NAMESPACE
+	return `${ns}/${kebab(name)}`
 }
 
 /** Indexed lookup; throws if `name` isn't in the schema. */
