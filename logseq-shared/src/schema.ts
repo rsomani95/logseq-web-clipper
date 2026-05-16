@@ -71,14 +71,21 @@ export const PROPERTIES = [
 		ownedBy: 'zotero',
 	},
 	{
+		// Publication date. Zoterolocal types this as `default` (accepts free-form
+		// strings like "2025", "January 2025", or an ISO date) — mirror that here
+		// so the extension writes the raw string instead of trying to coerce to a
+		// journal page reference.
 		name: 'date',
 		display: 'Date',
 		description: 'Publication date of the item',
-		type: 'date',
+		type: 'default',
 		cardinality: 'one',
 		ownedBy: 'zotero',
 	},
 	{
+		// `date` type in Logseq-DB = a reference to a journal page, not an ISO
+		// string. Zoterolocal types this as `date`, so the extension must
+		// `createJournalPage(yyyy-MM-dd)` and write the returned page id.
 		name: 'dateAdded',
 		display: 'Date Added',
 		description: 'Date the item was added to the graph',

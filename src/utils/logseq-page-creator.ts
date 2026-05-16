@@ -43,6 +43,22 @@ function splitNodeValues(value: string): string[] {
 		.filter((s) => s.length > 0)
 }
 
+/**
+ * Parses an ISO datetime (or plain `YYYY-MM-DD`) and returns the LOCAL calendar
+ * date as `YYYY-MM-DD`. Local — not UTC — because journal pages represent
+ * "what day was it for the user when they clipped this"; a late-evening
+ * negative-offset clip should land on the local day, not roll forward to the
+ * next UTC day.
+ */
+function toJournalDate(value: string): string | null {
+	const d = new Date(value)
+	if (Number.isNaN(d.getTime())) return null
+	const yyyy = d.getFullYear()
+	const mm = String(d.getMonth() + 1).padStart(2, '0')
+	const dd = String(d.getDate()).padStart(2, '0')
+	return `${yyyy}-${mm}-${dd}`
+}
+
 export async function saveToLogseq(
 	api: LogseqAPI,
 	input: SaveToLogseqInput,
@@ -96,6 +112,29 @@ export async function saveToLogseq(
 				}
 			}
 			if (anySet) matched++
+			continue
+		}
+
+		// Date-typed properties in Logseq-DB are *references to journal pages*,
+		// not strings. Create/fetch the journal page for the day, then write
+		// `page.id` — same pattern as zoterolocal's `handle-zot-db.ts`.
+		if (def.type === 'date') {
+			const ymd = toJournalDate(prop.value)
+			if (!ymd) {
+				console.warn(`[logseq-web-clipper] could not parse ${prop.name} as date: "${prop.value}"`)
+				continue
+			}
+			try {
+				const journalPage = await api.createJournalPage(ymd)
+				if (typeof journalPage?.id !== 'number') {
+					console.warn(`[logseq-web-clipper] createJournalPage(${ymd}) returned no id for ${prop.name}`)
+					continue
+				}
+				await api.upsertBlockProperty(page.uuid, ident(prop.name), journalPage.id)
+				matched++
+			} catch (err) {
+				console.warn(`[logseq-web-clipper] failed to set date property ${prop.name}:`, err)
+			}
 			continue
 		}
 

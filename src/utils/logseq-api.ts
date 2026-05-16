@@ -129,6 +129,15 @@ export class LogseqAPI {
 		return this.call('logseq.Editor.createPage', [name, properties, opts])
 	}
 
+	/**
+	 * Creates (or returns the existing) journal page for a YYYY-MM-DD date.
+	 * Required for writing `:logseq.property/type :date` properties — those
+	 * expect a page reference (numeric `page.id`), not an ISO string.
+	 */
+	createJournalPage(yyyyMmDd: string): Promise<LogseqPageEntity | null> {
+		return this.call('logseq.Editor.createJournalPage', [yyyyMmDd])
+	}
+
 	getPage(nameOrUuid: string): Promise<LogseqPageEntity | null> {
 		return this.call('logseq.Editor.getPage', [nameOrUuid])
 	}
