@@ -6,12 +6,9 @@ import { copyToClipboard } from 'core/popup';
 export type { Settings, ModelConfig, PropertyType, HistoryEntry, Provider, Rating };
 
 export let generalSettings: Settings = {
-	vaults: [],
 	logseqApiBaseUrl: 'http://127.0.0.1:12315',
 	logseqApiToken: '',
 	betaFeatures: false,
-	legacyMode: false,
-	silentOpen: false,
 	openBehavior: 'popup',
 	highlighterEnabled: true,
 	alwaysShowHighlights: false,
@@ -42,14 +39,14 @@ export let generalSettings: Settings = {
 		customCss: ''
 	},
 	stats: {
-		addToObsidian: 0,
+		addToLogseq: 0,
 		saveFile: 0,
 		copyToClipboard: 0,
 		share: 0
 	},
 	history: [],
 	ratings: [],
-	saveBehavior: 'addToObsidian'
+	saveBehavior: 'addToLogseq'
 };
 
 export function setLocalStorage(key: string, value: any): Promise<void> {
@@ -64,16 +61,13 @@ interface StorageData {
 	general_settings?: {
 		showMoreActionsButton?: boolean;
 		betaFeatures?: boolean;
-		legacyMode?: boolean;
-		silentOpen?: boolean;
 		openBehavior?: boolean | 'popup' | 'embedded';
-		saveBehavior?: 'addToObsidian' | 'copyToClipboard' | 'saveFile';
+		saveBehavior?: 'addToLogseq' | 'copyToClipboard' | 'saveFile';
 	};
 	logseq_settings?: {
 		baseUrl?: string;
 		token?: string;
 	};
-	vaults?: string[];
 	highlighter_settings?: {
 		highlighterEnabled?: boolean;
 		alwaysShowHighlights?: boolean;
@@ -106,7 +100,7 @@ interface StorageData {
 	};
 	property_types?: PropertyType[];
 	stats?: {
-		addToObsidian: number;
+		addToLogseq: number;
 		saveFile: number;
 		copyToClipboard: number;
 		share: number;
@@ -123,13 +117,10 @@ export async function loadSettings(): Promise<Settings> {
 	
 	// Load default settings first
 	const defaultSettings: Settings = {
-		vaults: [],
 		logseqApiBaseUrl: 'http://127.0.0.1:12315',
 		logseqApiToken: '',
 		showMoreActionsButton: false,
 		betaFeatures: false,
-		legacyMode: false,
-		silentOpen: false,
 		openBehavior: 'popup',
 		highlighterEnabled: true,
 		alwaysShowHighlights: true,
@@ -141,7 +132,7 @@ export async function loadSettings(): Promise<Settings> {
 		interpreterAutoRun: false,
 		defaultPromptContext: '',
 		propertyTypes: [],
-		saveBehavior: 'addToObsidian',
+		saveBehavior: 'addToLogseq',
 		readerSettings: {
 			fontSize: 16,
 			lineHeight: 1.6,
@@ -160,7 +151,7 @@ export async function loadSettings(): Promise<Settings> {
 			customCss: ''
 		},
 		stats: {
-			addToObsidian: 0,
+			addToLogseq: 0,
 			saveFile: 0,
 			copyToClipboard: 0,
 			share: 0
@@ -175,26 +166,21 @@ export async function loadSettings(): Promise<Settings> {
 		debugLog('Settings', `Updated migration version to ${CURRENT_MIGRATION_VERSION}`);
 	}
 
-	// Validate and sanitize data to prevent corruption
-	const sanitizedVaults = Array.isArray(data.vaults) ? data.vaults.filter(v => typeof v === 'string') : [];
-	const sanitizedModels = Array.isArray(data.interpreter_settings?.models) 
-		? data.interpreter_settings.models.filter(m => m && typeof m === 'object' && typeof m.id === 'string') 
+	const sanitizedModels = Array.isArray(data.interpreter_settings?.models)
+		? data.interpreter_settings.models.filter(m => m && typeof m === 'object' && typeof m.id === 'string')
 		: [];
-	const sanitizedProviders = Array.isArray(data.interpreter_settings?.providers) 
-		? data.interpreter_settings.providers.filter(p => p && typeof p === 'object' && typeof p.id === 'string') 
+	const sanitizedProviders = Array.isArray(data.interpreter_settings?.providers)
+		? data.interpreter_settings.providers.filter(p => p && typeof p === 'object' && typeof p.id === 'string')
 		: [];
 
 	// Load user settings
 	const loadedSettings: Settings = {
-		vaults: sanitizedVaults.length > 0 ? sanitizedVaults : defaultSettings.vaults,
 		logseqApiBaseUrl: data.logseq_settings?.baseUrl ?? defaultSettings.logseqApiBaseUrl,
 		logseqApiToken: data.logseq_settings?.token ?? defaultSettings.logseqApiToken,
 		showMoreActionsButton: data.general_settings?.showMoreActionsButton ?? defaultSettings.showMoreActionsButton,
 		betaFeatures: data.general_settings?.betaFeatures ?? defaultSettings.betaFeatures,
-		legacyMode: data.general_settings?.legacyMode ?? defaultSettings.legacyMode,
-		silentOpen: data.general_settings?.silentOpen ?? defaultSettings.silentOpen,
-		openBehavior: typeof data.general_settings?.openBehavior === 'boolean' 
-			? (data.general_settings.openBehavior ? 'embedded' : 'popup') 
+		openBehavior: typeof data.general_settings?.openBehavior === 'boolean'
+			? (data.general_settings.openBehavior ? 'embedded' : 'popup')
 			: (data.general_settings?.openBehavior ?? defaultSettings.openBehavior),
 		highlighterEnabled: data.highlighter_settings?.highlighterEnabled ?? defaultSettings.highlighterEnabled,
 		alwaysShowHighlights: data.highlighter_settings?.alwaysShowHighlights ?? defaultSettings.alwaysShowHighlights,
@@ -240,7 +226,6 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 	}
 
 	await browser.storage.sync.set({
-		vaults: generalSettings.vaults,
 		logseq_settings: {
 			baseUrl: generalSettings.logseqApiBaseUrl,
 			token: generalSettings.logseqApiToken,
@@ -248,8 +233,6 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 		general_settings: {
 			showMoreActionsButton: generalSettings.showMoreActionsButton,
 			betaFeatures: generalSettings.betaFeatures,
-			legacyMode: generalSettings.legacyMode,
-			silentOpen: generalSettings.silentOpen,
 			openBehavior: generalSettings.openBehavior,
 			saveBehavior: generalSettings.saveBehavior,
 		},
@@ -288,15 +271,10 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 	});
 }
 
-export async function setLegacyMode(enabled: boolean): Promise<void> {
-	await saveSettings({ legacyMode: enabled });
-	console.log(`Legacy mode ${enabled ? 'enabled' : 'disabled'}`);
-}
-
 export async function incrementStat(
 	action: keyof Settings['stats'],
-	vault?: string,
-	path?: string,
+	graphName?: string,
+	_unused?: string,
 	url?: string,
 	title?: string
 ): Promise<void> {
@@ -304,26 +282,23 @@ export async function incrementStat(
 	settings.stats[action]++;
 	await saveSettings(settings);
 
-	// Add history entry if URL is provided
 	if (url) {
-		await addHistoryEntry(action, url, title, vault, path);
+		await addHistoryEntry(action, url, title, graphName);
 	}
 }
 
 export async function addHistoryEntry(
-	action: keyof Settings['stats'], 
-	url: string, 
+	action: keyof Settings['stats'],
+	url: string,
 	title?: string,
-	vault?: string,
-	path?: string
+	graphName?: string,
 ): Promise<void> {
 	const entry: HistoryEntry = {
 		datetime: new Date().toISOString(),
 		url,
 		action,
 		title,
-		vault,
-		path
+		graphName,
 	};
 
 	// Get existing history from local storage

@@ -7,12 +7,9 @@ import type { Settings } from '../types/types';
 export default {} as any;
 
 export const generalSettings: Settings = {
-	vaults: [],
 	logseqApiBaseUrl: 'http://127.0.0.1:12315',
 	logseqApiToken: '',
 	betaFeatures: false,
-	legacyMode: false,
-	silentOpen: false,
 	openBehavior: 'popup',
 	highlighterEnabled: false,
 	alwaysShowHighlights: false,
@@ -43,14 +40,14 @@ export const generalSettings: Settings = {
 		customCss: '',
 	},
 	stats: {
-		addToObsidian: 0,
+		addToLogseq: 0,
 		saveFile: 0,
 		copyToClipboard: 0,
 		share: 0,
 	},
 	history: [],
 	ratings: [],
-	saveBehavior: 'addToObsidian',
+	saveBehavior: 'addToLogseq',
 };
 
 export const loadSettings = async () => {};

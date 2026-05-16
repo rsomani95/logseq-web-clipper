@@ -229,7 +229,7 @@ export class Reader {
 		// Clip button with dropdown
 		const clipButton = doc.createElement('button');
 		clipButton.className = 'obsidian-reader-settings-trigger nav-btn';
-		clipButton.setAttribute('aria-label', getMessage('addToObsidian'));
+		clipButton.setAttribute('aria-label', getMessage('addToLogseq'));
 		clipButton.appendChild(this.createSVG({
 			width: '18', height: '18', viewBox: '0 0 24 24', strokeWidth: '1.75',
 			paths: ['m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48'],
@@ -237,7 +237,7 @@ export class Reader {
 
 		const addToObsidianBtn = doc.createElement('button');
 		addToObsidianBtn.className = 'nav-btn';
-		addToObsidianBtn.setAttribute('aria-label', getMessage('addToObsidian'));
+		addToObsidianBtn.setAttribute('aria-label', getMessage('addToLogseq'));
 		const obsidianIcon = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
 		obsidianIcon.setAttribute('width', '18');
 		obsidianIcon.setAttribute('height', '18');

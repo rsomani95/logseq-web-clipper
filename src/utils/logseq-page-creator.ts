@@ -2,14 +2,15 @@
 // The HTTP transport is the injected LogseqAPI; the caller (background worker)
 // instantiates it from settings.
 //
-// Phase 2 scope: create a new page, tag it, write properties matching the
-// #WebClipping schema, append the markdown body as one block per paragraph.
-// Append-to-page and append-to-journal modes land in Phase 3.
+// Pipeline: createPage → addBlockTag → per-property writes → insertBatchBlock.
+// Node-typed properties (authors, tags) get one Logseq page per comma-separated
+// value, linked via numeric page.id — mirrors the zoterolocal pattern.
 
 import { PROPERTIES, WEB_CLIPPING_TAG, getProperty, ident, type PropertyName } from '@logseq-web-clipper/shared'
 
 import type { Property } from '../types/types'
 import type { LogseqAPI } from './logseq-api'
+import { markdownToBatchBlocks } from './markdown-to-outliner'
 
 export interface SaveToLogseqInput {
 	noteName: string
@@ -31,17 +32,15 @@ function isSchemaName(name: string): name is PropertyName {
 }
 
 /**
- * Splits the rendered markdown body into one Logseq block per paragraph.
- * Logseq renders markdown inside a block, so headings (`# X`), lists, and
- * inline formatting survive. True markdown-to-outliner conversion (lists
- * become nested blocks, headings become parents, etc.) is a Phase 3 polish.
+ * Splits a property value into individual node-property entries. Used for
+ * `authors` and `tags`, which are entered as comma-separated strings in the
+ * template UI but stored as multiple linked pages on the clipped item.
  */
-function paragraphsToBlocks(md: string): { content: string }[] {
-	return md
-		.split(/\n{2,}/)
-		.map((p) => p.trim())
-		.filter((p) => p.length > 0)
-		.map((content) => ({ content }))
+function splitNodeValues(value: string): string[] {
+	return value
+		.split(',')
+		.map((s) => s.trim())
+		.filter((s) => s.length > 0)
 }
 
 export async function saveToLogseq(
@@ -72,18 +71,34 @@ export async function saveToLogseq(
 
 	// Property writes are best-effort per field. One bad value (a malformed
 	// date, an unset schema entry) shouldn't abort the whole save — the page
-	// + tag already exist, the user can fix the field manually. Node-typed
-	// properties (authors, tags) are skipped here pending Phase 3 support
-	// for "create-page-per-value-and-link-by-uuid" writes.
+	// + tag already exist, the user can fix the field manually.
 	let matched = 0
 	for (const prop of properties) {
 		if (!isSchemaName(prop.name)) continue
 		if (!prop.value || prop.value.trim() === '') continue
 		const def = getProperty(prop.name)
+
 		if (def.type === 'node') {
-			console.info(`[logseq-web-clipper] skipping node-typed property ${prop.name} (not yet supported)`)
+			const values = splitNodeValues(prop.value)
+			if (values.length === 0) continue
+			let anySet = false
+			for (const v of values) {
+				try {
+					const nodePage = await api.createPage(v, {}, { redirect: false })
+					if (typeof nodePage?.id !== 'number') {
+						console.warn(`[logseq-web-clipper] node page for ${prop.name}="${v}" returned no id`)
+						continue
+					}
+					await api.upsertBlockProperty(page.uuid, ident(prop.name), nodePage.id)
+					anySet = true
+				} catch (err) {
+					console.warn(`[logseq-web-clipper] failed to link node property ${prop.name}="${v}":`, err)
+				}
+			}
+			if (anySet) matched++
 			continue
 		}
+
 		try {
 			await api.upsertBlockProperty(page.uuid, ident(prop.name), prop.value)
 			matched++
@@ -92,7 +107,7 @@ export async function saveToLogseq(
 		}
 	}
 
-	const blocks = paragraphsToBlocks(content)
+	const blocks = markdownToBatchBlocks(content)
 	if (blocks.length > 0) {
 		await api.insertBatchBlock(page.uuid, blocks)
 	}

@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Lägg till leverantör"
 	},
-	"addToObsidian": {
-		"message": "Lägg till i Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Tryck på retur för att lägga till ett valv"
-	},
 	"advanced": {
 		"message": "Avancerat"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Tack för din återkoppling"
 	},
-	"folder": {
-		"message": "Mapp"
-	},
 	"general": {
 		"message": "Allmänt"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Senaste 30 dagarna"
-	},
-	"lastUsed": {
-		"message": "Senast använd"
-	},
-	"legacyMode": {
-		"message": "Äldre läge"
-	},
-	"legacyModeDescription": {
-		"message": "Använder URI-klippmetoden som är kompatibel med Obsidian 1.6.7 eller tidigare. Observera att längden på innehållet du kan klippa är begränsad av din webbläsare och operativsystem. Vissa sidor kan misslyckas utan felmeddelanden."
 	},
 	"loadArticle": {
 		"message": "Läs artikel"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Ta bort alla egenskaper som inte används i någon mall."
 	},
-	"removeVault": {
-		"message": "Ta bort valv"
-	},
 	"replaceContent": {
 		"message": "Ersätt sidinnehållet"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Spara"
-	},
-	"saveBehaviorDescription": {
-		"message": "Välj standardalternativet för att spara sidor. Alternativa alternativ visas i rullgardinsmenyn bredvid huvudknappen."
-	},
-	"saveBehaviorLabel": {
-		"message": "Spara beteende"
 	},
 	"saveFile": {
 		"message": "Spara fil..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Visa sidvariabler"
-	},
-	"silentOpen": {
-		"message": "Spara klippt anteckning utan att öppna den"
-	},
-	"silentOpenDescription": {
-		"message": "Klippta anteckningar kommer att sparas men inte öppnas som en ny flik. Obsidian kommer fortfarande att flyttas till förgrunden."
 	},
 	"sort": {
 		"message": "Sortera"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Du använder den senaste versionen."
-	},
-	"vault": {
-		"message": "Valv"
-	},
-	"vaultDescription": {
-		"message": "Välj standardvalvet för denna mall. Gå till $link_start$allmänna inställningar$link_end$ för att lägga till eller ta bort valv.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Valv"
-	},
-	"vaultsDescription": {
-		"message": "Som standard sparas klippta anteckningar i det för närvarande öppna valvet. Du kan lägga till valv här om du vill ha möjlighet att spara i olika valv. Valvnamn måste exakt matcha namnet på Obsidian-valvet. Tryck $strong_start$retur$strong_end$ för att lägga till ett valv.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Version"

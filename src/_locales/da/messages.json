@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Tilføj udbyder"
 	},
-	"addToObsidian": {
-		"message": "Tilføj til Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Tryk Enter for at tilføje boks"
-	},
 	"advanced": {
 		"message": "Avanceret"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Tak for din feedback"
 	},
-	"folder": {
-		"message": "Mappe"
-	},
 	"general": {
 		"message": "Generelt"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Sidste 30 dage"
-	},
-	"lastUsed": {
-		"message": "Sidst brugt"
-	},
-	"legacyMode": {
-		"message": "Legacy-tilstand"
-	},
-	"legacyModeDescription": {
-		"message": "Bruger URI-indfangningsmetoden som er kompatibel med Obsidian 1.6.7 og ældre. Bemærk at længden af indfanget indhold er begrænset af browseren og operativsystemet. Nogle sider kan fejle uden fejlmeddelelse."
 	},
 	"loadArticle": {
 		"message": "Læs artikel"
@@ -856,9 +838,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Fjern alle egenskaber der ikke bruges i nogen skabeloner."
 	},
-	"removeVault": {
-		"message": "Fjern boks"
-	},
 	"replaceContent": {
 		"message": "Erstat noteindhold"
 	},
@@ -879,12 +858,6 @@
 	},
 	"save": {
 		"message": "Gem"
-	},
-	"saveBehaviorDescription": {
-		"message": "Vælg standardindstillingen for at gemme sider. Alternative muligheder vises i rullemenuen ved siden af hovedknappen."
-	},
-	"saveBehaviorLabel": {
-		"message": "Gem adfærd"
 	},
 	"saveFile": {
 		"message": "Gem fil..."
@@ -945,12 +918,6 @@
 	},
 	"showPageVariables": {
 		"message": "Vis sidevariabler"
-	},
-	"silentOpen": {
-		"message": "Gem noter uden at åbne dem"
-	},
-	"silentOpenDescription": {
-		"message": "Klippede noter vil blive gemt men ikke åbnet i en ny fane. Obsidian vil stadig blive bragt i forgrunden."
 	},
 	"sort": {
 		"message": "Sortér"
@@ -1026,34 +993,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Du bruger den nyeste version"
-	},
-	"vault": {
-		"message": "Boks"
-	},
-	"vaultDescription": {
-		"message": "Vælg standardboks for denne skabelon. Gå til $link_start$generelle indstillinger$link_end$ for at tilføje eller fjerne bokse.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Bokse"
-	},
-	"vaultsDescription": {
-		"message": "Som standard gemmes klippede noter i den åbne boks. Du kan tilføje bokse her hvis du ønsker muligheden for at gemme i forskellige bokse. Boksnavnet skal matche præcist med Obsidian-boksnavnet. Tryk $strong_start$enter$strong_end$ for at tilføje en boks.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Version"

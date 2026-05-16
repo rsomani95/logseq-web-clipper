@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "\"プロバイダーを追加\""
 	},
-	"addToObsidian": {
-		"message": "Obsidianに追加"
-	},
-	"addVaultPlaceholder": {
-		"message": "Enterキーを押して保管庫を追加"
-	},
 	"advanced": {
 		"message": "詳細設定"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "フィードバックありがとうございます"
 	},
-	"folder": {
-		"message": "フォルダ"
-	},
 	"general": {
 		"message": "一般"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "過去30日間"
-	},
-	"lastUsed": {
-		"message": "最後に使用"
-	},
-	"legacyMode": {
-		"message": "レガシーモード"
-	},
-	"legacyModeDescription": {
-		"message": "Obsidian 1.6.7以前と互換性のあるURIクリップ方式を使用します。クリップできるコンテンツの長さはブラウザとOSによって制限されます。エラーなしに失敗する場合があります。"
 	},
 	"loadArticle": {
 		"message": "記事を読む"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "どのテンプレートでも使用されていないプロパティをすべて削除します。"
 	},
-	"removeVault": {
-		"message": "保管庫を削除"
-	},
 	"replaceContent": {
 		"message": "ページコンテンツを置換"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "保存"
-	},
-	"saveBehaviorDescription": {
-		"message": "ページを保存するためのデフォルトオプションを選択します。他のオプションはメインボタンの隣のドロップダウンメニューに表示されます。"
-	},
-	"saveBehaviorLabel": {
-		"message": "保存の動作"
 	},
 	"saveFile": {
 		"message": "ファイルを保存..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "ページ変数を表示"
-	},
-	"silentOpen": {
-		"message": "ノートを開かずに保存"
-	},
-	"silentOpenDescription": {
-		"message": "クリップしたノートは保存されますが、新しいタブで開きません。Obsidianは引き続き前面に表示されます。"
 	},
 	"sort": {
 		"message": "並べ替え"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "最新バージョンを使用しています。"
-	},
-	"vault": {
-		"message": "保管庫"
-	},
-	"vaultDescription": {
-		"message": "このテンプレートのデフォルト保管庫を選択します。保管庫の追加や削除は$link_start$一般設定$link_end$で行えます。",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "保管庫"
-	},
-	"vaultsDescription": {
-		"message": "デフォルトでは、クリップしたノートは現在開いている保管庫に保存されます。異なる保管庫に保存するオプションが必要な場合は、ここで保管庫を追加できます。保管庫名はObsidian保管庫の名前と完全に一致する必要があります。$strong_start$Enter$strong_end$キーを押して保管庫を追加します。",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "バージョン"

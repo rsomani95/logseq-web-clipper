@@ -25,7 +25,8 @@ export interface LogseqGraphInfo {
 }
 
 export interface LogseqPageEntity {
-	id?: number
+	/** Internal datascript entity id. Required when used as a node-property value. */
+	id: number
 	uuid: string
 	name?: string
 	originalName?: string

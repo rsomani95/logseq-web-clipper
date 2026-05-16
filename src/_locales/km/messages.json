@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "បន្ថែមអ្នកផ្តល់សេវា"
 	},
-	"addToObsidian": {
-		"message": "បន្ថែមទៅ Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "ចុច Enter ដើម្បីបន្ថែម Vault"
-	},
 	"advanced": {
 		"message": "កម្រិតខ្ពស់"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "អរគុណសម្រាប់មតិយោបល់របស់អ្នក"
 	},
-	"folder": {
-		"message": "ថត"
-	},
 	"general": {
 		"message": "ទូទៅ"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "30 ថ្ងៃចុងក្រោយ"
-	},
-	"lastUsed": {
-		"message": "បានប្រើចុងក្រោយ"
-	},
-	"legacyMode": {
-		"message": "របៀបចាស់"
-	},
-	"legacyModeDescription": {
-		"message": "ប្រើវិធីកាត់យកតាម URI ដែលឆបគ្នាជាមួយ Obsidian 1.6.7 ឬចាស់ជាងនេះ។ សូមចំណាំថា ប្រវែងមាតិកាដែលអ្នកអាចកាត់យកបាន ត្រូវបានកំណត់ដោយកម្មវិធីរុករក និងប្រព័ន្ធប្រតិបត្តិការរបស់អ្នក។ ទំព័រខ្លះអាចបរាជ័យដោយគ្មានកំហុសណាមួយ។"
 	},
 	"loadArticle": {
 		"message": "អានអត្ថបទ"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "ដកលក្ខណៈសម្បត្តិទាំងអស់ដែលមិនត្រូវបានប្រើក្នុងគំរូណាមួយចេញ។"
 	},
-	"removeVault": {
-		"message": "ដក Vault ចេញ"
-	},
 	"replaceContent": {
 		"message": "ជំនួសមាតិកាទំព័រ"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "រក្សាទុក"
-	},
-	"saveBehaviorDescription": {
-		"message": "ជ្រើសរើសជម្រើសលំនាំដើមសម្រាប់រក្សាទុកទំព័រ។ ជម្រើសផ្សេងៗនឹងបង្ហាញនៅក្នុងម៉ឺនុយទម្លាក់ចុះជាប់នឹងប៊ូតុងមេ។"
-	},
-	"saveBehaviorLabel": {
-		"message": "ឥរិយាបថការរក្សាទុក"
 	},
 	"saveFile": {
 		"message": "រក្សាទុកឯកសារ..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "បង្ហាញអថេរទំព័រ"
-	},
-	"silentOpen": {
-		"message": "រក្សាទុកកំណត់ត្រាដែលបានកាត់យក ដោយមិនបើកវា"
-	},
-	"silentOpenDescription": {
-		"message": "កំណត់ត្រាដែលបានកាត់យកនឹងត្រូវបានរក្សាទុក ប៉ុន្តែមិនបើកជាផ្ទាំងថ្មីទេ។ Obsidian នឹងត្រូវបាននាំមកខាងមុខនៅតែដដែល។"
 	},
 	"sort": {
 		"message": "តម្រៀប"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "អ្នកកំពុងប្រើកំណែចុងក្រោយបំផុត។"
-	},
-	"vault": {
-		"message": "Vault"
-	},
-	"vaultDescription": {
-		"message": "ជ្រើសរើស vault លំនាំដើមសម្រាប់គំរូនេះ។ ទៅកាន់ $link_start$ការកំណត់ទូទៅ$link_end$ ដើម្បីបន្ថែម ឬដក vault ចេញ។",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Vaults"
-	},
-	"vaultsDescription": {
-		"message": "តាមលំនាំដើម កំណត់ត្រាដែលបានកាត់យកនឹងត្រូវបានរក្សាទុកទៅ vault ដែលកំពុងបើក។ អ្នកអាចបន្ថែម vault នៅទីនេះ ប្រសិនបើអ្នកចង់មានជម្រើសរក្សាទុកទៅ vault ផ្សេងៗ។ ឈ្មោះ vault ត្រូវតែត្រូវគ្នាពិតប្រាកដជាមួយឈ្មោះ vault របស់ Obsidian។ ចុច $strong_start$enter$strong_end$ ដើម្បីបន្ថែម vault។",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "កំណែ"

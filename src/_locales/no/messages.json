@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Legg til leverandør"
 	},
-	"addToObsidian": {
-		"message": "Legg til i Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Trykk Enter for å legge til hvelv"
-	},
 	"advanced": {
 		"message": "Avansert"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Takk for tilbakemeldingen"
 	},
-	"folder": {
-		"message": "Mappe"
-	},
 	"general": {
 		"message": "Generelt"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Siste 30 dager"
-	},
-	"lastUsed": {
-		"message": "Sist brukt"
-	},
-	"legacyMode": {
-		"message": "Eldre modus"
-	},
-	"legacyModeDescription": {
-		"message": "Bruker URI-fangstmetoden som er kompatibel med Obsidian 1.6.7 og eldre. Merk at lengden på fanget innhold er begrenset av nettleseren og operativsystemet. Noen sider kan mislykkes uten feilmelding."
 	},
 	"loadArticle": {
 		"message": "Les artikkel"
@@ -856,9 +838,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Fjern alle egenskaper som ikke brukes i noen maler."
 	},
-	"removeVault": {
-		"message": "Fjern hvelv"
-	},
 	"replaceContent": {
 		"message": "Erstatt notatinnhold"
 	},
@@ -879,12 +858,6 @@
 	},
 	"save": {
 		"message": "Lagre"
-	},
-	"saveBehaviorDescription": {
-		"message": "Velg standardalternativet for å lagre sider. Alternative alternativer vises i rullegardinmenyen ved siden av hovedknappen."
-	},
-	"saveBehaviorLabel": {
-		"message": "Lagre oppførsel"
 	},
 	"saveFile": {
 		"message": "Lagre fil..."
@@ -945,12 +918,6 @@
 	},
 	"showPageVariables": {
 		"message": "Vis sidevariabler"
-	},
-	"silentOpen": {
-		"message": "Lagre notater uten å åpne dem"
-	},
-	"silentOpenDescription": {
-		"message": "Klippede notater vil bli lagret men ikke åpnet i en ny fane. Obsidian vil fortsatt bli brakt til forgrunnen."
 	},
 	"sort": {
 		"message": "Sorter"
@@ -1026,34 +993,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Du bruker den nyeste versjonen"
-	},
-	"vault": {
-		"message": "Hvelv"
-	},
-	"vaultDescription": {
-		"message": "Velg standardhvelvet for denne malen. Gå til $link_start$generelle innstillinger$link_end$ for å legge til eller fjerne hvelv.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Hvelv"
-	},
-	"vaultsDescription": {
-		"message": "Som standard lagres klippede notater i det åpne hvelvet. Du kan legge til hvelv her hvis du ønsker muligheten til å lagre i forskjellige hvelv. Hvelvnavnet må samsvare nøyaktig med Obsidian-hvelvnavnet. Trykk $strong_start$enter$strong_end$ for å legge til et hvelv.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Versjon"

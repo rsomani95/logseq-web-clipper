@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Přidat poskytovatele"
 	},
-	"addToObsidian": {
-		"message": "Přidat do Obsidianu"
-	},
-	"addVaultPlaceholder": {
-		"message": "Stiskněte Enter pro přidání trezoru"
-	},
 	"advanced": {
 		"message": "Pokročilé"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Děkujeme za zpětnou vazbu"
 	},
-	"folder": {
-		"message": "Složka"
-	},
 	"general": {
 		"message": "Obecné"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Posledních 30 dní"
-	},
-	"lastUsed": {
-		"message": "Naposledy použité"
-	},
-	"legacyMode": {
-		"message": "Starší režim"
-	},
-	"legacyModeDescription": {
-		"message": "Používá metodu zachycení URI, která je kompatibilní s Obsidian 1.6.7 nebo starší. Vezměte na vědomí, že délka zachyceného obsahu je omezena prohlížečem a operačním systémem. Některé stránky mohou selhat bez chybové zprávy."
 	},
 	"loadArticle": {
 		"message": "Přečíst článek"
@@ -856,9 +838,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Odstraňte všechny vlastnosti, které nejsou použity v žádné šabloně."
 	},
-	"removeVault": {
-		"message": "Odstranit trezor"
-	},
 	"replaceContent": {
 		"message": "Nahradit obsah poznámky"
 	},
@@ -879,12 +858,6 @@
 	},
 	"save": {
 		"message": "Uložit"
-	},
-	"saveBehaviorDescription": {
-		"message": "Vyberte výchozí možnost pro ukládání stránek. Alternativní možnosti se zobrazí v rozbalovacím menu vedle hlavního tlačítka."
-	},
-	"saveBehaviorLabel": {
-		"message": "Chování při ukládání"
 	},
 	"saveFile": {
 		"message": "Uložit soubor..."
@@ -945,12 +918,6 @@
 	},
 	"showPageVariables": {
 		"message": "Zobrazit proměnné stránky"
-	},
-	"silentOpen": {
-		"message": "Uložit poznámky bez otevření"
-	},
-	"silentOpenDescription": {
-		"message": "Zachycené poznámky budou uloženy, ale neotevřou se v nové kartě. Obsidian bude stále přesunut do popředí."
 	},
 	"sort": {
 		"message": "Seřadit"
@@ -1026,34 +993,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Používáte nejnovější verzi."
-	},
-	"vault": {
-		"message": "Trezor"
-	},
-	"vaultDescription": {
-		"message": "Vyberte výchozí trezor pro tuto šablonu. Přejděte na $link_start$obecná nastavení$link_end$, abyste přidali nebo odstranili trezory.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Trezory"
-	},
-	"vaultsDescription": {
-		"message": "Ve výchozím nastavení jsou vybrané poznámky ukládány do aktuálně otevřeného trezoru. Pokud chcete mít možnost ukládat do různých trezorů, můžete zde přidat trezory. Názvy trezorů musí přesně odpovídat názvu trezoru Obsidian. Stiskněte $strong_start$enter$strong_end$ pro přidání trezoru.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Verze"

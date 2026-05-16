@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "أضف مزود"
 	},
-	"addToObsidian": {
-		"message": "إضافة إلى أوبسيديان"
-	},
-	"addVaultPlaceholder": {
-		"message": "اضغط على Enter لإضافة خزينة"
-	},
 	"advanced": {
 		"message": "متقدم"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "شكراً لملاحظاتك"
 	},
-	"folder": {
-		"message": "مجلد"
-	},
 	"general": {
 		"message": "عام"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "الـ 30 يومًا الماضية"
-	},
-	"lastUsed": {
-		"message": "آخر استخدام"
-	},
-	"legacyMode": {
-		"message": "الوضع القديم"
-	},
-	"legacyModeDescription": {
-		"message": "يستخدم طريقة قص URI المتوافقة مع أوبسيديان 1.6.7 أو أقدم. لاحظ أن طول المحتوى الذي يمكنك قصه محدود بواسطة متصفحك ونظام التشغيل. قد تفشل بعض الصفحات بدون أي أخطاء."
 	},
 	"loadArticle": {
 		"message": "قراءة المقالة"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "إزالة جميع الخصائص التي لا تستخدم في أي قالب."
 	},
-	"removeVault": {
-		"message": "إزالة الخزينة"
-	},
 	"replaceContent": {
 		"message": "استبدال محتوى الصفحة"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "حفظ"
-	},
-	"saveBehaviorDescription": {
-		"message": "اختر الخيار الافتراضي لحفظ الصفحات. تظهر الخيارات البديلة في القائمة المنسدلة بجوار الزر الرئيسي."
-	},
-	"saveBehaviorLabel": {
-		"message": "سلوك الحفظ"
 	},
 	"saveFile": {
 		"message": "حفظ الملف..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "إظهار متغيرات الصفحة"
-	},
-	"silentOpen": {
-		"message": "حفظ الملاحظة المقصوصة دون فتحها"
-	},
-	"silentOpenDescription": {
-		"message": "سيتم حفظ الملاحظات المقصوصة ولكن لن يتم فتحها كتبويب جديد. سيظل أوبسيديان يُجلب إلى المقدمة."
 	},
 	"sort": {
 		"message": "فرز"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "أنت تستخدم أحدث إصدار."
-	},
-	"vault": {
-		"message": "الخزينة"
-	},
-	"vaultDescription": {
-		"message": "حدد الخزينة الافتراضية لهذا القالب. انتقل إلى $link_start$الإعدادات العامة$link_end$ لإضافة أو إزالة الخزائن.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "الخزائن"
-	},
-	"vaultsDescription": {
-		"message": "بشكل افتراضي، يتم حفظ الملاحظات المقصوصة في الخزينة المفتوحة حالياً. يمكنك إضافة خزائن هنا إذا كنت تريد خيار الحفظ في خزائن مختلفة. يجب أن تتطابق أسماء الخزائن بالضبط مع اسم خزينة أوبسيديان. اضغط على $strong_start$enter$strong_end$ لإضافة خزينة.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "الإصدار"

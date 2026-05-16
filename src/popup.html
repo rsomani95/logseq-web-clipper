@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html id="popup">
 	<head>
-		<title data-i18n="extensionName">Obsidian Web Clipper</title>
+		<title data-i18n="extensionName">Logseq Web Clipper</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<link rel="stylesheet" href="style.css">
 		<script src="browser-polyfill.min.js"></script>
@@ -48,12 +48,6 @@
 				<textarea id="note-content-field" rows="4" data-i18n="notesAboutPage"></textarea>
 			</div>
 			<div class="clipper-footer">
-				<div class="vault-path-container">
-					<div id="vault-container" style="display: none;">
-						<select id="vault-select"></select>
-					</div>
-					<input id="path-name-field" type="text" data-i18n="folder"/>
-				</div>
 				<div id="interpreter" style="display: none;">
 					<textarea id="prompt-context" rows="3"></textarea>
 					<div class="interpreter-controls">
@@ -65,17 +59,12 @@
 					<div id="interpreter-error" style="display: none;"></div>
 				</div>
 				<div class="action-buttons" id="action-buttons">
-					<button id="clip-btn" class="mod-cta"><!-- Text set by determineMainAction --></button>
+					<button id="clip-btn" class="mod-cta"></button>
 					<div class="menu-btn">
 						<button id="more-btn"><i data-lucide="chevron-down"></i></button>
 						<div class="menu" id="more-dropdown">
-							<div class="secondary-actions">
-								<!-- Secondary actions will be populated by ts -->
-							</div>
+							<div class="secondary-actions"></div>
 						</div>
-					</div>
-					<div class="share-btn">
-						<a class="share-content clickable-icon" data-i18n-title="share"><i data-lucide="share"></i></a>
 					</div>
 				</div>
 			</div>

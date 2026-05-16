@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Pridať poskytovateľa"
 	},
-	"addToObsidian": {
-		"message": "Pridať do Obsidianu"
-	},
-	"addVaultPlaceholder": {
-		"message": "Stlačte Enter na pridanie vaultu"
-	},
 	"advanced": {
 		"message": "Pokročilé"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Ďakujeme za vašu spätnú väzbu"
 	},
-	"folder": {
-		"message": "Priečinok"
-	},
 	"general": {
 		"message": "Všeobecné"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Posledných 30 dní"
-	},
-	"lastUsed": {
-		"message": "Naposledy použité"
-	},
-	"legacyMode": {
-		"message": "Režim kompatibility"
-	},
-	"legacyModeDescription": {
-		"message": "Používa metódu orezávania cez URI kompatibilnú s Obsidianom 1.6.7 alebo starším. Upozorňujeme, že dĺžka obsahu, ktorý môžete uložiť, je obmedzená vaším prehliadačom a OS. Niektoré stránky môžu zlyhať bez akýchkoľvek chýb."
 	},
 	"loadArticle": {
 		"message": "Čítať článok"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Odstrániť všetky vlastnosti, ktoré sa nepoužívajú v žiadnej šablóne."
 	},
-	"removeVault": {
-		"message": "Odstrániť vault"
-	},
 	"replaceContent": {
 		"message": "Nahradiť obsah stránky"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Uložiť"
-	},
-	"saveBehaviorDescription": {
-		"message": "Vyberte predvolenú možnosť ukladania stránok. Alternatívne možnosti sa zobrazia v rozbaľovacej ponuke vedľa hlavného tlačidla."
-	},
-	"saveBehaviorLabel": {
-		"message": "Správanie ukladania"
 	},
 	"saveFile": {
 		"message": "Uložiť súbor..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Zobraziť premenné stránky"
-	},
-	"silentOpen": {
-		"message": "Uložiť výstrižok bez jeho otvorenia"
-	},
-	"silentOpenDescription": {
-		"message": "Výstrižky sa uložia, ale neotvoria sa v novej karte. Obsidian sa aj tak presunie do popredia."
 	},
 	"sort": {
 		"message": "Zoradiť"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Používate najnovšiu verziu."
-	},
-	"vault": {
-		"message": "Vault"
-	},
-	"vaultDescription": {
-		"message": "Vyberte predvolený vault pre túto šablónu. Ak chcete pridať alebo odstrániť vaulty, prejdite do $link_start$všeobecných nastavení$link_end$.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Vaulty"
-	},
-	"vaultsDescription": {
-		"message": "Predvolene sa výstrižky ukladajú do aktuálne otvoreného vaultu. Ak chcete mať možnosť ukladať do rôznych vaultov, môžete ich tu pridať. Názvy vaultov sa musia presne zhodovať s názvom Obsidian vaultu. Stlačte $strong_start$Enter$strong_end$ na pridanie vaultu.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Verzia"

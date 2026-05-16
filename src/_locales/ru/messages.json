@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Добавить провайдера"
 	},
-	"addToObsidian": {
-		"message": "Добавить в Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Нажмите enter чтобы добавить в хранилище"
-	},
 	"advanced": {
 		"message": "Расширенные настройки"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Спасибо за ваш отзыв"
 	},
-	"folder": {
-		"message": "Папка"
-	},
 	"general": {
 		"message": "Основное"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Последние 30 дней"
-	},
-	"lastUsed": {
-		"message": "Последнее использованное"
-	},
-	"legacyMode": {
-		"message": "Режим совместимости"
-	},
-	"legacyModeDescription": {
-		"message": "Использует метод обработки URI, совместимый с Obsidian 1.6.7 или более ранней версией. Обратите внимание, что длина контента, который вы можете вырезать, ограничена вашим браузером и ОС. Некоторые страницы могут не открыться без ошибок."
 	},
 	"loadArticle": {
 		"message": "Читать статью"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Удалить все свойства, которые не используются ни в одном шаблоне."
 	},
-	"removeVault": {
-		"message": "Удалить хранилище"
-	},
 	"replaceContent": {
 		"message": "Заменить содержимое страницы"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Сохранить"
-	},
-	"saveBehaviorDescription": {
-		"message": "Выберите опцию сохранения страниц по умолчанию. Альтернативные варианты отображаются в выпадающем меню рядом с основной кнопкой."
-	},
-	"saveBehaviorLabel": {
-		"message": "Поведение при сохранении"
 	},
 	"saveFile": {
 		"message": "Сохранить файл..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Показать переменные страницы"
-	},
-	"silentOpen": {
-		"message": "Сохранять заметки, не открывая их"
-	},
-	"silentOpenDescription": {
-		"message": "Заметки будут сохранены, но не откроются в новой вкладке. Obsidian по-прежнему будет выводиться на передний план."
 	},
 	"sort": {
 		"message": "Сортировать"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Вы используете последнюю версию."
-	},
-	"vault": {
-		"message": "Хранилище"
-	},
-	"vaultDescription": {
-		"message": "Выберите хранилище по умолчанию для этого шаблона. Перейдите в раздел $link_start$основных настроек$link_end$, чтобы добавить или удалить хранилища.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Хранилища"
-	},
-	"vaultsDescription": {
-		"message": "По умолчанию заметки сохраняются в текущем открытом хранилище. Вы можете добавить хранилища здесь, если хотите иметь возможность сохранять в разных хранилищах. Имена хранилищ должны полностью совпадать с именем хранилища Obsidian. Нажмите $strong_start$Enter$strong_end$, чтобы добавить хранилище.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Версия"

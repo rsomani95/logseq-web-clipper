@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "เพิ่มผู้ให้บริการ"
 	},
-	"addToObsidian": {
-		"message": "เพิ่มไปยัง Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "กด Enter เพื่อเพิ่มคลัง"
-	},
 	"advanced": {
 		"message": "ขั้นสูง"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "ขอบคุณสำหรับข้อเสนอแนะ"
 	},
-	"folder": {
-		"message": "โฟลเดอร์"
-	},
 	"general": {
 		"message": "ทั่วไป"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "30 วันที่ผ่านมา"
-	},
-	"lastUsed": {
-		"message": "ใช้ล่าสุด"
-	},
-	"legacyMode": {
-		"message": "โหมดเก่า"
-	},
-	"legacyModeDescription": {
-		"message": "ใช้วิธีการคลิป URI ที่เข้ากันได้กับ Obsidian 1.6.7 หรือเก่ากว่า โปรดทราบว่าความยาวของเนื้อหาที่คุณสามารถคลิปได้ถูกจำกัดโดยเบราว์เซอร์และระบบปฏิบัติการของคุณ บางหน้าอาจล้มเหลวโดยไม่มีข้อความแสดงข้อผิดพลาด"
 	},
 	"loadArticle": {
 		"message": "อ่านบทความ"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "ลบคุณสมบัติทั้งหมดที่ไม่ได้ใช้ในเทมเพลตใดๆ"
 	},
-	"removeVault": {
-		"message": "ลบคลัง"
-	},
 	"replaceContent": {
 		"message": "แทนที่เนื้อหาหน้า"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "บันทึก"
-	},
-	"saveBehaviorDescription": {
-		"message": "เลือกตัวเลือกเริ่มต้นสำหรับการบันทึกหน้า ตัวเลือกทางเลือกปรากฏในเมนูแบบเลื่อนลงถัดจากปุ่มหลัก"
-	},
-	"saveBehaviorLabel": {
-		"message": "พฤติกรรมการบันทึก"
 	},
 	"saveFile": {
 		"message": "บันทึกไฟล์..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "แสดงตัวแปรหน้า"
-	},
-	"silentOpen": {
-		"message": "บันทึกบันทึกที่คลิปโดยไม่เปิด"
-	},
-	"silentOpenDescription": {
-		"message": "บันทึกที่คลิปจะถูกบันทึกแต่ไม่เปิดเป็นแท็บใหม่ Obsidian จะยังคงถูกนำมาไว้ด้านหน้า"
 	},
 	"sort": {
 		"message": "จัดเรียง"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "คุณกำลังใช้เวอร์ชันล่าสุด"
-	},
-	"vault": {
-		"message": "คลัง"
-	},
-	"vaultDescription": {
-		"message": "เลือกคลังเริ่มต้นสำหรับเทมเพลตนี้ ไปที่ $link_start$การตั้งค่าทั่วไป$link_end$ เพื่อเพิ่มหรือลบคลัง",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "คลัง"
-	},
-	"vaultsDescription": {
-		"message": "โดยค่าเริ่มต้น บันทึกที่คลิปจะถูกบันทึกในคลังที่เปิดอยู่ คุณสามารถเพิ่มคลังที่นี่ถ้าคุณต้องการตัวเลือกในการบันทึกไปยังคลังต่างๆ ชื่อคลังต้องตรงกับชื่อคลัง Obsidian พอดี กด $strong_start$enter$strong_end$ เพื่อเพิ่มคลัง",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "เวอร์ชัน"

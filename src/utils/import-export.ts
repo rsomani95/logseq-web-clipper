@@ -45,10 +45,8 @@ export async function exportTemplate(): Promise<void> {
 		triggers: template.triggers,
 	};
 
-	// Only include noteNameFormat and path for non-daily note behaviors
 	if (!isDailyNote) {
 		orderedTemplate.noteNameFormat = template.noteNameFormat;
-		orderedTemplate.path = template.path;
 	}
 
 	// Include context only if it has a value
@@ -299,10 +297,8 @@ export function copyTemplateToClipboard(template: Template): void {
 		triggers: template.triggers,
 	};
 
-	// Only include noteNameFormat and path for non-daily note behaviors
 	if (!isDailyNote) {
 		orderedTemplate.noteNameFormat = template.noteNameFormat;
-		orderedTemplate.path = template.path;
 	}
 
 	// Include context only if it has a value

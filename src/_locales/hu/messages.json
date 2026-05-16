@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Szolgáltató hozzáadása"
 	},
-	"addToObsidian": {
-		"message": "Hozzáadás az Obsidianhoz"
-	},
-	"addVaultPlaceholder": {
-		"message": "Nyomd meg az Entert egy vault hozzáadásához"
-	},
 	"advanced": {
 		"message": "Speciális"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Köszönjük a visszajelzésed"
 	},
-	"folder": {
-		"message": "Mappa"
-	},
 	"general": {
 		"message": "Általános"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Elmúlt 30 nap"
-	},
-	"lastUsed": {
-		"message": "Utoljára használva"
-	},
-	"legacyMode": {
-		"message": "Örökölt mód"
-	},
-	"legacyModeDescription": {
-		"message": "Az Obsidian 1.6.7-es vagy korábbi verziójával kompatibilis URI-alapú klipelési módszert használja. Vedd figyelembe, hogy a klipelhető tartalom hossza a böngésződ és az operációs rendszered korlátaitól függ. Egyes oldalak hibajelzés nélkül is meghiúsulhatnak."
 	},
 	"loadArticle": {
 		"message": "Cikk olvasása"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Az összes olyan tulajdonság eltávolítása, amelyet egyetlen sablon sem használ."
 	},
-	"removeVault": {
-		"message": "Vault eltávolítása"
-	},
 	"replaceContent": {
 		"message": "Az oldal tartalmának lecserélése"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Mentés"
-	},
-	"saveBehaviorDescription": {
-		"message": "Válaszd ki az oldalak mentésének alapértelmezett módját. Az alternatív lehetőségek a fő gomb melletti legördülő menüben jelennek meg."
-	},
-	"saveBehaviorLabel": {
-		"message": "Mentési viselkedés"
 	},
 	"saveFile": {
 		"message": "Fájl mentése..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Oldalváltozók megjelenítése"
-	},
-	"silentOpen": {
-		"message": "A klipelt jegyzet mentése megnyitás nélkül"
-	},
-	"silentOpenDescription": {
-		"message": "A klipelt jegyzetek mentésre kerülnek, de nem nyílnak meg új lapon. Az Obsidian továbbra is előtérbe kerül."
 	},
 	"sort": {
 		"message": "Rendezés"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "A legfrissebb verziót használod."
-	},
-	"vault": {
-		"message": "Vault"
-	},
-	"vaultDescription": {
-		"message": "Válaszd ki az alapértelmezett vaultot ehhez a sablonhoz. Vaultok hozzáadásához vagy eltávolításához menj az $link_start$általános beállítások$link_end$hoz.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Vaultok"
-	},
-	"vaultsDescription": {
-		"message": "Alapértelmezés szerint a klipelt jegyzetek az éppen megnyitott vaultba kerülnek mentésre. Itt hozzáadhatsz vaultokat, ha szeretnéd a lehetőséget, hogy különböző vaultokba ments. A vaultneveknek pontosan meg kell egyezniük az Obsidian vault nevével. Vault hozzáadásához nyomd meg az $strong_start$Enter$strong_end$ billentyűt.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Verzió"

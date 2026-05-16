@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Ajouter un fournisseur"
 	},
-	"addToObsidian": {
-		"message": "Ajouter à Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Appuyez sur entrée pour ajouter un coffre"
-	},
 	"advanced": {
 		"message": "Avancé"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Merci pour votre retour"
 	},
-	"folder": {
-		"message": "Dossier"
-	},
 	"general": {
 		"message": "Général"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "30 derniers jours"
-	},
-	"lastUsed": {
-		"message": "Dernière utilisation"
-	},
-	"legacyMode": {
-		"message": "Mode compatibilité"
-	},
-	"legacyModeDescription": {
-		"message": "Utilise la méthode d'enregistrement URI compatible avec Obsidian 1.6.7 ou antérieur. Notez que la longueur du contenu que vous pouvez enregistrer est limitée par votre navigateur et votre système d'exploitation. Certaines pages peuvent échouer sans erreur."
 	},
 	"loadArticle": {
 		"message": "Lire l’article"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Supprime toutes les propriétés qui ne sont utilisées dans aucun modèle."
 	},
-	"removeVault": {
-		"message": "Supprimer le coffre"
-	},
 	"replaceContent": {
 		"message": "Remplacer le contenu de la page"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Enregistrer"
-	},
-	"saveBehaviorDescription": {
-		"message": "Choisissez l'option par défaut pour enregistrer les pages. Les options alternatives apparaissent dans le menu déroulant à côté du bouton principal."
-	},
-	"saveBehaviorLabel": {
-		"message": "Comportement de sauvegarde"
 	},
 	"saveFile": {
 		"message": "Enregistrer le fichier..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Afficher les variables de page"
-	},
-	"silentOpen": {
-		"message": "Enregistrer la note sans l'ouvrir"
-	},
-	"silentOpenDescription": {
-		"message": "Les notes seront enregistrées mais ne s'ouvriront pas dans un nouvel onglet. Obsidian sera toujours amené au premier plan."
 	},
 	"sort": {
 		"message": "Trier"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Vous utilisez la dernière version."
-	},
-	"vault": {
-		"message": "Coffre"
-	},
-	"vaultDescription": {
-		"message": "Sélectionnez le coffre par défaut pour ce modèle. Allez dans les $link_start$paramètres généraux$link_end$ pour ajouter ou supprimer des coffres.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Coffres"
-	},
-	"vaultsDescription": {
-		"message": "Par défaut, les notes sont enregistrées dans le coffre actuellement ouvert. Vous pouvez ajouter des coffres ici si vous souhaitez pouvoir enregistrer dans différents coffres. Les noms des coffres doivent correspondre exactement au nom du coffre Obsidian. Appuyez sur $strong_start$entrée$strong_end$ pour ajouter un coffre.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Version"

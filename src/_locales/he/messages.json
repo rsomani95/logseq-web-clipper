@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "הוסף ספק"
 	},
-	"addToObsidian": {
-		"message": "הוסף ל-Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "לחץ/י Enter להוספת כספת"
-	},
 	"advanced": {
 		"message": "מתקדם"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "תודה על המשוב"
 	},
-	"folder": {
-		"message": "תיקייה"
-	},
 	"general": {
 		"message": "כללי"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "30 הימים האחרונים"
-	},
-	"lastUsed": {
-		"message": "שימוש אחרון"
-	},
-	"legacyMode": {
-		"message": "מצב מורשת"
-	},
-	"legacyModeDescription": {
-		"message": "שימוש בשיטת URI המתאימה ל-Obsidian 1.6.7 ומטה. שים/י לב שאורך התוכן מוגבל על ידי הדפדפן ומערכת ההפעלה. חלק מהדפים עלולים להיכשל ללא הודעת שגיאה."
 	},
 	"loadArticle": {
 		"message": "קרא מאמר"
@@ -856,9 +838,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "הסר את כל המאפיינים שאינם בשימוש באף תבנית."
 	},
-	"removeVault": {
-		"message": "הסר כספת"
-	},
 	"replaceContent": {
 		"message": "החלף תוכן פתק"
 	},
@@ -879,12 +858,6 @@
 	},
 	"save": {
 		"message": "שמור"
-	},
-	"saveBehaviorDescription": {
-		"message": "בחר את האפשרות הברירת המחדל לשמירת דפים. אפשרויות חלופיות מופיעות בתפריט הנפתח ליד הכפתור הראשי."
-	},
-	"saveBehaviorLabel": {
-		"message": "התנהגות שמירה"
 	},
 	"saveFile": {
 		"message": "שמור קובץ..."
@@ -945,12 +918,6 @@
 	},
 	"showPageVariables": {
 		"message": "הצג/י משתני דף"
-	},
-	"silentOpen": {
-		"message": "שמור פתקים מבלי לפתוח"
-	},
-	"silentOpenDescription": {
-		"message": "פתקים שנגזרו יישמרו אך לא ייפתחו בכרטיסייה חדשה. Obsidian עדיין יועבר לחזית."
 	},
 	"sort": {
 		"message": "מיון"
@@ -1026,34 +993,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "את/ה משתמש/ת בגרסה העדכנית ביותר"
-	},
-	"vault": {
-		"message": "כספת"
-	},
-	"vaultDescription": {
-		"message": "בחר את כספת ברירת המחדל עבור תבנית זו. עבור אל $link_start$הגדרות כלליות$link_end$ כדי להוסיף או להסיר כספות.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "כספות"
-	},
-	"vaultsDescription": {
-		"message": "כברירת מחדל, פתקים שנגזרו נשמרים בכספת הפתוחה. תוכל/י להוסיף כספות כאן אם תרצה/י את האפשרות לשמור בכספות שונות. שם הכספת חייב להתאים בדיוק לשם כספת ה-Obsidian. לחץ/י $strong_start$enter$strong_end$ כדי להוסיף כספת.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "גרסה"

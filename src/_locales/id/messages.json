@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Tambah penyedia"
 	},
-	"addToObsidian": {
-		"message": "Tambah ke Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Tekan enter untuk menambahkan vault"
-	},
 	"advanced": {
 		"message": "Pengaturan Lanjutan"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Terima kasih atas umpan balik Anda"
 	},
-	"folder": {
-		"message": "Folder"
-	},
 	"general": {
 		"message": "Umum"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "30 hari terakhir"
-	},
-	"lastUsed": {
-		"message": "Terakhir digunakan"
-	},
-	"legacyMode": {
-		"message": "Mode Legacy"
-	},
-	"legacyModeDescription": {
-		"message": "Menggunakan metode klip URI yang kompatibel dengan Obsidian 1.6.7 atau yang lebih lama. Perhatikan bahwa panjang konten yang dapat Anda klip dibatasi oleh browser dan sistem operasi Anda. Beberapa laman web bisa saja gagal tanpa ada pesan error yang tampil."
 	},
 	"loadArticle": {
 		"message": "Baca artikel"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Hapus semua properti yang tidak digunakan dalam template apapun."
 	},
-	"removeVault": {
-		"message": "Hapus vault"
-	},
 	"replaceContent": {
 		"message": "Ganti konten laman web"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Simpan"
-	},
-	"saveBehaviorDescription": {
-		"message": "Pilih opsi default untuk menyimpan halaman. Opsi alternatif muncul di menu dropdown di sebelah tombol utama."
-	},
-	"saveBehaviorLabel": {
-		"message": "Perilaku penyimpanan"
 	},
 	"saveFile": {
 		"message": "Simpan file..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Tampilkan variabel laman web"
-	},
-	"silentOpen": {
-		"message": "Simpan catatan yang diklip tanpa membuka catatan"
-	},
-	"silentOpenDescription": {
-		"message": "Catatan yang diklip akan disimpan, tetapi tidak akan dibuka di dalam tab baru. Obsidian tetap akan diangkat ke latar depan."
 	},
 	"sort": {
 		"message": "Urutkan"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Anda menggunakan versi terbaru."
-	},
-	"vault": {
-		"message": "Vault"
-	},
-	"vaultDescription": {
-		"message": "Pilih vault default untuk template ini. Pergi ke $link_start$pengaturan umum$link_end$ untuk menambah atau menghapus vault.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Vault"
-	},
-	"vaultsDescription": {
-		"message": "Secara default, catatan yang diklip akan disimpan ke vault yang sedang dibuka. Anda dapat menambahkan vault di sini jika Anda ingin menambah opsi untuk menyimpan ke vault lainnya. Nama vault harus sama persis dengan nama vault Obsidian. Tekan $strong_start$enter$strong_end$ untuk menambah vault.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Versi"

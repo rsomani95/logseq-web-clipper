@@ -239,11 +239,11 @@ async function main(): Promise<void> {
 
 	// Output
 	if (args.open) {
-		const vault = args.vault || template.vault || '';
+		const vault = args.vault || '';
 		const obsResult = await openInObsidian(
 			result.fullContent,
 			result.noteName,
-			template.path || '',
+			'',
 			vault,
 			template.behavior || 'create',
 			args.silent,

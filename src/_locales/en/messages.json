@@ -17,14 +17,8 @@
 	"addProviderTitle": {
 		"message": "Add provider"
 	},
-	"addToObsidian": {
-		"message": "Add to Obsidian"
-	},
 	"addToLogseq": {
 		"message": "Add to Logseq"
-	},
-	"addVaultPlaceholder": {
-		"message": "Press enter to add a vault"
 	},
 	"advanced": {
 		"message": "Advanced"
@@ -345,9 +339,6 @@
 	"feedbackTitle": {
 		"message": "Thanks for your feedback"
 	},
-	"folder": {
-		"message": "Folder"
-	},
 	"general": {
 		"message": "General"
 	},
@@ -462,15 +453,6 @@
 	},
 	"last30Days": {
 		"message": "Last 30 days"
-	},
-	"lastUsed": {
-		"message": "Last used"
-	},
-	"legacyMode": {
-		"message": "Legacy mode"
-	},
-	"legacyModeDescription": {
-		"message": "Uses the URI clipping method compatible with Obsidian 1.6.7 or earlier. Note that the length of the content you can clip is limited by your browser and OS. Some pages may fail without any errors."
 	},
 	"loadArticle": {
 		"message": "Read article"
@@ -909,9 +891,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Remove all properties that are not used in any template."
 	},
-	"removeVault": {
-		"message": "Remove vault"
-	},
 	"replaceContent": {
 		"message": "Replace the page content"
 	},
@@ -932,12 +911,6 @@
 	},
 	"save": {
 		"message": "Save"
-	},
-	"saveBehaviorDescription": {
-		"message": "Choose the default option for saving pages. Alternate options appear in the dropdown menu next to the main button."
-	},
-	"saveBehaviorLabel": {
-		"message": "Save behavior"
 	},
 	"saveFile": {
 		"message": "Save file..."
@@ -998,12 +971,6 @@
 	},
 	"showPageVariables": {
 		"message": "Show page variables"
-	},
-	"silentOpen": {
-		"message": "Save clipped note without opening it"
-	},
-	"silentOpenDescription": {
-		"message": "Clipped notes will be saved but will not open as a new tab. Obsidian will still be brought to the foreground."
 	},
 	"sort": {
 		"message": "Sort"
@@ -1079,34 +1046,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "You are using the latest version."
-	},
-	"vault": {
-		"message": "Vault"
-	},
-	"vaultDescription": {
-		"message": "Select the default vault for this template. Go to $link_start$general settings$link_end$ to add or remove vaults.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Vaults"
-	},
-	"vaultsDescription": {
-		"message": "By default, clipped notes are saved to the currently open vault. You can add vaults here if you want the option to save to different vaults. Vault names must exactly match the name of the Obsidian vault. Press $strong_start$enter$strong_end$ to add a vault.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Version"

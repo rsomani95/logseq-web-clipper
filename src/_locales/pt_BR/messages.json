@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Adicionar provedor"
 	},
-	"addToObsidian": {
-		"message": "Adicionar ao Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Pressione Enter para adicionar um cofre"
-	},
 	"advanced": {
 		"message": "Avançado"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Obrigado pelo seu feedback"
 	},
-	"folder": {
-		"message": "Pasta"
-	},
 	"general": {
 		"message": "Geral"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Últimos 30 dias"
-	},
-	"lastUsed": {
-		"message": "Usado pela última vez"
-	},
-	"legacyMode": {
-		"message": "Modo legado"
-	},
-	"legacyModeDescription": {
-		"message": "Utiliza o método de captura por URI compatível com o Obsidian 1.6.7 ou versões anteriores. Observe que o tamanho do conteúdo que pode ser capturado é limitado pelo seu navegador e pelo sistema operacional. Algumas páginas podem falhar sem exibir erros."
 	},
 	"loadArticle": {
 		"message": "Ler artigo"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Remove todas as propriedades que não são utilizadas em nenhum modelo."
 	},
-	"removeVault": {
-		"message": "Remover cofre"
-	},
 	"replaceContent": {
 		"message": "Substituir o conteúdo da página"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Salvar"
-	},
-	"saveBehaviorDescription": {
-		"message": "Escolha a opção padrão para salvar páginas. Opções alternativas aparecem no menu suspenso ao lado do botão principal."
-	},
-	"saveBehaviorLabel": {
-		"message": "Comportamento de salvamento"
 	},
 	"saveFile": {
 		"message": "Salvar arquivo..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Exibir variáveis"
-	},
-	"silentOpen": {
-		"message": "Salvar captura sem abrir a nota"
-	},
-	"silentOpenDescription": {
-		"message": "As notas capturadas serão salvas, mas não serão abertas em uma nova guia. O Obsidian ainda será trazido para o primeiro plano."
 	},
 	"sort": {
 		"message": "Ordenar"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Você está usando a versão mais recente."
-	},
-	"vault": {
-		"message": "Cofre"
-	},
-	"vaultDescription": {
-		"message": "Selecione o cofre padrão para este modelo. Acesse $link_start$Configurações gerais$link_end$ para adicionar ou remover cofres.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Cofres"
-	},
-	"vaultsDescription": {
-		"message": "Por padrão, as notas capturadas são salvas no cofre aberto no momento. Você pode adicionar cofres aqui se quiser ter a opção de salvar em cofres diferentes. Os nomes dos cofres devem corresponder exatamente ao nome do cofre do Obsidian. Pressione $strong_start$Enter$strong_end$ para adicionar um cofre.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Versão"

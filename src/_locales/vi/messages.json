@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Thêm nhà cung cấp"
 	},
-	"addToObsidian": {
-		"message": "Thêm vào Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Nhấn enter để thêm kho lưu trữ"
-	},
 	"advanced": {
 		"message": "Nâng cao"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Cảm ơn phản hồi của bạn"
 	},
-	"folder": {
-		"message": "Thư mục"
-	},
 	"general": {
 		"message": "Chung"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "30 ngày qua"
-	},
-	"lastUsed": {
-		"message": "Sử dụng lần cuối"
-	},
-	"legacyMode": {
-		"message": "Chế độ cũ"
-	},
-	"legacyModeDescription": {
-		"message": "Sử dụng phương thức lưu URI tương thích với Obsidian 1.6.7 hoặc cũ hơn. Lưu ý rằng độ dài nội dung bạn có thể lưu bị giới hạn bởi trình duyệt và hệ điều hành của bạn. Một số trang có thể thất bại mà không có thông báo lỗi."
 	},
 	"loadArticle": {
 		"message": "Đọc bài viết"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Xóa tất cả thuộc tính không được sử dụng trong bất kỳ mẫu nào."
 	},
-	"removeVault": {
-		"message": "Xóa kho lưu trữ"
-	},
 	"replaceContent": {
 		"message": "Thay thế nội dung trang"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Lưu"
-	},
-	"saveBehaviorDescription": {
-		"message": "Chọn tùy chọn mặc định để lưu trang. Các tùy chọn khác xuất hiện trong menu dropdown bên cạnh nút chính."
-	},
-	"saveBehaviorLabel": {
-		"message": "Hành vi lưu"
 	},
 	"saveFile": {
 		"message": "Lưu tệp..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Hiển thị biến trang"
-	},
-	"silentOpen": {
-		"message": "Lưu ghi chú đã lưu mà không mở"
-	},
-	"silentOpenDescription": {
-		"message": "Ghi chú đã lưu sẽ được lưu nhưng không mở trong tab mới. Obsidian vẫn sẽ được đưa lên phía trước."
 	},
 	"sort": {
 		"message": "Sắp xếp"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Bạn đang sử dụng phiên bản mới nhất."
-	},
-	"vault": {
-		"message": "Kho lưu trữ"
-	},
-	"vaultDescription": {
-		"message": "Chọn kho lưu trữ mặc định cho mẫu này. Đi tới $link_start$cài đặt chung$link_end$ để thêm hoặc xóa kho lưu trữ.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Kho lưu trữ"
-	},
-	"vaultsDescription": {
-		"message": "Theo mặc định, ghi chú đã lưu được lưu vào kho lưu trữ hiện đang mở. Bạn có thể thêm kho lưu trữ ở đây nếu muốn có tùy chọn lưu vào các kho lưu trữ khác nhau. Tên kho lưu trữ phải khớp chính xác với tên kho lưu trữ Obsidian. Nhấn $strong_start$enter$strong_end$ để thêm kho lưu trữ.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Phiên bản"

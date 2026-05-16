@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Sağlayıcı ekle"
 	},
-	"addToObsidian": {
-		"message": "Obsidian'a ekle"
-	},
-	"addVaultPlaceholder": {
-		"message": "Kasa eklemek için enter'a basın"
-	},
 	"advanced": {
 		"message": "Gelişmiş"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Geri bildiriminiz için teşekkür ederiz"
 	},
-	"folder": {
-		"message": "Klasör"
-	},
 	"general": {
 		"message": "Genel"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Son 30 gün"
-	},
-	"lastUsed": {
-		"message": "Son kullanılan"
-	},
-	"legacyMode": {
-		"message": "Eski mod"
-	},
-	"legacyModeDescription": {
-		"message": "Obsidian 1.6.7 veya daha eski sürümlerle uyumlu URI kırpma yöntemini kullanır. Kırpabileceğiniz içerik uzunluğunun tarayıcınız ve işletim sisteminiz tarafından sınırlandırıldığını unutmayın. Bazı sayfalar hata vermeden başarısız olabilir."
 	},
 	"loadArticle": {
 		"message": "Makaleyi oku"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Hiçbir şablonda kullanılmayan tüm özellikleri kaldır."
 	},
-	"removeVault": {
-		"message": "Kasayı kaldır"
-	},
 	"replaceContent": {
 		"message": "Sayfa içeriğini değiştir"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Kaydet"
-	},
-	"saveBehaviorDescription": {
-		"message": "Sayfaları kaydetmek için varsayılan seçeneği belirleyin. Ana düğmenin yanındaki açılır menüde alternatif seçenekler görünür."
-	},
-	"saveBehaviorLabel": {
-		"message": "Kaydetme davranışı"
 	},
 	"saveFile": {
 		"message": "Dosyayı kaydet..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Sayfa değişkenlerini göster"
-	},
-	"silentOpen": {
-		"message": "Kırpılan notu açmadan kaydet"
-	},
-	"silentOpenDescription": {
-		"message": "Notlar kaydedilir ama yeni sekmede açılmaz. Obsidian yine de öne gelir."
 	},
 	"sort": {
 		"message": "Sırala"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "En son sürümü kullanıyorsunuz."
-	},
-	"vault": {
-		"message": "Kasa"
-	},
-	"vaultDescription": {
-		"message": "Bu şablon için varsayılan kasayı seçin. Kasa eklemek veya kaldırmak için $link_start$genel ayarlar$link_end$ bölümüne gidin.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Kasalar"
-	},
-	"vaultsDescription": {
-		"message": "Varsayılan olarak, kırpılan notlar şu anda açık olan kasaya kaydedilir. Farklı kasalara kaydetme seçeneği istiyorsanız buraya kasa ekleyebilirsiniz. Kasa adları Obsidian kasasının adıyla tam olarak eşleşmelidir. Kasa eklemek için $strong_start$enter$strong_end$ tuşuna basın.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Sürüm"

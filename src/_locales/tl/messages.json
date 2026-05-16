@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Magdagdag ng provider"
 	},
-	"addToObsidian": {
-		"message": "Idagdag sa Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Pindutin ang Enter para magdagdag ng vault"
-	},
 	"advanced": {
 		"message": "Advanced"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Salamat sa iyong feedback"
 	},
-	"folder": {
-		"message": "Folder"
-	},
 	"general": {
 		"message": "Pangkalahatan"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Huling 30 araw"
-	},
-	"lastUsed": {
-		"message": "Huling ginamit"
-	},
-	"legacyMode": {
-		"message": "Legacy mode"
-	},
-	"legacyModeDescription": {
-		"message": "Gumagamit ng URI capture method na compatible sa Obsidian 1.6.7 at mas luma. Tandaan na ang haba ng na-capture na content ay limitado ng browser at operating system. Ang ilang pahina ay maaaring mabigo nang walang error message."
 	},
 	"loadArticle": {
 		"message": "Basahin ang artikulo"
@@ -856,9 +838,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Tanggalin ang lahat ng property na hindi ginagamit sa kahit anong template."
 	},
-	"removeVault": {
-		"message": "Tanggalin ang vault"
-	},
 	"replaceContent": {
 		"message": "Palitan ang content ng note"
 	},
@@ -879,12 +858,6 @@
 	},
 	"save": {
 		"message": "I-save"
-	},
-	"saveBehaviorDescription": {
-		"message": "Pumili ng default na opsyon para sa pag-save ng mga pahina. Ang mga alternatibong opsyon ay lumilitaw sa dropdown menu na katabi ng pangunahing button."
-	},
-	"saveBehaviorLabel": {
-		"message": "Ugali ng pag-save"
 	},
 	"saveFile": {
 		"message": "I-save ang file..."
@@ -945,12 +918,6 @@
 	},
 	"showPageVariables": {
 		"message": "Ipakita ang mga variable ng pahina"
-	},
-	"silentOpen": {
-		"message": "I-save ang mga note nang hindi binubuksan"
-	},
-	"silentOpenDescription": {
-		"message": "Ang mga na-clip na note ay mase-save pero hindi bubuksan sa bagong tab. Ang Obsidian ay dadalhin pa rin sa foreground."
 	},
 	"sort": {
 		"message": "Ayusin"
@@ -1026,34 +993,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Gumagamit ka ng pinakabagong bersyon"
-	},
-	"vault": {
-		"message": "Vault"
-	},
-	"vaultDescription": {
-		"message": "Piliin ang default vault para sa template na ito. Pumunta sa $link_start$general settings$link_end$ para magdagdag o magtanggal ng mga vault.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Mga Vault"
-	},
-	"vaultsDescription": {
-		"message": "By default, ang mga na-clip na note ay sine-save sa bukas na vault. Maaari kang magdagdag ng mga vault dito kung gusto mong magkaroon ng opsyon na mag-save sa iba't ibang vault. Ang pangalan ng vault ay dapat eksaktong tumugma sa pangalan ng Obsidian vault. Pindutin ang $strong_start$enter$strong_end$ para magdagdag ng vault.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Bersyon"

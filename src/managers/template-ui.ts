@@ -146,7 +146,6 @@ export function showTemplateEditor(template: Template | null): void {
 			name: newTemplateName,
 			behavior: 'create',
 			noteNameFormat: '{{title}}',
-			path: 'Clippings',
 			noteContentFormat: '{{content}}',
 			properties: [],
 			triggers: [],
@@ -176,12 +175,6 @@ export function showTemplateEditor(template: Template | null): void {
 	if (templateEditorTitle) templateEditorTitle.textContent = getMessage('editTemplate');
 	if (templateName) templateName.value = editingTemplate.name;
 	if (templateProperties) templateProperties.textContent = '';
-
-	const pathInput = document.getElementById('template-path-name') as HTMLInputElement;
-	if (pathInput) {
-		pathInput.value = editingTemplate.path || '';
-		validateTemplateField(pathInput, false);
-	}
 
 	const behaviorSelect = document.getElementById('template-behavior') as HTMLSelectElement;
 	if (behaviorSelect) behaviorSelect.value = editingTemplate.behavior || 'create';
@@ -240,23 +233,6 @@ export function showTemplateEditor(template: Template | null): void {
 		});
 	}
 
-	const vaultSelect = document.getElementById('template-vault') as HTMLSelectElement;
-	if (vaultSelect) {
-		// Clear existing vault options
-		vaultSelect.textContent = '';
-		const lastUsedOption = document.createElement('option');
-		lastUsedOption.value = '';
-		lastUsedOption.textContent = getMessage('lastUsed');
-		vaultSelect.appendChild(lastUsedOption);
-		generalSettings.vaults.forEach(vault => {
-			const option = document.createElement('option');
-			option.value = vault;
-			option.textContent = vault;
-			vaultSelect.appendChild(option);
-		});
-		vaultSelect.value = editingTemplate.vault || '';
-	}
-
 	updateUrl('templates', editingTemplate.id);
 	updatePromptContextVisibility();
 }
@@ -264,7 +240,6 @@ export function showTemplateEditor(template: Template | null): void {
 function updateBehaviorFields(): void {
 	const behaviorSelect = document.getElementById('template-behavior') as HTMLSelectElement;
 	const noteNameFormatContainer = document.getElementById('note-name-format-container');
-	const pathContainer = document.getElementById('path-name-container');
 	const noteNameFormat = document.getElementById('note-name-format') as HTMLInputElement;
 
 	if (behaviorSelect) {
@@ -272,7 +247,6 @@ function updateBehaviorFields(): void {
 		const isDailyNote = selectedBehavior === 'append-daily' || selectedBehavior === 'prepend-daily';
 
 		if (noteNameFormatContainer) noteNameFormatContainer.style.display = isDailyNote ? 'none' : 'block';
-		if (pathContainer) pathContainer.style.display = isDailyNote ? 'none' : 'block';
 
 		if (noteNameFormat) {
 			noteNameFormat.required = !isDailyNote;
@@ -503,9 +477,6 @@ export function updateTemplateFromForm(): void {
 
 	const isDailyNote = template.behavior === 'append-daily' || template.behavior === 'prepend-daily';
 
-	const pathInput = document.getElementById('template-path-name') as HTMLInputElement;
-	if (pathInput) template.path = pathInput.value;
-
 	const noteNameFormat = document.getElementById('note-name-format') as HTMLInputElement;
 	if (noteNameFormat) {
 		if (!isDailyNote && noteNameFormat.value.trim() === '') {
@@ -541,9 +512,6 @@ export function updateTemplateFromForm(): void {
 	const triggersTextarea = document.getElementById('url-patterns') as HTMLTextAreaElement;
 	if (triggersTextarea) template.triggers = triggersTextarea.value.split('\n').filter(Boolean);
 
-	const vaultSelect = document.getElementById('template-vault') as HTMLSelectElement;
-	if (vaultSelect) template.vault = vaultSelect.value || undefined;
-
 	hasUnsavedChanges = true;
 }
 
@@ -555,8 +523,6 @@ function clearTemplateEditor(): void {
 	if (templateEditorTitle) templateEditorTitle.textContent = getMessage('newTemplate');
 	if (templateName) templateName.value = '';
 	if (templateProperties) templateProperties.textContent = '';
-	const pathInput = document.getElementById('template-path-name') as HTMLInputElement;
-	if (pathInput) pathInput.value = 'Clippings';
 	const triggersTextarea = document.getElementById('url-patterns') as HTMLTextAreaElement;
 	if (triggersTextarea) triggersTextarea.value = '';
 	const templateEditor = document.getElementById('template-editor');
@@ -769,10 +735,6 @@ export function initializeTemplateValidation(): void {
 	// Note name format (single line)
 	const noteNameFormat = document.getElementById('note-name-format') as HTMLInputElement;
 	addValidationListener(noteNameFormat, false);
-
-	// Path/folder (single line)
-	const pathInput = document.getElementById('template-path-name') as HTMLInputElement;
-	addValidationListener(pathInput, false);
 
 	// Prompt context (multiline, show line numbers)
 	const promptContext = document.getElementById('prompt-context') as HTMLTextAreaElement;

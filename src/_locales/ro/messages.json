@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Adaugă furnizor"
 	},
-	"addToObsidian": {
-		"message": "Adaugă în Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Apasă Enter pentru a adăuga seiful"
-	},
 	"advanced": {
 		"message": "Avansat"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Mulțumim pentru feedback"
 	},
-	"folder": {
-		"message": "Dosar"
-	},
 	"general": {
 		"message": "General"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Ultimele 30 de zile"
-	},
-	"lastUsed": {
-		"message": "Ultima utilizare"
-	},
-	"legacyMode": {
-		"message": "Mod vechi"
-	},
-	"legacyModeDescription": {
-		"message": "Folosește metoda de captură URI compatibilă cu Obsidian 1.6.7 sau mai vechi. Reține că lungimea conținutului capturat este limitată de browser și sistemul de operare. Unele pagini pot eșua fără mesaj de eroare."
 	},
 	"loadArticle": {
 		"message": "Citește articolul"
@@ -856,9 +838,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Elimină toate proprietățile care nu sunt folosite în niciun șablon."
 	},
-	"removeVault": {
-		"message": "Elimină seiful"
-	},
 	"replaceContent": {
 		"message": "Înlocuiește conținutul notei"
 	},
@@ -879,12 +858,6 @@
 	},
 	"save": {
 		"message": "Salvează"
-	},
-	"saveBehaviorDescription": {
-		"message": "Alegeți opțiunea implicită pentru salvarea paginilor. Opțiunile alternative apar în meniul derulant alături de butonul principal."
-	},
-	"saveBehaviorLabel": {
-		"message": "Comportamentul de salvare"
 	},
 	"saveFile": {
 		"message": "Salvează fișier..."
@@ -945,12 +918,6 @@
 	},
 	"showPageVariables": {
 		"message": "Arată variabilele paginii"
-	},
-	"silentOpen": {
-		"message": "Salvează note fără a le deschide"
-	},
-	"silentOpenDescription": {
-		"message": "Notele decupate vor fi salvate dar nu vor fi deschise într-o filă nouă. Obsidian va fi totuși adus în prim-plan."
 	},
 	"sort": {
 		"message": "Sortează"
@@ -1026,34 +993,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Folosești cea mai recentă versiune"
-	},
-	"vault": {
-		"message": "Seif"
-	},
-	"vaultDescription": {
-		"message": "Selectează seiful implicit pentru acest șablon. Mergi la $link_start$setări generale$link_end$ pentru a adăuga sau elimina seifuri.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Seifuri"
-	},
-	"vaultsDescription": {
-		"message": "În mod implicit, notele decupate sunt salvate în seiful deschis. Poți adăuga seifuri aici dacă dorești opțiunea de a salva în diferite seifuri. Numele seifului trebuie să se potrivească exact cu numele seifului Obsidian. Apasă $strong_start$enter$strong_end$ pentru a adăuga un seif.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Versiune"

@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Adicionar fornecedor"
 	},
-	"addToObsidian": {
-		"message": "Adicionar ao Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Prima Enter para adicionar um cofre"
-	},
 	"advanced": {
 		"message": "Avançado"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Obrigado pelo seu feedback"
 	},
-	"folder": {
-		"message": "Pasta"
-	},
 	"general": {
 		"message": "Geral"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Últimos 30 dias"
-	},
-	"lastUsed": {
-		"message": "Última utilização"
-	},
-	"legacyMode": {
-		"message": "Modo legado"
-	},
-	"legacyModeDescription": {
-		"message": "Utiliza o método de recorte por URI compatível com o Obsidian 1.6.7 ou anterior. Note que o tamanho do conteúdo que pode recortar é limitado pelo seu navegador e sistema operativo. Algumas páginas podem falhar sem qualquer erro."
 	},
 	"loadArticle": {
 		"message": "Ler artigo"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Remova todas as propriedades que não são usadas em nenhum modelo."
 	},
-	"removeVault": {
-		"message": "Remover cofre"
-	},
 	"replaceContent": {
 		"message": "Substituir o conteúdo da página"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Guardar"
-	},
-	"saveBehaviorDescription": {
-		"message": "Escolha a opção predefinida para guardar páginas. As opções alternativas aparecem no menu suspenso ao lado do botão principal."
-	},
-	"saveBehaviorLabel": {
-		"message": "Comportamento de guardar"
 	},
 	"saveFile": {
 		"message": "Guardar ficheiro..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Mostrar variáveis da página"
-	},
-	"silentOpen": {
-		"message": "Guardar a nota recortada sem a abrir"
-	},
-	"silentOpenDescription": {
-		"message": "As notas recortadas serão guardadas, mas não serão abertas como um novo separador. O Obsidian continuará a ser trazido para primeiro plano."
 	},
 	"sort": {
 		"message": "Ordenar"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Está a usar a versão mais recente."
-	},
-	"vault": {
-		"message": "Cofre"
-	},
-	"vaultDescription": {
-		"message": "Selecione o cofre predefinido para este modelo. Vá a $link_start$definições gerais$link_end$ para adicionar ou remover cofres.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Cofres"
-	},
-	"vaultsDescription": {
-		"message": "Por predefinição, as notas recortadas são guardadas no cofre atualmente aberto. Pode adicionar cofres aqui se quiser a opção de guardar em cofres diferentes. Os nomes dos cofres têm de corresponder exatamente ao nome do cofre do Obsidian. Prima $strong_start$Enter$strong_end$ para adicionar um cofre.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Versão"

@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Dodaj operatora"
 	},
-	"addToObsidian": {
-		"message": "Zapisz w Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Kliknij enter, aby dodać sejf"
-	},
 	"advanced": {
 		"message": "Zaawansowane"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Dziękujemy za Twoją opinię"
 	},
-	"folder": {
-		"message": "Folder"
-	},
 	"general": {
 		"message": "Ogólne"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Ostatnie 30 dni"
-	},
-	"lastUsed": {
-		"message": "Ostatnio używane"
-	},
-	"legacyMode": {
-		"message": "Tryb klasyczny"
-	},
-	"legacyModeDescription": {
-		"message": "Używa URI jako sposobu wyodrębniania treści, który jest kompatybilny z Obsidian w wersji 1.6.7 lub starszej. Należy pamiętać, że długość treści, którą można wyodrębnić, jest ograniczona przez przeglądarkę i system operacyjny. Część stron może nie działać pomimo braku błędów."
 	},
 	"loadArticle": {
 		"message": "Czytaj artykuł"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Usuń wszystkie atrybuty, które nie są używane w żadnym szablonie."
 	},
-	"removeVault": {
-		"message": "Usuń sejf"
-	},
 	"replaceContent": {
 		"message": "Zastąp zawartość strony"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Zapisz"
-	},
-	"saveBehaviorDescription": {
-		"message": "Wybierz domyślną opcję zapisywania stron. Alternatywne opcje pojawiają się w menu rozwijanym obok głównego przycisku."
-	},
-	"saveBehaviorLabel": {
-		"message": "Zachowanie zapisu"
 	},
 	"saveFile": {
 		"message": "Zapisz plik..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Pokaż zmienne strony"
-	},
-	"silentOpen": {
-		"message": "Zapisz notatkę bez jej otwierania"
-	},
-	"silentOpenDescription": {
-		"message": "Notatki będą zapisywane bez otwierania ich w nowej karcie. Obsidian nadal będzie umieszczany na wierzchu."
 	},
 	"sort": {
 		"message": "Sortuj"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Używasz najnowszej wersji."
-	},
-	"vault": {
-		"message": "Sejf"
-	},
-	"vaultDescription": {
-		"message": "Wybierz domyślny sejf dla tego szablonu. Przejdź do $link_start$ustawień ogólnych$link_end$, aby dodać lub usunąć sejfy.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Sejfy"
-	},
-	"vaultsDescription": {
-		"message": "Domyślnie notatki są zapisywane w obecnie otwartym sejfie. Jeśli chcesz mieć możliwość zapisywania w różnych sejfach, możesz je dodawać w tym miejscu. Nazwy sejfów muszą dokładnie odpowiadać tym w Obsidian. Kliknij $strong_start$enter$strong_end$, aby dodać sejf.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Wersja"

@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Aggiungi fornitore"
 	},
-	"addToObsidian": {
-		"message": "Aggiungi a Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Premi invio per aggiungere un vault"
-	},
 	"advanced": {
 		"message": "Avanzato"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Grazie per il tuo feedback"
 	},
-	"folder": {
-		"message": "Cartella"
-	},
 	"general": {
 		"message": "Generale"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Ultimi 30 giorni"
-	},
-	"lastUsed": {
-		"message": "Ultimo utilizzato"
-	},
-	"legacyMode": {
-		"message": "Modalità legacy"
-	},
-	"legacyModeDescription": {
-		"message": "Utilizza il metodo di clipping URI compatibile con Obsidian 1.6.7 o precedente. Nota che la lunghezza del contenuto che puoi ritagliare è limitata dal tuo browser e dal sistema operativo. Alcune pagine potrebbero fallire senza alcun errore."
 	},
 	"loadArticle": {
 		"message": "Leggi articolo"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Rimuovi tutte le proprietà che non vengono utilizzate in nessun modello."
 	},
-	"removeVault": {
-		"message": "Rimuovi vault"
-	},
 	"replaceContent": {
 		"message": "Sostituisci il contenuto della pagina"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Salva"
-	},
-	"saveBehaviorDescription": {
-		"message": "Scegli l'opzione predefinita per salvare le pagine. Le opzioni alternative appaiono nel menu a discesa accanto al pulsante principale."
-	},
-	"saveBehaviorLabel": {
-		"message": "Comportamento di salvataggio"
 	},
 	"saveFile": {
 		"message": "Salva file..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Mostra variabili della pagina"
-	},
-	"silentOpen": {
-		"message": "Salva la nota ritagliata senza aprirla"
-	},
-	"silentOpenDescription": {
-		"message": "Le note ritagliate verranno salvate ma non si apriranno in una nuova scheda. Obsidian sarà comunque portato in primo piano."
 	},
 	"sort": {
 		"message": "Ordina"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Stai utilizzando l'ultima versione."
-	},
-	"vault": {
-		"message": "Vault"
-	},
-	"vaultDescription": {
-		"message": "Seleziona il vault predefinito per questo modello. Vai alle $link_start$impostazioni generali$link_end$ per aggiungere o rimuovere vaults.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Vaults"
-	},
-	"vaultsDescription": {
-		"message": "Per impostazione predefinita, le note ritagliate vengono salvate nel vault attualmente aperto. Puoi aggiungere vault qui se desideri avere l'opzione di salvare in vault diversi. I nomi dei vault devono corrispondere esattamente al nome del vault Obsidian. Premi $strong_start$invio$strong_end$ per aggiungere un vault.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Versione"

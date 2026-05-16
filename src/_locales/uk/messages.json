@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Додати провайдера"
 	},
-	"addToObsidian": {
-		"message": "Додати в Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Натисніть Enter, щоб додати сховище"
-	},
 	"advanced": {
 		"message": "Розширені"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Дякуємо за відгук"
 	},
-	"folder": {
-		"message": "Папка"
-	},
 	"general": {
 		"message": "Загальні"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Останні 30 днів"
-	},
-	"lastUsed": {
-		"message": "Останнє використання"
-	},
-	"legacyMode": {
-		"message": "Застарілий режим"
-	},
-	"legacyModeDescription": {
-		"message": "Використовує метод захоплення URI, сумісний з Obsidian 1.6.7 та старішими версіями. Зауважте, що довжина захопленого вмісту обмежена браузером та операційною системою. Деякі сторінки можуть не вдатися без повідомлення про помилку."
 	},
 	"loadArticle": {
 		"message": "Читати статтю"
@@ -856,9 +838,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Видалити всі властивості, які не використовуються в жодному шаблоні."
 	},
-	"removeVault": {
-		"message": "Видалити сховище"
-	},
 	"replaceContent": {
 		"message": "Замінити вміст нотатки"
 	},
@@ -879,12 +858,6 @@
 	},
 	"save": {
 		"message": "Зберегти"
-	},
-	"saveBehaviorDescription": {
-		"message": "Виберіть типовий варіант для збереження сторінок. Альтернативні варіанти з'являються у випадаючому меню поруч з основною кнопкою."
-	},
-	"saveBehaviorLabel": {
-		"message": "Поведінка збереження"
 	},
 	"saveFile": {
 		"message": "Зберегти файл..."
@@ -945,12 +918,6 @@
 	},
 	"showPageVariables": {
 		"message": "Показати змінні сторінки"
-	},
-	"silentOpen": {
-		"message": "Зберігати нотатки без відкриття"
-	},
-	"silentOpenDescription": {
-		"message": "Вирізані нотатки будуть збережені, але не відкриті в новій вкладці. Obsidian все одно буде виведений на передній план."
 	},
 	"sort": {
 		"message": "Сортувати"
@@ -1026,34 +993,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Ви використовуєте найновішу версію"
-	},
-	"vault": {
-		"message": "Сховище"
-	},
-	"vaultDescription": {
-		"message": "Виберіть сховище за замовчуванням для цього шаблону. Перейдіть до $link_start$загальних налаштувань$link_end$ щоб додати або видалити сховища.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Сховища"
-	},
-	"vaultsDescription": {
-		"message": "За замовчуванням вирізані нотатки зберігаються у відкритому сховищі. Ви можете додати сховища тут, якщо хочете мати можливість зберігати в різних сховищах. Назва сховища повинна точно відповідати назві сховища Obsidian. Натисніть $strong_start$enter$strong_end$ щоб додати сховище.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Версія"

@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Provider toevoegen"
 	},
-	"addToObsidian": {
-		"message": "Toevoegen aan Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Druk op Enter om een kluis toe te voegen"
-	},
 	"advanced": {
 		"message": "Geavanceerd"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Bedankt voor uw feedback"
 	},
-	"folder": {
-		"message": "Map"
-	},
 	"general": {
 		"message": "Algemeen"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Laatste 30 dagen"
-	},
-	"lastUsed": {
-		"message": "Laatst gebruikt"
-	},
-	"legacyMode": {
-		"message": "Legacy-modus"
-	},
-	"legacyModeDescription": {
-		"message": "Gebruikt de URI-clipmethode die compatibel is met Obsidian 1.6.7 of eerder. De lengte van de inhoud die je kunt knippen wordt beperkt door je browser en besturingssysteem. Sommige pagina's kunnen zonder foutmelding mislukken."
 	},
 	"loadArticle": {
 		"message": "Artikel lezen"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Verwijder alle eigenschappen die in geen enkel sjabloon worden gebruikt."
 	},
-	"removeVault": {
-		"message": "Kluis verwijderen"
-	},
 	"replaceContent": {
 		"message": "Pagina-inhoud vervangen"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Opslaan"
-	},
-	"saveBehaviorDescription": {
-		"message": "Kies de standaardoptie voor het opslaan van pagina's. Alternatieve opties verschijnen in het dropdown-menu naast de hoofdknop."
-	},
-	"saveBehaviorLabel": {
-		"message": "Opslaggedrag"
 	},
 	"saveFile": {
 		"message": "Bestand opslaan..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Toon paginavariabelen"
-	},
-	"silentOpen": {
-		"message": "Geknipte notitie opslaan zonder te openen"
-	},
-	"silentOpenDescription": {
-		"message": "Geknipte notities worden opgeslagen maar niet geopend in een nieuw tabblad. Obsidian wordt nog steeds naar de voorgrond gebracht."
 	},
 	"sort": {
 		"message": "Sorteren"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Je gebruikt de nieuwste versie."
-	},
-	"vault": {
-		"message": "Kluis"
-	},
-	"vaultDescription": {
-		"message": "Selecteer de standaard kluis voor dit sjabloon. Ga naar $link_start$algemene instellingen$link_end$ om kluizen toe te voegen of te verwijderen.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Kluizen"
-	},
-	"vaultsDescription": {
-		"message": "Standaard worden geknipte notities opgeslagen in de momenteel geopende kluis. Je kunt hier kluizen toevoegen als je de optie wilt hebben om in verschillende kluizen op te slaan. Kluisnamen moeten exact overeenkomen met de naam van de Obsidian-kluis. Druk op $strong_start$enter$strong_end$ om een kluis toe te voegen.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Versie"

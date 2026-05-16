@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "প্রোভাইডার যোগ করুন"
 	},
-	"addToObsidian": {
-		"message": "অবসিডিয়ানে যোগ করুন"
-	},
-	"addVaultPlaceholder": {
-		"message": "ভল্ট যোগ করতে এন্টার চাপুন"
-	},
 	"advanced": {
 		"message": "অ্যাডভান্সড"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "আপনার মতামতের জন্য ধন্যবাদ"
 	},
-	"folder": {
-		"message": "ফোল্ডার"
-	},
 	"general": {
 		"message": "সাধারণ"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "গত ৩০ দিন"
-	},
-	"lastUsed": {
-		"message": "শেষ ব্যবহৃত"
-	},
-	"legacyMode": {
-		"message": "লেগ্যাসি মোড"
-	},
-	"legacyModeDescription": {
-		"message": "এটি Obsidian 1.6.7 বা তার আগের সংস্করণের সাথে সামঞ্জস্যপূর্ণ URI ক্লিপিং পদ্ধতি ব্যবহার করে। মনে রাখবেন, আপনার ব্রাউজার এবং অপারেটিং সিস্টেমের সীমাবদ্ধতার কারণে পেজের বিষয়বস্তু ক্লিপ করার পরিমাণ সীমিত থাকতে পারে। কিছু পেজ কোনো ত্রুটি বার্তা ছাড়াই ব্যর্থ হতে পারে।"
 	},
 	"loadArticle": {
 		"message": "আর্টিকেল পড়ুন"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "যে প্রোপার্টিগুলি কোনো টেমপ্লেটে ব্যবহার হয়নি, সেগুলি মুছে ফেলুন।"
 	},
-	"removeVault": {
-		"message": "ভল্ট মুছে ফেলুন"
-	},
 	"replaceContent": {
 		"message": "পেজের বিষয়বস্তু রিপ্লেস করুন"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "সংরক্ষণ করুন"
-	},
-	"saveBehaviorDescription": {
-		"message": "পৃষ্ঠাগুলি সংরক্ষণ করার জন্য ডিফল্ট বিকল্প চয়ন করুন। বিকল্প বিকল্পগুলি প্রধান বোতামের পাশে ড্রপডাউন মেনুতে দেখা যায়।"
-	},
-	"saveBehaviorLabel": {
-		"message": "সংরক্ষণ আচরণ"
 	},
 	"saveFile": {
 		"message": "ফাইল সংরক্ষণ করুন..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "পেজ ভ্যারিয়েবল দেখান"
-	},
-	"silentOpen": {
-		"message": "ক্লিপ করা নোটটি না খুলে সংরক্ষণ করুন"
-	},
-	"silentOpenDescription": {
-		"message": "ক্লিপ করা নোট সংরক্ষণ হবে, তবে এটি নতুন ট্যাবে খুলবে না। Obsidian অ্যাপটি সামনে প্রদর্শিত হবে।"
 	},
 	"sort": {
 		"message": "সাজান"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "আপনি সর্বশেষ সংস্করণ ব্যবহার করছেন।"
-	},
-	"vault": {
-		"message": "ভল্ট"
-	},
-	"vaultDescription": {
-		"message": "এই টেমপ্লেটের জন্য ডিফল্ট ভল্ট নির্বাচন করুন। ভল্ট যোগ বা মুছে ফেলতে $link_start$সাধারণ সেটিংস$link_end$ এ যান।",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "ভল্ট"
-	},
-	"vaultsDescription": {
-		"message": "ডিফল্টভাবে, ক্লিপ করা নোটগুলি বর্তমানে খোলা থাকা ভল্টে সংরক্ষিত হয়। আপনি যদি বিভিন্ন ভল্টে সংরক্ষণ করার অপশন চান, তবে এখানে ভল্ট যোগ করতে পারেন। ভল্টের নাম অবশ্যই Obsidian ভল্টের নামের সাথে পুরোপুরি মিলতে হবে। একটি ভল্ট যোগ করতে $strong_start$এন্টার$strong_end$ চাপুন।",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "সংস্করণ"

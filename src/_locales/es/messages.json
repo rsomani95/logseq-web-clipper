@@ -17,12 +17,6 @@
 	"addProviderTitle": {
 		"message": "Agregar proveedor"
 	},
-	"addToObsidian": {
-		"message": "Agregar a Obsidian"
-	},
-	"addVaultPlaceholder": {
-		"message": "Presiona enter para añadir una bóveda"
-	},
 	"advanced": {
 		"message": "Avanzado"
 	},
@@ -342,9 +336,6 @@
 	"feedbackTitle": {
 		"message": "Gracias por tus comentarios"
 	},
-	"folder": {
-		"message": "Carpeta"
-	},
 	"general": {
 		"message": "General"
 	},
@@ -459,15 +450,6 @@
 	},
 	"last30Days": {
 		"message": "Últimos 30 días"
-	},
-	"lastUsed": {
-		"message": "Último usado"
-	},
-	"legacyMode": {
-		"message": "Modo heredado"
-	},
-	"legacyModeDescription": {
-		"message": "Usa el método de guardado URI compatible con Obsidian 1.6.7 o anterior. Ten en cuenta que la longitud del contenido que puedes guardar está limitada por tu navegador y sistema operativo. Algunas páginas pueden fallar sin mostrar errores."
 	},
 	"loadArticle": {
 		"message": "Leer artículo"
@@ -864,9 +846,6 @@
 	"removeUnusedPropertiesDescription": {
 		"message": "Elimina todas las propiedades que no se utilizan en ninguna plantilla."
 	},
-	"removeVault": {
-		"message": "Eliminar bóveda"
-	},
 	"replaceContent": {
 		"message": "Reemplazar el contenido de la página"
 	},
@@ -887,12 +866,6 @@
 	},
 	"save": {
 		"message": "Guardar"
-	},
-	"saveBehaviorDescription": {
-		"message": "Elige la opción predeterminada para guardar páginas. Las opciones alternativas aparecen en el menú desplegable junto al botón principal."
-	},
-	"saveBehaviorLabel": {
-		"message": "Comportamiento de guardado"
 	},
 	"saveFile": {
 		"message": "Guardar archivo..."
@@ -953,12 +926,6 @@
 	},
 	"showPageVariables": {
 		"message": "Mostrar variables de página"
-	},
-	"silentOpen": {
-		"message": "Guardar nota sin abrirla"
-	},
-	"silentOpenDescription": {
-		"message": "Las notas se guardarán pero no se abrirán en una nueva pestaña. Obsidian seguirá siendo traído al primer plano."
 	},
 	"sort": {
 		"message": "Ordenar"
@@ -1034,34 +1001,6 @@
 	},
 	"usingLatestVersion": {
 		"message": "Estás usando la última versión."
-	},
-	"vault": {
-		"message": "Bóveda"
-	},
-	"vaultDescription": {
-		"message": "Selecciona la bóveda predeterminada para esta plantilla. Ve a $link_start$ajustes generales$link_end$ para agregar o eliminar bóvedas.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"?section=general\">"
-			}
-		}
-	},
-	"vaults": {
-		"message": "Bóvedas"
-	},
-	"vaultsDescription": {
-		"message": "Por defecto, las notas se guardan en la bóveda abierta actualmente. Puedes añadir bóvedas aquí si quieres la opción de guardar en diferentes bóvedas. Los nombres de las bóvedas deben coincidir exactamente con el nombre de la bóveda de Obsidian. Presiona $strong_start$enter$strong_end$ para añadir una bóveda.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
 	},
 	"version": {
 		"message": "Versión"

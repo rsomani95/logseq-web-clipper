@@ -112,24 +112,24 @@ async function prepareTemplateForSave(template: Template): Promise<[string[], st
 
 export function createDefaultTemplate(): Template {
 	// Property names match #WebClipping schema fields (see
-	// @logseq-web-clipper/shared); anything that doesn't match is silently
-	// skipped by the page creator. `authors` and `tags` are node-typed in the
-	// schema, so they're left out of the default template for now and will
-	// be wired in when the page creator gains node-property support.
+	// @logseq-web-clipper/shared). authors/tags are node-typed (cardinality:many)
+	// — the page creator splits them on commas and creates one Logseq page per
+	// value, then links each via upsertBlockProperty.
 	const newId = () => Date.now().toString() + Math.random().toString(36).slice(2, 11);
 	return {
 		id: newId(),
 		name: getMessage('defaultTemplateName'),
 		behavior: 'create',
 		noteNameFormat: '{{title}}',
-		path: '',
 		noteContentFormat: '{{content}}',
 		context: '',
 		properties: [
 			{ id: newId(), name: 'title', value: '{{title}}' },
+			{ id: newId(), name: 'authors', value: '{{author}}' },
 			{ id: newId(), name: 'url', value: '{{url}}' },
 			{ id: newId(), name: 'date', value: '{{published}}' },
 			{ id: newId(), name: 'dateAdded', value: '{{date}}' },
+			{ id: newId(), name: 'tags', value: '{{meta:name:keywords}}' },
 			{ id: newId(), name: 'excerpt', value: '{{description}}' },
 		],
 		triggers: []
