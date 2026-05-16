@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
 import { Template, Property, PromptVariable } from '../types/types';
 import { incrementStat, addHistoryEntry, getClipHistory } from '../utils/storage-utils';
-import { generateFrontmatter, saveToObsidian } from '../utils/obsidian-note-creator';
+import { generateFrontmatter } from '../utils/obsidian-note-creator';
+import type { SaveToLogseqInput, SaveToLogseqResult } from '../utils/logseq-page-creator';
 import { extractPageContent, initializePageContent } from '../utils/content-extractor';
 import { compileTemplate } from '../utils/template-compiler';
 import { initializeIcons, getPropertyTypeIcon } from '../icons/icons';
@@ -1300,8 +1301,8 @@ function determineMainAction() {
 			addSecondaryAction(secondaryActions, 'addToObsidian', () => handleClipObsidian());
 			addSecondaryAction(secondaryActions, 'copyToClipboard', copyContent);
 			break;
-		default: // 'addToObsidian'
-			mainButton.textContent = getMessage('addToObsidian');
+		default: // 'addToObsidian' (kept as the storage key for now)
+			mainButton.textContent = getMessage('addToLogseq');
 			mainButton.onclick = () => handleClipObsidian();
 			// Add direct actions to secondary
 			addSecondaryAction(secondaryActions, 'copyToClipboard', copyContent);
@@ -1312,14 +1313,23 @@ function determineMainAction() {
 async function handleClipObsidian(): Promise<void> {
 	if (!currentTemplate) return;
 
-	const vaultDropdown = document.getElementById('vault-select') as HTMLSelectElement;
 	const noteContentField = document.getElementById('note-content-field') as HTMLTextAreaElement;
 	const noteNameField = document.getElementById('note-name-field') as HTMLInputElement;
-	const pathField = document.getElementById('path-name-field') as HTMLInputElement;
 	const interpretBtn = document.getElementById('interpret-btn') as HTMLButtonElement;
 
-	if (!vaultDropdown || !noteContentField) {
+	if (!noteContentField) {
 		showError('Some required fields are missing. Please try reloading the extension.');
+		return;
+	}
+
+	if (currentTemplate.behavior !== 'create') {
+		showError('Only "create new page" is supported in this build. Append/journal modes are coming.');
+		return;
+	}
+
+	const noteName = noteNameField?.value?.trim() || '';
+	if (!noteName) {
+		showError('Page name is required.');
 		return;
 	}
 
@@ -1334,31 +1344,34 @@ async function handleClipObsidian(): Promise<void> {
 			}
 		}
 
-		// Gather content
 		const properties = getPropertiesFromDOM();
 
-		const frontmatter = await generateFrontmatter(properties);
-		const fileContent = frontmatter + noteContentField.value;
+		const payload: SaveToLogseqInput = {
+			noteName,
+			content: noteContentField.value,
+			properties,
+		};
+		const response = await browser.runtime.sendMessage({
+			action: 'saveToLogseq',
+			payload,
+		}) as { success: true; result: SaveToLogseqResult } | { success: false; error: string };
 
-		// Save to Obsidian
-		const selectedVault = vaultDropdown.value || currentTemplate.vault || '';
-		const isDailyNote = currentTemplate.behavior === 'append-daily' || currentTemplate.behavior === 'prepend-daily';
-		const noteName = isDailyNote ? '' : noteNameField?.value || '';
-		const path = isDailyNote ? '' : pathField?.value || '';
+		if (!response?.success) {
+			showError(response?.error || 'Unknown error talking to Logseq');
+			return;
+		}
 
-		await saveToObsidian(fileContent, noteName, path, selectedVault, currentTemplate.behavior);
 		const tabInfo = await getCurrentTabInfo();
-		await incrementStat('addToObsidian', selectedVault, path, tabInfo.url, tabInfo.title);
-
-		lastSelectedVault = selectedVault;
-		await setLocalStorage('lastSelectedVault', lastSelectedVault);
+		// The 'addToObsidian' stat key is reused as the clip counter for now —
+		// a semantic rename will land alongside the wider UI rip-out.
+		await incrementStat('addToObsidian', response.result.graphName, '', tabInfo.url, tabInfo.title);
 
 		if (!isSidePanel) {
 			setTimeout(() => window.close(), 500);
 		}
 	} catch (error) {
 		console.error('Error in handleClipObsidian:', error);
-		showError('failedToSaveFile');
+		showError(error instanceof Error ? error.message : 'Failed to save to Logseq');
 		throw error;
 	}
 }

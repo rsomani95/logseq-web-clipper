@@ -20,6 +20,9 @@
 	"addToObsidian": {
 		"message": "Add to Obsidian"
 	},
+	"addToLogseq": {
+		"message": "Add to Logseq"
+	},
 	"addVaultPlaceholder": {
 		"message": "Press enter to add a vault"
 	},

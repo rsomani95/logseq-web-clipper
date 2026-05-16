@@ -5,6 +5,9 @@ import { TextHighlightData } from './utils/highlighter';
 import { debounce } from './utils/debounce';
 import { Settings } from './types/types';
 import { debugLog } from './utils/debug';
+import { createLogseqAPI } from './utils/logseq-api';
+import { saveToLogseq, SaveToLogseqInput } from './utils/logseq-page-creator';
+import { loadSettings, generalSettings } from './utils/storage-utils';
 
 const YOUTUBE_EMBED_RULE_ID = 9001;
 const YOUTUBE_INNERTUBE_RULE_ID = 9002;
@@ -687,42 +690,36 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 			return true;
 		}
 
-		if (typedRequest.action === "openObsidianUrl") {
-			const url = (typedRequest as any).url;
-			if (url) {
-				browser.tabs.query({active: true, currentWindow: true}).then((tabs) => {
-					const currentTab = tabs[0];
-					if (currentTab && currentTab.id) {
-						browser.tabs.update(currentTab.id, { url: url }).then(() => {
-							sendResponse({ success: true });
-						}).catch((error) => {
-							console.error('Error opening Obsidian URL:', error);
-							sendResponse({
-								success: false,
-								error: error instanceof Error ? error.message : String(error)
-							});
-						});
-					} else {
-						sendResponse({
-							success: false,
-							error: 'No active tab found'
-						});
-					}
-				}).catch((error) => {
-					console.error('Error querying tabs:', error);
-					sendResponse({
-						success: false,
-						error: error instanceof Error ? error.message : String(error)
-					});
-				});
-				return true;
-			} else {
-				sendResponse({
-					success: false,
-					error: 'Missing URL'
-				});
+		if (typedRequest.action === "saveToLogseq") {
+			const payload = (typedRequest as any).payload as SaveToLogseqInput | undefined;
+			if (!payload) {
+				sendResponse({ success: false, error: 'Missing payload' });
 				return true;
 			}
+			(async () => {
+				try {
+					await loadSettings();
+					const baseUrl = generalSettings.logseqApiBaseUrl?.trim();
+					const token = generalSettings.logseqApiToken?.trim();
+					if (!baseUrl || !token) {
+						sendResponse({
+							success: false,
+							error: 'Logseq base URL or token is not set — open Web Clipper Settings.',
+						});
+						return;
+					}
+					const api = createLogseqAPI({ baseUrl, token });
+					const result = await saveToLogseq(api, payload);
+					sendResponse({ success: true, result });
+				} catch (err) {
+					console.error('saveToLogseq failed:', err);
+					sendResponse({
+						success: false,
+						error: err instanceof Error ? err.message : String(err),
+					});
+				}
+			})();
+			return true;
 		}
 
 		// For other actions that use sendResponse
@@ -730,7 +727,7 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 			typedRequest.action === "ensureContentScriptLoaded" ||
 			typedRequest.action === "getHighlighterMode" ||
 			typedRequest.action === "toggleHighlighterMode" ||
-			typedRequest.action === "openObsidianUrl") {
+			typedRequest.action === "saveToLogseq") {
 			return true;
 		}
 	}
