@@ -80,6 +80,11 @@ export async function setLogseqDbSchema(): Promise<void> {
 
 	logseq.UI.closeMsg(settingUpMsg)
 
+	// Drop the user on the tag page so they can see what was just created
+	// (schema panel + any existing #WebClipping items). pushState resolves by
+	// the lowercased page name — same convention as `logseq.Editor.openPage`.
+	await logseq.App.pushState('page', { name: WEB_CLIPPING_TAG.toLowerCase() })
+
 	if (missingZoteroProps.length > 0) {
 		await logseq.UI.showMsg(
 			`#${WEB_CLIPPING_TAG} set up, but ${missingZoteroProps.length} Zotero properties were missing (${missingZoteroProps.join(', ')}). Run zoterolocal's "Add Zotero schema to Logseq" first, then re-run this command.`,
