@@ -1,0 +1,27 @@
+{
+	"name": "@logseq-web-clipper/plugin",
+	"version": "0.1.0",
+	"description": "Companion Logseq plugin for the Web Clipper browser extension. Owns the #WebClipping tag schema.",
+	"private": true,
+	"license": "MIT",
+	"logseq": {
+		"id": "logseq-web-clipper",
+		"title": "Logseq Web Clipper",
+		"main": "dist/index.html"
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@logseq/libs": "^0.2.9",
+		"@logseq-web-clipper/shared": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "^24.10.1",
+		"typescript": "^5.9.3",
+		"vite": "^7.2.4",
+		"vite-plugin-logseq": "^1.1.2"
+	}
+}

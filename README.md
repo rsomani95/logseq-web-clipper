@@ -1,109 +1,67 @@
-Obsidian Web Clipper helps you highlight and capture the web in your favorite browser. Anything you save is stored as durable Markdown files that you can read offline, and preserve for the long term.
+# Logseq Web Clipper
 
-- **[Download Web Clipper](https://obsidian.md/clipper)**
-- **[Documentation](https://help.obsidian.md/web-clipper)**
-- **[Troubleshooting](https://help.obsidian.md/web-clipper/troubleshoot)**
+Browser extension that clips web pages into a Logseq-DB graph, forked from [obsidianmd/obsidian-clipper](https://github.com/obsidianmd/obsidian-clipper).
 
-## Get started
+Targets the **DB graph** version of Logseq only. Talks to Logseq via its local HTTP API on `http://127.0.0.1:12315`.
 
-Install the extension by downloading it from the official directory for your browser:
+## Status
 
-- **[Chrome Web Store](https://chromewebstore.google.com/detail/obsidian-web-clipper/cnjifjpddelmedmihgijeibhnjfabmlf)** for Chrome, Brave, Arc, Orion, and other Chromium-based browsers.
-- **[Firefox Add-Ons](https://addons.mozilla.org/en-US/firefox/addon/web-clipper-obsidian/)** for Firefox and Firefox Mobile.
-- **[Safari Extensions](https://apps.apple.com/us/app/obsidian-web-clipper/id6720708363)** for macOS, iOS, and iPadOS.
-- **[Edge Add-Ons](https://microsoftedge.microsoft.com/addons/detail/obsidian-web-clipper/eigdjhmgnaaeaonimdklocfekkaanfme)** for Microsoft Edge.
+Phase 1 — **foundation only**. The clip pipeline isn't wired up yet. What's in:
 
-## Use the extension
+- Monorepo scaffolded with bun workspaces.
+- `logseq-shared` — single source of truth for the `#WebClipping` tag schema (11 fields, named to mirror the `logseq-zoterolocal-plugin` Essentials preset so Zotero + Web sources can be unified later).
+- `logseq-plugin` — companion Logseq plugin that owns the `#WebClipping` tag and the `Web Clipper: Set up schema` command.
+- Extension manifest renamed; upstream's clip flow (writer + frontmatter) still points at Obsidian and will be swapped in Phase 2.
 
-Documentation is available on the [Obsidian Help site](https://help.obsidian.md/web-clipper), which covers how to use [highlighting](https://help.obsidian.md/web-clipper/highlight), [templates](https://help.obsidian.md/web-clipper/templates), [variables](https://help.obsidian.md/web-clipper/variables), [filters](https://help.obsidian.md/web-clipper/filters), and more.
+## Repo layout
 
-## Contribute
+```
+.                       — extension (fork of obsidianmd/obsidian-clipper, npm/webpack)
+logseq-plugin/          — companion Logseq DB plugin (bun/vite)
+logseq-shared/          — schema definitions used by both sides
+```
 
-### Translations
+The extension lives at the repo root so future `git pull upstream main` syncs stay clean.
 
-You can help translate Web Clipper into your language. Submit your translation via pull request using the format found in the [/_locales](/src/_locales) folder.
+## Develop
 
-### Features and bug fixes
+```bash
+# Install workspace deps once
+bun install
 
-See the [help wanted](https://github.com/obsidianmd/obsidian-clipper/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) tag for issues where contributions are welcome.
+# Extension (webpack, watch mode)
+npm run dev:chrome
+# → build/chrome — load as unpacked in chrome://extensions
+
+# Companion Logseq plugin (vite, watch mode)
+cd logseq-plugin && bun run dev
+# → dist/ — load as unpacked in Logseq's Plugins dashboard (developer mode on)
+```
+
+Open Logseq's command palette, run **Web Clipper: Set up schema** once per graph to create the `#WebClipping` tag and its properties.
+
+## Architecture
+
+Two pieces. The extension does the clipping; the plugin owns the Logseq-side schema. They talk indirectly: the plugin creates properties under `:plugin.property.logseq-web-clipper/*`, and the extension (Phase 2) writes values to those same idents over the HTTP API.
+
+Why two pieces: properties created via `Editor.upsertProperty` get namespaced to the calling plugin's id. If the extension created them directly, the namespace would be unpredictable and unifying with Zotero's filter/view experience wouldn't work cleanly.
 
 ## Roadmap
 
-In no particular order:
+- **Phase 2** — Logseq HTTP API client, page creator (replaces `obsidian-note-creator.ts`), metadata extractor (`og:` / JSON-LD / `citation_*`), settings UI for the HTTP API token. End-to-end "click → page in Logseq" working.
+- **Phase 3** — port the highlighter, add SingleFile snapshot capture, append-to-journal mode, schema unification with `logseq-zoterolocal-plugin`.
+- **Phase 4+** — Zotero translator catalog (Embedded Metadata + a translator engine) for richer scholarly metadata, React-ify the popup, polish.
 
-- [ ] A separate icon for Web Clipper
-- [ ] Annotate highlights
-- [ ] Template directory
-- [ ] Sync settings across browsers
-- [x] Template validation
-- [x] Template logic (if/for)
-- [x] Save images locally, [added in Obsidian 1.8.0](https://obsidian.md/changelog/2024-12-18-desktop-v1.8.0/)
-- [x] Translate UI into more languages — help is welcomed
+## Upstream sync
 
-## Developers
-
-To build the extension:
-
-```
-npm run build
+```bash
+git fetch upstream
+git merge upstream/main
+# resolve conflicts in src/manifest.*.json, src/utils/obsidian-note-creator.ts → logseq-page-creator.ts, etc.
 ```
 
-This will create three directories:
-- `dist/` for the Chromium version
-- `dist_firefox/` for the Firefox version
-- `dist_safari/` for the Safari version
-
-### Install the extension locally
-
-For Chromium browsers, such as Chrome, Brave, Edge, and Arc:
-
-1. Open your browser and navigate to `chrome://extensions`
-2. Enable **Developer mode**
-3. Click **Load unpacked** and select the `dist` directory
-
-For Firefox:
-
-1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
-2. Click **Load Temporary Add-on**
-3. Navigate to the `dist_firefox` directory and select the `manifest.json` file
-
-If you want to run the extension permanently you can do so with the Nightly or Developer versions of Firefox.
-
-1. Type `about:config` in the URL bar
-2. In the Search box type `xpinstall.signatures.required`
-3. Double-click the preference, or right-click and select "Toggle", to set it to `false`.
-4. Go to `about:addons` > gear icon > **Install Add-on From File…**
-
-For iOS Simulator testing on macOS:
-
-1. Run `npm run build` to build the extension
-2. Open `xcode/Obsidian Web Clipper/Obsidian Web Clipper.xcodeproj` in Xcode
-3. Select the **Obsidian Web Clipper (iOS)** scheme from the scheme selector
-4. Choose an iOS Simulator device and click **Run** to build and launch the app
-5. Once the app is running on the simulator, open **Safari**
-6. Navigate to a webpage and tap the **Extensions** button in Safari to access the Web Clipper extension
-
-### Run tests
-
-```
-npm test
-```
-
-Or run in watch mode during development:
-
-```
-npm run test:watch
-```
-
-## Third-party libraries
-
-- [webextension-polyfill](https://github.com/mozilla/webextension-polyfill) for browser compatibility
-- [defuddle](https://github.com/kepano/defuddle) for content extraction and Markdown conversion
-- [dayjs](https://github.com/iamkun/dayjs) for date parsing and formatting
-- [lz-string](https://github.com/pieroxy/lz-string) to compress templates to reduce storage space
-- [lucide](https://github.com/lucide-icons/lucide) for icons
-- [dompurify](https://github.com/cure53/DOMPurify) for sanitizing HTML
+Our additions (`logseq-plugin/`, `logseq-shared/`, this README) live in their own directories and never conflict.
 
 ## License
 
-Obsidian Web Clipper source code is open source under the MIT License. All trademarks, icons, marketing copy, and other marketing assets are excluded from that license.
+MIT, inherited from obsidian-clipper.

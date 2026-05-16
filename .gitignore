@@ -3,6 +3,10 @@
 # NPM
 node_modules/
 
+# Bun (workspace plumbing only; upstream's package-lock.json stays the source of truth)
+bun.lock
+bun.lockb
+
 # Dev
 dev/
 dev_firefox/

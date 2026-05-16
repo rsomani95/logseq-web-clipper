@@ -1,10 +1,10 @@
 {
 	"manifest_version": 3,
 	"default_locale": "en",
-	"name": "Obsidian Web Clipper",
-	"homepage_url": "https://obsidian.md/",
-	"version": "1.6.2",
-	"description": "Save and highlight web pages in a private and durable format that you can access offline. The official extension for Obsidian.",
+	"name": "Logseq Web Clipper",
+	"homepage_url": "https://github.com/rsomani95/logseq-web-clipper",
+	"version": "0.1.0",
+	"description": "Clip web pages into a Logseq-DB graph. Forked from obsidian-clipper.",
 	"permissions": [
 		"activeTab",
 		"clipboardWrite",
@@ -18,7 +18,8 @@
 	"host_permissions": [
 		"<all_urls>",
 		"http://*/*",
-		"https://*/*"
+		"https://*/*",
+		"http://127.0.0.1:12315/*"
 	],
 	"action": {
 		"default_popup": "popup.html"
