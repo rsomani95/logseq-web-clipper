@@ -1151,6 +1151,20 @@ async function handleClipLogseq(): Promise<void> {
 		}
 
 		const tabInfo = await getCurrentTabInfo();
+		// Already-in-graph: skip the stat (no new content was added) and surface
+		// a non-error notice instead of silently closing — the user just clicked
+		// "Add" and deserves to know we navigated to the existing page rather
+		// than creating a clone. The page-creator already called `openPage` for
+		// the existing entry; here we just message + close on a longer delay so
+		// the user has a beat to read it.
+		if (response.result.status === 'exists') {
+			showError(`Already in graph — opened "${response.result.pageName}"`);
+			if (!isSidePanel) {
+				setTimeout(() => window.close(), 1500);
+			}
+			return;
+		}
+
 		await incrementStat('addToLogseq', response.result.graphName, '', tabInfo.url, tabInfo.title);
 
 		if (!isSidePanel) {

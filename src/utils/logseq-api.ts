@@ -142,6 +142,25 @@ export class LogseqAPI {
 		return this.call('logseq.Editor.getPage', [nameOrUuid])
 	}
 
+	/**
+	 * Reads every property on a page. Returns a record keyed by the full
+	 * property `:db/ident` (e.g. `:plugin.property.logseq-zoterolocal-plugin/url`),
+	 * with values shaped according to the property type (scalars for default/url,
+	 * entity refs for node/date).
+	 */
+	getPageProperties(pageUuid: string): Promise<Record<string, unknown> | null> {
+		return this.call('logseq.Editor.getPageProperties', [pageUuid])
+	}
+
+	/**
+	 * Raw Datascript query against the graph. Args are forwarded verbatim and
+	 * must already be in Datalog literal form — string values quoted (`"foo"`),
+	 * uuids as `#uuid "…"`, etc.
+	 */
+	datascriptQuery<T = unknown>(query: string, ...args: string[]): Promise<T> {
+		return this.call('logseq.DB.datascriptQuery', [query, ...args])
+	}
+
 	addBlockTag(uuid: string, tagName: string): Promise<unknown> {
 		return this.call('logseq.Editor.addBlockTag', [uuid, tagName])
 	}

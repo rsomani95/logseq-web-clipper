@@ -10,6 +10,7 @@ import { PROPERTIES, WEB_CLIPPING_TAG, getProperty, ident, type PropertyName } f
 
 import type { Property } from '../types/types'
 import type { LogseqAPI } from './logseq-api'
+import { findPageByUrl, normalizeUrl } from './logseq-url-index'
 import { markdownToBatchBlocks } from './markdown-to-outliner'
 
 export interface SaveToLogseqInput {
@@ -23,6 +24,12 @@ export interface SaveToLogseqResult {
 	pageName: string
 	graphName: string
 	matchedPropertyCount: number
+	/**
+	 * `created` — new page was written.
+	 * `exists` — a page with this URL was already in the graph; no writes
+	 *   happened. `pageUuid` / `pageName` point at that existing page.
+	 */
+	status: 'created' | 'exists'
 }
 
 const SCHEMA_NAME_SET = new Set<string>(PROPERTIES.map((p) => p.name))
@@ -76,6 +83,34 @@ export async function saveToLogseq(
 	const isDb = await api.checkCurrentIsDbGraph()
 	if (!isDb) {
 		throw new Error(`Graph "${graph.name}" is a file graph — Web Clipper requires a DB graph.`)
+	}
+
+	// URL-based dedupe. The `url` property is shared with logseq-zoterolocal-
+	// plugin (same `:db/ident`), so this also catches the case where the user
+	// imported the page via Zotero before clipping it here. Pattern mirrors
+	// zoterolocal's `zotero-code-index` — keyed on a stable identifier, not on
+	// the page name, so renaming a clipped page doesn't reopen the door to a
+	// duplicate. If URL lookup fails (no url property on input, or the index
+	// build erroring out), fall through to a normal create — better to risk
+	// a rare manual cleanup than block the save.
+	const urlProp = properties.find((p) => p.name === 'url')
+	const normalizedUrl = normalizeUrl(urlProp?.value)
+	if (normalizedUrl) {
+		const existing = await findPageByUrl(api, normalizedUrl)
+		if (existing) {
+			try {
+				await api.openPage(existing.title)
+			} catch (err) {
+				console.warn('[logseq-web-clipper] openPage on existing dupe failed:', err)
+			}
+			return {
+				pageUuid: existing.uuid,
+				pageName: existing.title,
+				graphName: graph.name,
+				matchedPropertyCount: 0,
+				status: 'exists',
+			}
+		}
 	}
 
 	const page = await api.createPage(noteName, {}, { redirect: false })
@@ -170,5 +205,6 @@ export async function saveToLogseq(
 		pageName: noteName,
 		graphName: graph.name,
 		matchedPropertyCount: matched,
+		status: 'created',
 	}
 }
