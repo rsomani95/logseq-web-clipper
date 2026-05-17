@@ -102,6 +102,22 @@ describe('buildVariables', () => {
 		expect(vars['{{published}}']).toBe('2024-01-15');
 	});
 
+	test('keeps year on single human-readable date with comma', () => {
+		// Regression: bongeats.com surfaces "April 10, 2026" as the published
+		// date. A blind split-on-comma would truncate to "April 10".
+		const vars = buildVariables(makeParams({
+			published: 'April 10, 2026',
+		}));
+		expect(vars['{{published}}']).toBe('April 10, 2026');
+	});
+
+	test('passes through ISO date with no comma untouched', () => {
+		const vars = buildVariables(makeParams({
+			published: '2026-04-10',
+		}));
+		expect(vars['{{published}}']).toBe('2026-04-10');
+	});
+
 	test('defaults optional fields to empty strings', () => {
 		const vars = buildVariables(makeParams());
 		expect(vars['{{selection}}']).toBe('');

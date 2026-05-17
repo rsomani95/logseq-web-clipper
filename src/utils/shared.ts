@@ -37,6 +37,24 @@ export interface BuildVariablesParams {
  * Build the template variable dictionary from extracted page data.
  * Pure function — no browser dependencies.
  */
+/**
+ * Picks the first date out of `params.published`. The upstream behavior was
+ * `split(',')[0].trim()` — which works for ISO-formatted multi-value strings
+ * like `"2026-04-10, 2026-04-11"`, but collapses a single human-readable
+ * date like `"April 10, 2026"` down to `"April 10"` and silently drops the
+ * year. Heuristic: only treat the comma as a separator between dates when
+ * the first chunk already contains a 4-digit year; otherwise the comma is
+ * part of a single date and the whole string is kept.
+ */
+export function extractFirstPublishedDate(raw: string | null | undefined): string {
+	if (typeof raw !== 'string') return '';
+	const trimmed = raw.trim();
+	if (!trimmed.includes(',')) return trimmed;
+	const firstPart = trimmed.split(',')[0].trim();
+	if (/\d{4}/.test(firstPart)) return firstPart;
+	return trimmed;
+}
+
 export function buildVariables(params: BuildVariablesParams): Record<string, string> {
 	const currentUrl = params.url.replace(/#:~:text=[^&]+(&|$)/, '');
 	const noteName = sanitizeFileName(params.title);
@@ -57,7 +75,7 @@ export function buildVariables(params: BuildVariablesParams): Record<string, str
 		'{{highlights}}': params.highlights || '',
 		'{{image}}': params.image || '',
 		'{{noteName}}': noteName.trim(),
-		'{{published}}': (params.published || '').split(',')[0].trim(),
+		'{{published}}': extractFirstPublishedDate(params.published),
 		'{{site}}': (params.site || '').trim(),
 		'{{title}}': (params.title || '').trim(),
 		'{{url}}': currentUrl.trim(),
