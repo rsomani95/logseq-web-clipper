@@ -2192,17 +2192,11 @@ export class Reader {
 				doc.body.appendChild(clipperIframeContainer);
 			}
 
-			// D: toggle dark mode (visual only, doesn't change appearance setting)
-			Reader.registerHotkey(doc, 'd', () => {
-				const html = doc.documentElement;
-				const isDark = html.classList.contains('theme-dark');
-				html.classList.remove('theme-light', 'theme-dark');
-				html.classList.add(isDark ? 'theme-light' : 'theme-dark');
-				this.applyTheme(doc);
-			});
-
-			// H: toggle highlighter
-			Reader.registerHotkey(doc, 'h', () => Reader.toggleHighlighter(doc));
+			// Highlight / note keyboard shortcuts live in
+			// registerSelectionToHighlightButton (H highlights the selection, or
+			// toggles the highlighter when nothing is selected; N notes it) and the
+			// overlay keydown handler (D deletes / N notes a selected highlight).
+			// The old D = dark/light toggle was removed; it didn't earn a hotkey.
 
 			// Selection → highlight affordance. When highlighter is OFF and the
 			// user makes a normal text selection inside the article, surface a
@@ -2491,20 +2485,35 @@ export class Reader {
 			}
 		});
 		window.addEventListener('resize', hide);
-	}
 
-	// Single-key hotkey wired to the reader document. Ignores presses while
-	// reader is inactive, while modifier keys are held, or while the user is
-	// typing in an input.
-	private static registerHotkey(doc: Document, key: string, handler: () => void) {
-		const lowerKey = key.toLowerCase();
+		// Keyboard equivalents of the pills. H highlights the current selection,
+		// or toggles the highlighter when nothing is selected; N notes the
+		// selection. Only while the highlighter is OFF — when it's on, the mouseup
+		// path already highlights selections. (D / N for an already-made highlight
+		// are handled by the overlay keydown handler.) Triggers the pill handlers
+		// directly so behaviour is identical to clicking them. Ignored while typing.
 		doc.addEventListener('keydown', (e) => {
 			if (!this.isActive) return;
 			if (e.ctrlKey || e.metaKey || e.altKey) return;
-			if (e.key.toLowerCase() !== lowerKey) return;
-			const tag = (document.activeElement as HTMLElement)?.tagName;
-			if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-			handler();
+			const key = e.key.toLowerCase();
+			if (key !== 'h' && key !== 'n') return;
+			const ae = doc.activeElement as HTMLElement | null;
+			if (ae && (ae.isContentEditable || ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
+
+			const highlighterOff = !doc.body.classList.contains('obsidian-highlighter-active');
+			const sel = doc.getSelection();
+			const article = doc.querySelector('.obsidian-reader-content article');
+			const hasSelection = !!sel && !sel.isCollapsed && sel.rangeCount > 0
+				&& !!article && article.contains(sel.getRangeAt(0).commonAncestorContainer);
+
+			if (key === 'h') {
+				e.preventDefault();
+				if (hasSelection && highlighterOff) highlightBtn.click();
+				else Reader.toggleHighlighter(doc);
+			} else if (hasSelection && highlighterOff) {
+				e.preventDefault();
+				noteBtn.click();
+			}
 		});
 	}
 

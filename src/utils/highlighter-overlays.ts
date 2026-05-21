@@ -239,30 +239,36 @@ function ensureHighlightNoteButton(): HTMLButtonElement {
 	btn.addEventListener('click', (e) => {
 		e.stopPropagation();
 		e.preventDefault();
-		const id = currentDeleteTargetId;
-		const anchor = currentActionAnchor;
-		if (!id) return;
-		// In reader margin mode, edit the note in place (aligned to the highlight);
-		// otherwise fall back to the floating box.
-		const repId = noteRepByPiece.get(id) ?? id;
-		const handled = editNoteInMargin({
-			doc: document,
-			id: repId,
-			initialValue: getHighlightNote(repId),
-			getRect: () => noteRectForHighlight(repId),
-		});
-		if (!handled && anchor) {
-			openNoteBox({
-				anchorRect: anchor,
-				initialValue: getHighlightNote(repId),
-				onSubmit: (note) => setHighlightNote(repId, note),
-			});
-		}
-		hideHighlightDeleteButton();
+		noteCurrentTarget();
 	});
 	document.body.appendChild(btn);
 	highlightNoteButton = btn;
 	return btn;
+}
+
+// Open the note editor for the currently-selected highlight (the one whose
+// Remove/Note buttons are showing). In reader margin mode the note is edited in
+// place, aligned to the highlight; otherwise the floating box is the fallback.
+// Shared by the Note button and the N keyboard shortcut.
+function noteCurrentTarget(): void {
+	const id = currentDeleteTargetId;
+	const anchor = currentActionAnchor;
+	if (!id) return;
+	const repId = noteRepByPiece.get(id) ?? id;
+	const handled = editNoteInMargin({
+		doc: document,
+		id: repId,
+		initialValue: getHighlightNote(repId),
+		getRect: () => noteRectForHighlight(repId),
+	});
+	if (!handled && anchor) {
+		openNoteBox({
+			anchorRect: anchor,
+			initialValue: getHighlightNote(repId),
+			onSubmit: (note) => setHighlightNote(repId, note),
+		});
+	}
+	hideHighlightDeleteButton();
 }
 
 function showHighlightDeleteButtonForText(id: string): void {
@@ -384,6 +390,26 @@ function handleHighlightClick(event: MouseEvent) {
 	hideHighlightDeleteButton();
 }
 
+// Keyboard shortcuts for the currently-selected highlight (the one whose
+// Remove/Note buttons are showing): D deletes it, N adds/edits its note — so the
+// mouse is optional. Attached with the other highlight listeners
+// (syncHoverListener), so it's live both on native pages and in reader. Bails
+// while typing (note card / inputs) and when any modifier is held.
+function handleHighlightKeydown(event: KeyboardEvent) {
+	if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+	if (!currentDeleteTargetId) return;
+	const ae = document.activeElement as HTMLElement | null;
+	if (ae && (ae.isContentEditable || ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
+	const key = event.key.toLowerCase();
+	if (key === 'd') {
+		event.preventDefault();
+		void deleteHighlightById(currentDeleteTargetId);
+	} else if (key === 'n') {
+		event.preventDefault();
+		noteCurrentTarget();
+	}
+}
+
 // Handle mouse up — create highlight from selection, or from block click.
 // Fires only while highlighter is active (attached via toggleHighlighterMenu).
 export function handleMouseUp(event: MouseEvent | TouchEvent) {
@@ -401,6 +427,14 @@ export function handleMouseUp(event: MouseEvent | TouchEvent) {
 
 	const selection = window.getSelection();
 	if (selection && !selection.isCollapsed) {
+		// Only turn a selection into a highlight while the highlighter is truly
+		// on. This listener is attached during active mode, but the
+		// `obsidian-highlighter-active` class can desync from it — e.g. reader
+		// replaces document.body, dropping the class while this document-level
+		// listener lives on — and without this guard a plain text selection in
+		// reader would silently become a highlight. With it, selecting while off
+		// just leaves the text selected (then H highlights, N notes).
+		if (!document.body.classList.contains('obsidian-highlighter-active')) return;
 		// When the user drags past the left/right edge of the content area,
 		// browsers extend the selection vertically (up for left, down for
 		// right), often selecting the entire article. Detect this by checking
@@ -632,10 +666,12 @@ export function syncHoverListener(): void {
 		// text inside or near a link never reaches a bubbling handler.
 		document.addEventListener('click', handleHighlightClick, true);
 		document.addEventListener('mousemove', handleHighlightHover);
+		document.addEventListener('keydown', handleHighlightKeydown);
 		listenersAttached = true;
 	} else if (!needed && listenersAttached) {
 		document.removeEventListener('click', handleHighlightClick, true);
 		document.removeEventListener('mousemove', handleHighlightHover);
+		document.removeEventListener('keydown', handleHighlightKeydown);
 		document.body.style.cursor = '';
 		listenersAttached = false;
 		hideHighlightDeleteButton();
