@@ -12,8 +12,10 @@ import {
 	updateHighlighterMenu,
 	getHighlightNote,
 	setHighlightNote,
+	groupHighlights,
 } from './highlighter';
 import { openNoteBox } from './note-input';
+import { syncNoteIndicators, removeNoteIndicators, NoteItem, NoteRect } from './note-indicators';
 import { throttle } from './throttle';
 import { getElementByXPath, isDarkColor, setElementHTML } from './dom-utils';
 import { getMessage } from './i18n';
@@ -24,7 +26,7 @@ let touchStartY: number = 0;
 let isTouchMoved: boolean = false;
 
 const IGNORED_BOUNDARY_SELECTOR =
-	'.obsidian-highlighter-menu, .obsidian-reader-settings, .transcript-segment > strong, .obsidian-highlight-delete, .obsidian-selection-action';
+	'.obsidian-highlighter-menu, .obsidian-reader-settings, .transcript-segment > strong, .obsidian-highlight-delete, .obsidian-selection-action, .obsidian-highlight-note-marker, .obsidian-reader-note-card';
 
 // --- Custom Highlight API (for type: 'text' highlights) ---
 //
@@ -322,8 +324,9 @@ export function markHighlightJustCreated(): void {
 function handleHighlightClick(event: MouseEvent) {
 	const target = event.target as Element | null;
 
-	// Clicking the remove button, selection button, or a link — let native behavior run.
-	if (target?.closest('.obsidian-highlight-delete, .obsidian-selection-action, a[href]')) return;
+	// Clicking the remove button, selection button, note marker/card, or a link —
+	// let those handlers (or native behavior) run instead of toggling the highlight.
+	if (target?.closest('.obsidian-highlight-delete, .obsidian-selection-action, .obsidian-highlight-note-marker, .obsidian-reader-note-card, a[href]')) return;
 
 	// Don't show the remove button immediately after creating a highlight —
 	// the click that ends a drag-selection shouldn't also surface "Remove".
@@ -385,8 +388,8 @@ export function handleMouseUp(event: MouseEvent | TouchEvent) {
 		return;
 	}
 
-	// Delete button / selection action button — let their own handlers run.
-	if (target.closest('.obsidian-highlight-delete, .obsidian-selection-action')) return;
+	// Delete button / selection action button / note marker — let their own handlers run.
+	if (target.closest('.obsidian-highlight-delete, .obsidian-selection-action, .obsidian-highlight-note-marker, .obsidian-reader-note-card')) return;
 
 	// Block-level one-click highlight (figure, img, table, pre, picture).
 	const block = findBlockToHighlight(target);
@@ -553,4 +556,66 @@ export function removeExistingHighlights() {
 	document.querySelectorAll('.obsidian-highlight-overlay').forEach(el => el.remove());
 	clearTextHighlights();
 	hideHighlightDeleteButton();
+	removeNoteIndicators();
+}
+
+// Bounding geometry of a (possibly multi-block) highlight group's rendered
+// region, in viewport coordinates. Text pieces come from the stored Ranges;
+// element pieces from their overlay (falling back to the live element). Null
+// when nothing in the group is currently on screen.
+function getGroupNoteRect(group: AnyHighlightData[]): NoteRect | null {
+	const rects: DOMRect[] = [];
+	for (const h of group) {
+		if (h.type === 'text') {
+			const ranges = textHighlightRanges.get(h.id);
+			if (ranges) {
+				for (const range of ranges) {
+					const clientRects = range.getClientRects();
+					for (let i = 0; i < clientRects.length; i++) rects.push(clientRects[i]);
+				}
+			}
+		} else {
+			const overlay = document.querySelector(`.obsidian-highlight-overlay[data-highlight-id="${h.id}"]`) as HTMLElement | null;
+			if (overlay) rects.push(overlay.getBoundingClientRect());
+			else {
+				const el = getElementByXPath(h.xpath);
+				if (el) rects.push(el.getBoundingClientRect());
+			}
+		}
+	}
+	if (rects.length === 0) return null;
+	let top = Infinity, bottom = -Infinity, left = Infinity, right = -Infinity;
+	let last = rects[0];
+	for (const r of rects) {
+		if (r.top < top) top = r.top;
+		if (r.bottom > bottom) bottom = r.bottom;
+		if (r.left < left) left = r.left;
+		if (r.right > right) right = r.right;
+		// "Last" line = lowest, then rightmost — where the inline icon sits.
+		if (r.bottom > last.bottom || (r.bottom === last.bottom && r.right > last.right)) last = r;
+	}
+	return { top, bottom, left, right, endRight: last.right, endTop: last.top, endBottom: last.bottom };
+}
+
+// (Re)build the note indicators (inline icons / reader margin cards) for every
+// highlight that carries a note. Called after each (re)render of highlights;
+// note-indicators owns its own reposition-on-scroll/resize/reflow.
+export function refreshNoteIndicators(): void {
+	const items: NoteItem[] = [];
+	for (const group of groupHighlights(highlights)) {
+		const id = group[0].id;
+		const note = getHighlightNote(id);
+		if (!note) continue;
+		items.push({ id, note, getRect: () => getGroupNoteRect(group) });
+	}
+	syncNoteIndicators(items, {
+		doc: document,
+		edit: (id, anchor) => {
+			openNoteBox({
+				anchorRect: anchor,
+				initialValue: getHighlightNote(id),
+				onSubmit: (note) => setHighlightNote(id, note),
+			});
+		},
+	});
 }

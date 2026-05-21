@@ -8,6 +8,7 @@ import {
 	handleTouchMove,
 	syncHoverListener,
 	markHighlightJustCreated,
+	refreshNoteIndicators,
 } from './highlighter-overlays';
 import { detectBrowser, addBrowserClassToHtml } from './browser-detection';
 import dayjs from 'dayjs';
@@ -1075,6 +1076,9 @@ export function applyHighlights() {
 	lastAppliedVersion = highlightsVersion;
 	isApplyingHighlights = false;
 	syncHoverListener();
+	// Repaint note indicators (inline icons / reader margin cards) against the
+	// freshly rendered highlights — text Ranges and element overlays now exist.
+	refreshNoteIndicators();
 }
 
 // Apply, save, and update UI after highlight changes.
