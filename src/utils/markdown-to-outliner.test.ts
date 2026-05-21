@@ -57,15 +57,15 @@ describe('markdownToBatchBlocks', () => {
 		expect(markdownToBatchBlocks('## A\n')).toEqual([{ content: '## A' }])
 	})
 
-	test('strips heading markers when useHeadingMarkers is false; nesting is unchanged', () => {
+	test('bolds headings (not plain) when useHeadingMarkers is false; nesting is unchanged', () => {
 		const md = '# Top\n\nintro.\n\n## A\n\na-text.\n'
 		expect(markdownToBatchBlocks(md, { useHeadingMarkers: false })).toEqual([
 			{
-				content: 'Top',
+				content: '**Top**',
 				children: [
 					{ content: 'intro.' },
 					{
-						content: 'A',
+						content: '**A**',
 						children: [{ content: 'a-text.' }],
 					},
 				],

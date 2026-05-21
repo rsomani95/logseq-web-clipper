@@ -31,6 +31,14 @@ describe('highlightToBlock', () => {
 	test('ignores a blank/whitespace-only note', () => {
 		expect(highlightToBlock({ text: 'quote', note: '   ' })).toEqual({ content: 'quote' })
 	})
+
+	test('keeps a heading highlight verbatim when markers are on', () => {
+		expect(highlightToBlock({ text: '## Quote heading' }, true)).toEqual({ content: '## Quote heading' })
+	})
+
+	test('bolds a heading highlight when markers are off', () => {
+		expect(highlightToBlock({ text: '## Quote heading' }, false)).toEqual({ content: '**Quote heading**' })
+	})
 })
 
 describe('buildClipBlocks', () => {
@@ -77,9 +85,18 @@ describe('buildClipBlocks', () => {
 		).toEqual([{ content: 'Page Content', children: [{ content: 'Body.' }] }])
 	})
 
-	test('passes useHeadingMarkers through to the outliner', () => {
+	test('passes useHeadingMarkers through to the outliner (off → bold)', () => {
 		expect(buildClipBlocks('# Title', [], { useHeadingMarkers: false })).toEqual([
-			{ content: 'Page Content', children: [{ content: 'Title' }] },
+			{ content: 'Page Content', children: [{ content: '**Title**' }] },
+		])
+	})
+
+	test('applies the heading rule to highlight blocks too', () => {
+		expect(
+			buildClipBlocks('Body.', [{ text: '## Quoted heading' }], { useHeadingMarkers: false }),
+		).toEqual([
+			{ content: 'Page Content', children: [{ content: 'Body.' }] },
+			{ content: 'Highlights', children: [{ content: '**Quoted heading**' }] },
 		])
 	})
 })
@@ -95,6 +112,12 @@ describe('normalizeHighlightText', () => {
 
 	test('matches quoted and unquoted forms of the same text', () => {
 		expect(normalizeHighlightText('> hello world')).toBe(normalizeHighlightText('hello world'))
+	})
+
+	test('canonicalizes a heading across `#`, bold, and plain forms (dedup stays stable)', () => {
+		const plain = normalizeHighlightText('Section title')
+		expect(normalizeHighlightText('## Section title')).toBe(plain)
+		expect(normalizeHighlightText('**Section title**')).toBe(plain)
 	})
 })
 

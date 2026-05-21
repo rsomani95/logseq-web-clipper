@@ -146,6 +146,24 @@ function parseParagraph(lines: string[], start: number): { content: string; next
 	return { content: buf.join('\n').trim(), next: i }
 }
 
+/**
+ * Apply the heading-marker setting to a block of (possibly multi-line) text:
+ * with markers on the text is returned unchanged; with markers off, each
+ * Markdown heading line becomes bold (`**text**`) so it still stands out while
+ * the `#` level styling gives way to indentation/nesting. Shared by the article
+ * body and highlight blocks so a clipped heading reads the same in both.
+ */
+export function styleHeadingLines(text: string, useHeadingMarkers: boolean): string {
+	if (useHeadingMarkers) return text
+	return text
+		.split(/\r?\n/)
+		.map((line) => {
+			const m = HEADING_RE.exec(line)
+			return m ? `**${m[2].trim()}**` : line
+		})
+		.join('\n')
+}
+
 export function markdownToBatchBlocks(
 	md: string,
 	options: { useHeadingMarkers?: boolean } = {},
@@ -186,7 +204,7 @@ export function markdownToBatchBlocks(
 			const level = headingMatch[1].length
 			const headingText = headingMatch[2].trim()
 			const block: BatchBlock = {
-				content: useHeadingMarkers ? `${headingMatch[1]} ${headingText}` : headingText,
+				content: useHeadingMarkers ? `${headingMatch[1]} ${headingText}` : `**${headingText}**`,
 			}
 			let parent: BatchBlock | null = null
 			for (let lv = level - 1; lv >= 1; lv--) {

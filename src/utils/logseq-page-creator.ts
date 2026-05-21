@@ -11,7 +11,7 @@ import { PROPERTIES, WEB_CLIPPING_TAG, getProperty, ident, type PropertyName } f
 import type { Property } from '../types/types'
 import type { LogseqAPI, LogseqBlockEntity } from './logseq-api'
 import { findPageByUrl, normalizeUrl } from './logseq-url-index'
-import { markdownToBatchBlocks, type BatchBlock } from './markdown-to-outliner'
+import { markdownToBatchBlocks, styleHeadingLines, type BatchBlock } from './markdown-to-outliner'
 
 /** A highlight captured for a clip, ready to render into the Highlights section. */
 export interface ClipHighlight {
@@ -100,18 +100,19 @@ const PAGE_CONTENT_HEADING = 'Page Content'
 const HIGHLIGHTS_HEADING = 'Highlights'
 
 /**
- * Canonical form of a highlight's text, for dedupe on re-import: strip any
- * leading blockquote marker from each line and collapse all whitespace.
- *
- * We no longer emit `> ` (see `highlightToBlock`), but pages clipped before that
- * change stored each highlight as `> foo`; stripping the marker here keeps a
- * re-clip's dedup matching those legacy blocks against the new clean form.
+ * Canonical form of a highlight's text, for dedupe on re-import: strip leading
+ * blockquote (legacy `> `) and heading (`#`) markers from each line, drop bold
+ * styling, and collapse whitespace — so the dedup key is the *content*,
+ * independent of how a heading highlight was rendered (`## Foo`, `**Foo**`, or
+ * plain). Otherwise toggling the heading-marker setting between clips would make
+ * the same highlight re-merge as a duplicate.
  */
 export function normalizeHighlightText(text: string): string {
 	return text
 		.split(/\r?\n/)
-		.map((line) => line.replace(/^\s*>\s?/, ''))
+		.map((line) => line.replace(/^\s*>\s?/, '').replace(/^\s*#{1,6}\s+/, ''))
 		.join(' ')
+		.replace(/\*\*(.+?)\*\*/g, '$1')
 		.replace(/\s+/g, ' ')
 		.trim()
 }
@@ -126,8 +127,10 @@ export function normalizeHighlightText(text: string): string {
  * can't be set over the JSON HTTP API: the value arrives as a string and fails
  * Logseq's `keyword?` validation. A clean block is the correct, lossless shape.
  */
-export function highlightToBlock(h: ClipHighlight): BatchBlock {
-	const block: BatchBlock = { content: h.text }
+export function highlightToBlock(h: ClipHighlight, useHeadingMarkers: boolean = true): BatchBlock {
+	// A highlight that is itself a heading follows the same rule as body
+	// headings: keep `#` markers when on, bold when off.
+	const block: BatchBlock = { content: styleHeadingLines(h.text, useHeadingMarkers) }
 	const note = h.note?.trim()
 	if (note) block.children = [{ content: note }]
 	return block
@@ -145,14 +148,15 @@ export function buildClipBlocks(
 ): BatchBlock[] {
 	const pageContentName = options.pageContentBlockName?.trim() || PAGE_CONTENT_HEADING
 	const highlightsName = options.highlightsBlockName?.trim() || HIGHLIGHTS_HEADING
+	const useHeadingMarkers = options.useHeadingMarkers ?? true
 	const blocks: BatchBlock[] = [
 		{
 			content: pageContentName,
-			children: markdownToBatchBlocks(contentMarkdown, { useHeadingMarkers: options.useHeadingMarkers }),
+			children: markdownToBatchBlocks(contentMarkdown, { useHeadingMarkers }),
 		},
 	]
 	if (highlights.length > 0) {
-		blocks.push({ content: highlightsName, children: highlights.map(highlightToBlock) })
+		blocks.push({ content: highlightsName, children: highlights.map((h) => highlightToBlock(h, useHeadingMarkers)) })
 	}
 	return blocks
 }
@@ -182,6 +186,7 @@ export async function mergeHighlightsIntoExistingPage(
 	pageUuid: string,
 	highlights: ClipHighlight[],
 	highlightsBlockName: string = HIGHLIGHTS_HEADING,
+	useHeadingMarkers: boolean = true,
 ): Promise<number> {
 	if (highlights.length === 0) return 0
 
@@ -208,7 +213,7 @@ export async function mergeHighlightsIntoExistingPage(
 	)
 	if (fresh.length === 0) return 0
 
-	const newBlocks = fresh.map(highlightToBlock)
+	const newBlocks = fresh.map((h) => highlightToBlock(h, useHeadingMarkers))
 	try {
 		if (highlightsBlock?.uuid) {
 			await api.insertBatchBlock(highlightsBlock.uuid, newBlocks)
@@ -262,7 +267,7 @@ export async function saveToLogseq(
 				`[logseq-web-clipper] re-import: matched existing page; payload carries ` +
 					`${(input.highlights ?? []).length} highlight(s).`,
 			)
-			const added = await mergeHighlightsIntoExistingPage(api, existing.uuid, input.highlights ?? [], options.highlightsBlockName)
+			const added = await mergeHighlightsIntoExistingPage(api, existing.uuid, input.highlights ?? [], options.highlightsBlockName, options.useHeadingMarkers ?? true)
 			try {
 				await api.openPage(existing.title)
 			} catch (err) {
