@@ -275,8 +275,41 @@ body.obsidian-highlighter-active {
 // highlights are lightweight, and the user can create them outside highlighter
 // mode (via the in-reader selection-to-highlight button), so they need to be
 // visible without requiring mode activation.
+//
+// This is the default for arbitrary web pages, where we have no theme to draw
+// from. In reader mode it's overridden below by a calmer, theme-derived rule.
 ::highlight(obsidian-highlight) {
 	background-color: rgba(255, 235, 0, 0.35);
+}
+
+// Reader mode: we own the palette, so trade the wash for a thin underline tinted
+// from the active theme's --color-yellow (defined per theme in
+// _reader-themes.scss; the highlight pseudo inherits it from the
+// .obsidian-reader-active ancestor). Calmer on light themes like Solarized, and
+// per-theme instead of one fixed yellow. Higher specificity than the rule above,
+// so it wins inside the reader; native pages are untouched.
+.obsidian-reader-active ::highlight(obsidian-highlight) {
+	background-color: transparent;
+	text-decoration-line: underline;
+	text-decoration-color: color-mix(in srgb, var(--color-yellow) 65%, transparent);
+	text-decoration-thickness: 2px;
+	text-underline-offset: 4px;
+	text-decoration-skip-ink: none;
+}
+
+// Element highlights (figure/img/table/pre) can't carry an underline, so give
+// them a subtle accent frame instead of the yellow fill — same restraint.
+.obsidian-reader-active .obsidian-highlight-overlay,
+.obsidian-reader-active .obsidian-highlight-overlay.obsidian-highlight-overlay-dark {
+	background-color: transparent;
+	mix-blend-mode: normal;
+	box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-yellow) 55%, transparent);
+}
+
+// While actively dragging to highlight in the reader, tint the live selection
+// from the theme accent rather than the fixed yellow.
+.obsidian-reader-active body.obsidian-highlighter-active *::selection {
+	background-color: color-mix(in srgb, var(--color-yellow) 22%, transparent) !important;
 }
 
 // Shared base for floating action buttons (Remove highlight, Highlight selection).
