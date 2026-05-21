@@ -152,11 +152,11 @@ export async function initializePageContent(
 			selectedMarkdown = createMarkdownContent(selectedHtml, currentUrl);
 		}
 
-		// Process highlights after getting the base content
-		if (generalSettings.highlighterEnabled && generalSettings.highlightBehavior !== 'no-highlights' && highlights && highlights.length > 0) {
-			content = processHighlights(content, highlights);
-		}
-
+		// Highlights are no longer inlined into the body. The Logseq page creator
+		// emits them as their own "Highlights" section (each a blockquote, with
+		// notes nested beneath), so the body stays clean. `processHighlights`
+		// (and its helpers below) are kept for upstream parity / clean merges but
+		// intentionally not called here.
 		const markdownBody = createMarkdownContent(content, currentUrl);
 
 		const highlightsData = collapseGroupsForExport(highlights, c => createMarkdownContent(c, currentUrl));

@@ -35,7 +35,10 @@ export interface LogseqPageEntity {
 export interface LogseqBlockEntity {
 	id?: number
 	uuid: string
+	/** Block text. DB graphs expose `title`; older/file builds use `content`. Read whichever is present. */
 	content?: string
+	title?: string
+	children?: LogseqBlockEntity[]
 }
 
 export interface LogseqBatchBlock {
@@ -150,6 +153,15 @@ export class LogseqAPI {
 	 */
 	getPageProperties(pageUuid: string): Promise<Record<string, unknown> | null> {
 		return this.call('logseq.Editor.getPageProperties', [pageUuid])
+	}
+
+	/**
+	 * Returns a page's full block tree (top-level blocks, each with nested
+	 * `children`). Used by re-import to find an existing "Highlights" block so
+	 * new highlights can be appended rather than duplicating the page.
+	 */
+	getPageBlocksTree(srcPage: string): Promise<LogseqBlockEntity[]> {
+		return this.call('logseq.Editor.getPageBlocksTree', [srcPage])
 	}
 
 	/**

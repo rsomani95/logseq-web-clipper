@@ -9,14 +9,24 @@
 import { PROPERTIES, WEB_CLIPPING_TAG, getProperty, ident, type PropertyName } from '@logseq-web-clipper/shared'
 
 import type { Property } from '../types/types'
-import type { LogseqAPI } from './logseq-api'
+import type { LogseqAPI, LogseqBlockEntity } from './logseq-api'
 import { findPageByUrl, normalizeUrl } from './logseq-url-index'
-import { markdownToBatchBlocks } from './markdown-to-outliner'
+import { markdownToBatchBlocks, type BatchBlock } from './markdown-to-outliner'
+
+/** A highlight captured for a clip, ready to render into the Highlights section. */
+export interface ClipHighlight {
+	/** Markdown of the highlighted content. */
+	text: string
+	/** Optional single note the user attached to this highlight. */
+	note?: string
+}
 
 export interface SaveToLogseqInput {
 	noteName: string
 	content: string
 	properties: Property[]
+	/** Highlights captured for this clip, in document order. */
+	highlights?: ClipHighlight[]
 }
 
 export interface SaveToLogseqResult {
@@ -26,10 +36,14 @@ export interface SaveToLogseqResult {
 	matchedPropertyCount: number
 	/**
 	 * `created` — new page was written.
-	 * `exists` — a page with this URL was already in the graph; no writes
-	 *   happened. `pageUuid` / `pageName` point at that existing page.
+	 * `exists` — a page with this URL was already in the graph and had nothing
+	 *   new to add; no writes happened. `pageUuid` / `pageName` point at it.
+	 * `updated` — the page already existed, but new highlights were appended to
+	 *   its "Highlights" block. See `addedHighlightCount`.
 	 */
-	status: 'created' | 'exists'
+	status: 'created' | 'exists' | 'updated'
+	/** For `updated`: number of new highlights appended to the existing page. */
+	addedHighlightCount?: number
 }
 
 const SCHEMA_NAME_SET = new Set<string>(PROPERTIES.map((p) => p.name))
@@ -66,6 +80,114 @@ function toJournalDate(value: string): string | null {
 	return `${yyyy}-${mm}-${dd}`
 }
 
+const PAGE_CONTENT_HEADING = 'Page Content'
+const HIGHLIGHTS_HEADING = 'Highlights'
+
+/** Prefix each line with `> ` so the block renders as a blockquote in Logseq. */
+function toBlockquote(text: string): string {
+	return text
+		.split(/\r?\n/)
+		.map((line) => (line.trim() === '' ? '>' : `> ${line}`))
+		.join('\n')
+}
+
+/**
+ * Canonical form of a highlight's text, for dedupe on re-import: strip a leading
+ * blockquote marker from each line and collapse all whitespace. So a highlight
+ * already on the page (stored as `> foo`) matches the same incoming highlight
+ * (`foo`) regardless of quoting or wrapping differences.
+ */
+export function normalizeHighlightText(text: string): string {
+	return text
+		.split(/\r?\n/)
+		.map((line) => line.replace(/^\s*>\s?/, ''))
+		.join(' ')
+		.replace(/\s+/g, ' ')
+		.trim()
+}
+
+/** One highlight → a blockquote block, with its note (if any) as a child block. */
+export function highlightToBlock(h: ClipHighlight): BatchBlock {
+	const block: BatchBlock = { content: toBlockquote(h.text) }
+	const note = h.note?.trim()
+	if (note) block.children = [{ content: note }]
+	return block
+}
+
+/**
+ * Builds the page body: a "Page Content" wrapper around the clipped article
+ * (always present, so re-imports have a stable shape to merge into), plus a
+ * "Highlights" section when there are any highlights.
+ */
+export function buildClipBlocks(contentMarkdown: string, highlights: ClipHighlight[]): BatchBlock[] {
+	const blocks: BatchBlock[] = [
+		{ content: PAGE_CONTENT_HEADING, children: markdownToBatchBlocks(contentMarkdown) },
+	]
+	if (highlights.length > 0) {
+		blocks.push({ content: HIGHLIGHTS_HEADING, children: highlights.map(highlightToBlock) })
+	}
+	return blocks
+}
+
+function blockText(b: LogseqBlockEntity): string {
+	return (b.content ?? b.title ?? '').toString()
+}
+
+function findChildBlockByText(tree: LogseqBlockEntity[], text: string): LogseqBlockEntity | null {
+	const want = text.trim().toLowerCase()
+	for (const b of tree) {
+		if (blockText(b).trim().toLowerCase() === want) return b
+	}
+	return null
+}
+
+/**
+ * Re-import path: append highlights that aren't already on the page to its
+ * "Highlights" block (creating that block if the page doesn't have one yet —
+ * e.g. it was first clipped with no highlights, or imported via Zotero).
+ * Returns the count actually added. Dedupe is by normalized highlight text.
+ * Best-effort: any API failure logs and returns 0 so the caller still reports
+ * the page as already-in-graph rather than surfacing an error.
+ */
+export async function mergeHighlightsIntoExistingPage(
+	api: LogseqAPI,
+	pageUuid: string,
+	highlights: ClipHighlight[],
+): Promise<number> {
+	if (highlights.length === 0) return 0
+
+	let tree: LogseqBlockEntity[]
+	try {
+		tree = (await api.getPageBlocksTree(pageUuid)) ?? []
+	} catch (err) {
+		console.warn('[logseq-web-clipper] re-import: getPageBlocksTree failed; skipping highlight merge', err)
+		return 0
+	}
+
+	const highlightsBlock = findChildBlockByText(tree, HIGHLIGHTS_HEADING)
+	const existing = new Set<string>()
+	for (const child of highlightsBlock?.children ?? []) {
+		const t = blockText(child)
+		if (t) existing.add(normalizeHighlightText(t))
+	}
+
+	const fresh = highlights.filter((h) => !existing.has(normalizeHighlightText(h.text)))
+	if (fresh.length === 0) return 0
+
+	const newBlocks = fresh.map(highlightToBlock)
+	try {
+		if (highlightsBlock?.uuid) {
+			await api.insertBatchBlock(highlightsBlock.uuid, newBlocks)
+		} else {
+			await api.insertBatchBlock(pageUuid, [{ content: HIGHLIGHTS_HEADING, children: newBlocks }])
+		}
+	} catch (err) {
+		console.warn('[logseq-web-clipper] re-import: failed to append highlights', err)
+		return 0
+	}
+	return fresh.length
+}
+
 export async function saveToLogseq(
 	api: LogseqAPI,
 	input: SaveToLogseqInput,
@@ -98,6 +220,10 @@ export async function saveToLogseq(
 	if (normalizedUrl) {
 		const existing = await findPageByUrl(api, normalizedUrl)
 		if (existing) {
+			// Don't duplicate the page — but if this clip carries highlights the
+			// existing page doesn't have yet (e.g. it was clipped before they were
+			// made), merge those in rather than no-op'ing.
+			const added = await mergeHighlightsIntoExistingPage(api, existing.uuid, input.highlights ?? [])
 			try {
 				await api.openPage(existing.title)
 			} catch (err) {
@@ -108,7 +234,8 @@ export async function saveToLogseq(
 				pageName: existing.title,
 				graphName: graph.name,
 				matchedPropertyCount: 0,
-				status: 'exists',
+				status: added > 0 ? 'updated' : 'exists',
+				addedHighlightCount: added,
 			}
 		}
 	}
@@ -188,7 +315,7 @@ export async function saveToLogseq(
 		}
 	}
 
-	const blocks = markdownToBatchBlocks(content)
+	const blocks = buildClipBlocks(content, input.highlights ?? [])
 	if (blocks.length > 0) {
 		await api.insertBatchBlock(page.uuid, blocks)
 	}

@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { Template, Property, PromptVariable } from '../types/types';
 import { incrementStat, addHistoryEntry, getClipHistory } from '../utils/storage-utils';
 import { generateFrontmatter } from '../utils/obsidian-note-creator';
-import type { SaveToLogseqInput, SaveToLogseqResult } from '../utils/logseq-page-creator';
+import type { ClipHighlight, SaveToLogseqInput, SaveToLogseqResult } from '../utils/logseq-page-creator';
 import { extractPageContent, initializePageContent } from '../utils/content-extractor';
 import { compileTemplate } from '../utils/template-compiler';
 import { initializeIcons, getPropertyTypeIcon } from '../icons/icons';
@@ -1099,6 +1099,29 @@ function determineMainAction() {
 	addSecondaryAction(secondaryActions, 'saveFile', handleSaveToDownloads);
 }
 
+// Highlights are assembled into their own "Highlights" section by the page
+// creator, so they ride alongside the body in the save payload rather than
+// being baked into the content textarea. Source is the same {{highlights}}
+// export the templating engine sees (currentVariables.highlights), shaped as
+// ExportedHighlight[] — { text, timestamp, notes? }. A highlight may carry
+// multiple notes after merges; we join them into the single note we render.
+function collectClipHighlights(): ClipHighlight[] {
+	const raw = currentVariables.highlights;
+	if (!raw) return [];
+	try {
+		const parsed = JSON.parse(raw) as { text?: string; notes?: string[] }[];
+		if (!Array.isArray(parsed)) return [];
+		return parsed
+			.filter((h) => typeof h.text === 'string' && h.text.trim().length > 0)
+			.map((h) => {
+				const note = (h.notes ?? []).map((n) => n.trim()).filter(Boolean).join('\n\n');
+				return note ? { text: h.text as string, note } : { text: h.text as string };
+			});
+	} catch {
+		return [];
+	}
+}
+
 async function handleClipLogseq(): Promise<void> {
 	if (!currentTemplate) return;
 
@@ -1139,6 +1162,7 @@ async function handleClipLogseq(): Promise<void> {
 			noteName,
 			content: noteContentField.value,
 			properties,
+			highlights: collectClipHighlights(),
 		};
 		const response = await browser.runtime.sendMessage({
 			action: 'saveToLogseq',
@@ -1166,6 +1190,17 @@ async function handleClipLogseq(): Promise<void> {
 		}
 
 		await incrementStat('addToLogseq', response.result.graphName, '', tabInfo.url, tabInfo.title);
+
+		// Re-import that appended new highlights to an existing page — tell the
+		// user what changed instead of silently closing as if a page was created.
+		if (response.result.status === 'updated') {
+			const n = response.result.addedHighlightCount ?? 0;
+			showError(`Added ${n} new highlight${n === 1 ? '' : 's'} to "${response.result.pageName}"`);
+			if (!isSidePanel) {
+				setTimeout(() => window.close(), 1500);
+			}
+			return;
+		}
 
 		if (!isSidePanel) {
 			setTimeout(() => window.close(), 500);
