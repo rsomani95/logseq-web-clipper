@@ -60,6 +60,9 @@ export interface EditNoteInMarginOptions {
 	initialValue?: string;
 	getRect: () => NoteRect | null;
 	onCommit?: (note: string) => void;
+	/** Editing abandoned via Esc (vs committed). Used by note-on-selection to
+	 *  revert the highlight it created up front. */
+	onCancel?: () => void;
 }
 
 const STYLE_ID = 'obsidian-note-indicators-style';
@@ -91,6 +94,7 @@ let editingId: string | null = null;
 let editOriginal = '';
 let editSynthetic = false;
 let editOnCommit: ((note: string) => void) | null = null;
+let editOnCancel: (() => void) | null = null;
 
 function activeId(): string | null {
 	return editingId ?? hoveredId;
@@ -479,6 +483,7 @@ export function editNoteInMargin(opts: EditNoteInMarginOptions): boolean {
 	editOriginal = opts.initialValue ?? item.note;
 	editSynthetic = synthetic;
 	editOnCommit = opts.onCommit ?? ((note: string) => deps?.setNote(id, note));
+	editOnCancel = opts.onCancel ?? null;
 	card.classList.add('is-editing');
 	card.setAttribute('contenteditable', 'true');
 	card.spellcheck = false;
@@ -498,6 +503,7 @@ function commitEdit(): void {
 	const synthetic = editSynthetic;
 	editingId = null;
 	editOnCommit = null;
+	editOnCancel = null;
 	editSynthetic = false;
 	hoveredId = null;
 	if (card) {
@@ -516,8 +522,10 @@ function cancelEdit(): void {
 	if (!id) return;
 	const card = els.get(id);
 	const synthetic = editSynthetic;
+	const onCancel = editOnCancel;
 	editingId = null;
 	editOnCommit = null;
+	editOnCancel = null;
 	editSynthetic = false;
 	hoveredId = null;
 	if (card) {
@@ -531,6 +539,8 @@ function cancelEdit(): void {
 		card.textContent = editOriginal;
 		if (deps) { layoutMargin(deps.doc); redrawConnectors(); }
 	}
+	// e.g. note-on-selection reverts the highlight it created up front.
+	onCancel?.();
 }
 
 function removeSynthetic(id: string): void {
@@ -614,11 +624,18 @@ function ensureListeners(doc: Document): void {
 // updates), positions everything, and ensures reposition listeners are live.
 export function syncNoteIndicators(nextItems: NoteItem[], nextDeps: NoteIndicatorDeps): void {
 	deps = nextDeps;
-	items = nextItems;
+	// Keep an in-progress synthetic edit alive across refreshes. note-on-selection
+	// creates a highlight (→ applyHighlights → refreshNoteIndicators) and then opens
+	// the editor on it; the note isn't persisted until commit, so it's absent from
+	// nextItems. Re-merge it so the focused card keeps its place and connector.
+	const editingItem = (editingId && editSynthetic) ? items.find((i) => i.id === editingId) : undefined;
+	items = editingItem && !nextItems.some((i) => i.id === editingItem.id)
+		? [...nextItems, editingItem]
+		: nextItems;
 	// Don't pay for styles / reposition listeners on pages that never get a note.
 	// Once one exists the listeners stay (cheap, and they no-op when the set later
 	// empties), so removal still repaints correctly.
-	if (nextItems.length > 0) {
+	if (items.length > 0) {
 		injectStyle(nextDeps.doc);
 		ensureListeners(nextDeps.doc);
 	}
@@ -636,5 +653,6 @@ export function removeNoteIndicators(): void {
 	hoveredId = null;
 	editingId = null;
 	editOnCommit = null;
+	editOnCancel = null;
 	editSynthetic = false;
 }

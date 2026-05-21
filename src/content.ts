@@ -1,6 +1,6 @@
 import browser from './utils/browser-polyfill';
 import * as highlighter from './utils/highlighter';
-import { removeExistingHighlights } from './utils/highlighter-overlays';
+import { removeExistingHighlights, deleteHighlightById } from './utils/highlighter-overlays';
 import { editNoteInMargin } from './utils/note-indicators';
 import { loadSettings, generalSettings } from './utils/storage-utils';
 import { getDomain } from './utils/string-utils';
@@ -463,7 +463,9 @@ declare global {
 		clearHighlights: highlighter.clearHighlights,
 		saveHighlights: highlighter.saveHighlights,
 		updateHighlighterMenu: highlighter.updateHighlighterMenu,
+		setHighlightNote: highlighter.setHighlightNote,
 		removeExistingHighlights,
+		deleteHighlightById,
 		editNoteInMargin,
 		ensureHighlighterCSS: () => { ensureHighlighterCSS(); },
 	} satisfies highlighter.HighlighterAPI;

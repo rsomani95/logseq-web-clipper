@@ -323,7 +323,7 @@ export function hideHighlightDeleteButton(): void {
 	currentActionAnchor = null;
 }
 
-async function deleteHighlightById(id: string): Promise<void> {
+export async function deleteHighlightById(id: string): Promise<void> {
 	const target = highlights.find((h: AnyHighlightData) => h.id === id);
 	if (!target) return;
 	// If the highlight is part of a group (multi-block selection), remove the
@@ -391,17 +391,18 @@ function handleHighlightClick(event: MouseEvent) {
 }
 
 // Keyboard shortcuts for the currently-selected highlight (the one whose
-// Remove/Note buttons are showing): D deletes it, N adds/edits its note — so the
-// mouse is optional. Attached with the other highlight listeners
-// (syncHoverListener), so it's live both on native pages and in reader. Bails
-// while typing (note card / inputs) and when any modifier is held.
+// Remove/Note buttons are showing): D / Backspace / Delete remove it, N
+// adds/edits its note — so the mouse is optional. Attached with the other
+// highlight listeners (syncHoverListener), so it's live both on native pages and
+// in reader. Bails while typing (note card / inputs) and when any modifier is
+// held.
 function handleHighlightKeydown(event: KeyboardEvent) {
 	if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
 	if (!currentDeleteTargetId) return;
 	const ae = document.activeElement as HTMLElement | null;
 	if (ae && (ae.isContentEditable || ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
 	const key = event.key.toLowerCase();
-	if (key === 'd') {
+	if (key === 'd' || key === 'backspace' || key === 'delete') {
 		event.preventDefault();
 		void deleteHighlightById(currentDeleteTargetId);
 	} else if (key === 'n') {
@@ -691,11 +692,22 @@ export function syncHoverListener(): void {
 	}
 }
 
-// Remove all existing highlight overlays from the page
-export function removeExistingHighlights() {
+// Clear highlight *renders* only — element overlays, text highlights, action
+// buttons — NOT the note indicators. applyHighlights calls this, re-renders the
+// highlights, then reconciles note cards via refreshNoteIndicators/
+// syncNoteIndicators (a diff). Tearing the note cards down here instead would
+// flicker every card on each apply and, worse, drop an in-progress in-margin
+// note edit out from under the user.
+export function clearHighlightRenders() {
 	document.querySelectorAll('.obsidian-highlight-overlay').forEach(el => el.remove());
 	clearTextHighlights();
 	hideHighlightDeleteButton();
+}
+
+// Full teardown: renders + note indicators. For callers that hide highlights
+// without a following refresh (exiting highlighter mode, reader teardown).
+export function removeExistingHighlights() {
+	clearHighlightRenders();
 	removeNoteIndicators();
 }
 

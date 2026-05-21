@@ -7,7 +7,7 @@ import hljs from 'highlight.js';
 import { getDomain } from './string-utils';
 import type { HighlighterAPI } from './highlighter';
 import * as localHighlighter from './highlighter';
-import { removeExistingHighlights as localRemoveExistingHighlights } from './highlighter-overlays';
+import { removeExistingHighlights as localRemoveExistingHighlights, deleteHighlightById as localDeleteHighlightById } from './highlighter-overlays';
 import { editNoteInMargin as localEditNoteInMargin } from './note-indicators';
 
 // Bridge: on a live page with reader mode (case 2), content.js already loaded
@@ -21,6 +21,7 @@ function hl(): HighlighterAPI {
 	return _hl ??= window.__obsidianHighlighter ?? {
 		...localHighlighter,
 		removeExistingHighlights: localRemoveExistingHighlights,
+		deleteHighlightById: localDeleteHighlightById,
 		editNoteInMargin: localEditNoteInMargin,
 		ensureHighlighterCSS: () => Reader.ensureHighlighterCSS(document),
 	};
@@ -2403,37 +2404,37 @@ export class Reader {
 			e.stopPropagation();
 			const sel = doc.getSelection();
 			if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
-			// Capture the range + a viewport anchor BEFORE the note box steals
-			// focus (which collapses the selection); restore and highlight it on
-			// save, with the note attached.
+			// Capture the range + a viewport anchor BEFORE highlighting collapses
+			// the selection, so the margin card (or fallback box) can position
+			// against it.
 			const range = sel.getRangeAt(0).cloneRange();
 			const rects = range.getClientRects();
 			const last = rects.length > 0 ? rects[rects.length - 1] : range.getBoundingClientRect();
 			const anchorRect = { left: last.left, top: last.top, right: last.right, bottom: last.bottom };
 			hide();
-			const onCommit = (note: string) => {
-				const s = doc.getSelection();
-				if (!s) return;
-				s.removeAllRanges();
-				s.addRange(range);
-				hl().handleTextSelection(s, note ? [note] : []);
+
+			// Highlight the selection up front so it's visible while the note is
+			// written, then edit the note in place targeting that highlight.
+			// Abandoning the note (empty commit or Esc) reverts the highlight, so
+			// backing out leaves nothing highlighted.
+			const id = hl().handleTextSelection(sel);
+			if (!id) return;
+			const finish = (note: string) => {
+				if (note.trim()) hl().setHighlightNote(id, note);
+				else hl().deleteHighlightById(id);
 			};
-			// Reader margin: write the note in place, aligned to the selection.
+			const revert = () => hl().deleteHighlightById(id);
+			const getRect = () => {
+				const rs = range.getClientRects();
+				const l = rs.length > 0 ? rs[rs.length - 1] : range.getBoundingClientRect();
+				return { top: l.top, bottom: l.bottom, left: l.left, right: l.right, endRight: l.right, endTop: l.top, endBottom: l.bottom };
+			};
 			// Route via the bridge so on a live page it reaches the content-script
 			// instance that owns the margin cards. Falls back to the floating box
 			// when margin mode isn't available (e.g. a narrow viewport).
-			const handled = hl().editNoteInMargin({
-				doc,
-				initialValue: '',
-				getRect: () => {
-					const rs = range.getClientRects();
-					const l = rs.length > 0 ? rs[rs.length - 1] : range.getBoundingClientRect();
-					return { top: l.top, bottom: l.bottom, left: l.left, right: l.right, endRight: l.right, endTop: l.top, endBottom: l.bottom };
-				},
-				onCommit,
-			});
+			const handled = hl().editNoteInMargin({ doc, id, initialValue: '', getRect, onCommit: finish, onCancel: revert });
 			if (!handled) {
-				openNoteBox({ doc, anchorRect, onSubmit: onCommit });
+				openNoteBox({ doc, anchorRect, onSubmit: finish, onCancel: revert });
 			}
 		});
 

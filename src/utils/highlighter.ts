@@ -4,6 +4,7 @@ import {
 	handleMouseUp,
 	renderHighlight,
 	removeExistingHighlights,
+	clearHighlightRenders,
 	handleTouchStart,
 	handleTouchMove,
 	syncHoverListener,
@@ -124,7 +125,10 @@ export interface HighlighterAPI {
 	clearHighlights: typeof clearHighlights;
 	saveHighlights: typeof saveHighlights;
 	updateHighlighterMenu: typeof updateHighlighterMenu;
+	setHighlightNote: typeof setHighlightNote;
 	removeExistingHighlights: () => void;
+	// Owned by highlighter-overlays.ts; group-aware single-highlight removal.
+	deleteHighlightById: (id: string) => void;
 	editNoteInMargin: (opts: EditNoteInMarginOptions) => boolean;
 	ensureHighlighterCSS: () => void;
 }
@@ -555,11 +559,12 @@ export function highlightElement(element: Element, notes?: string[]) {
 }
 
 // Handle text selection for highlighting
-export function handleTextSelection(selection: Selection, notes?: string[]) {
-	if (selection.isCollapsed) return;
+export function handleTextSelection(selection: Selection, notes?: string[]): string | undefined {
+	if (selection.isCollapsed) return undefined;
 	const range = selection.getRangeAt(0);
 	const newHighlightDatas = getHighlightRanges(range);
 
+	let representativeId: string | undefined;
 	if (newHighlightDatas.length > 0) {
 		const oldGlobalHighlights = [...highlights]; // Save global state BEFORE this operation
 		let currentBatchHighlights = [...highlights]; // Start with global state for merging
@@ -597,8 +602,14 @@ export function handleTextSelection(selection: Selection, notes?: string[]) {
 		sortHighlights();
 		commitHighlightChanges();
 		markHighlightJustCreated();
+		// First piece is the group's representative — the id notes attach to
+		// (set/getHighlightNote merge by group). Returned so a caller can target a
+		// just-made highlight: note-on-selection highlights first, then edits the
+		// note in place, reverting the highlight if the note is abandoned.
+		representativeId = newHighlightDatas[0].id;
 	}
 	selection.removeAllRanges();
+	return representativeId;
 }
 
 // Split a user selection into one highlight per block it crosses.
@@ -1077,9 +1088,11 @@ export function applyHighlights() {
 
 	isApplyingHighlights = true;
 
-	// Always clear — deleting the last highlight must also tear down its
-	// overlay, so we can't early-return on highlights.length === 0.
-	removeExistingHighlights();
+	// Clear renders only (overlays + text highlights). Note cards are reconciled
+	// below by refreshNoteIndicators — tearing them down here would flicker every
+	// card and drop an in-progress in-margin edit. Always clear renders, since
+	// deleting the last highlight must also tear down its overlay.
+	clearHighlightRenders();
 
 	// When cross-view sync is on, highlights whose stored xpath doesn't resolve
 	// in this DOM are re-anchored by text. The anchor index is built lazily and
