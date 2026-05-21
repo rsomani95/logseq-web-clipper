@@ -12,6 +12,7 @@ export let generalSettings: Settings = {
 	openBehavior: 'popup',
 	highlighterEnabled: true,
 	alwaysShowHighlights: false,
+	syncHighlightsAcrossViews: true,
 	highlightBehavior: 'highlight-inline',
 	showMoreActionsButton: false,
 	interpreterModel: '',
@@ -71,6 +72,7 @@ interface StorageData {
 	highlighter_settings?: {
 		highlighterEnabled?: boolean;
 		alwaysShowHighlights?: boolean;
+		syncHighlightsAcrossViews?: boolean;
 		highlightBehavior?: string;
 	};
 	reader_settings?: {
@@ -124,6 +126,7 @@ export async function loadSettings(): Promise<Settings> {
 		openBehavior: 'popup',
 		highlighterEnabled: true,
 		alwaysShowHighlights: true,
+		syncHighlightsAcrossViews: true,
 		highlightBehavior: 'highlight-inline',
 		interpreterModel: '',
 		models: [],
@@ -184,6 +187,7 @@ export async function loadSettings(): Promise<Settings> {
 			: (data.general_settings?.openBehavior ?? defaultSettings.openBehavior),
 		highlighterEnabled: data.highlighter_settings?.highlighterEnabled ?? defaultSettings.highlighterEnabled,
 		alwaysShowHighlights: data.highlighter_settings?.alwaysShowHighlights ?? defaultSettings.alwaysShowHighlights,
+		syncHighlightsAcrossViews: data.highlighter_settings?.syncHighlightsAcrossViews ?? defaultSettings.syncHighlightsAcrossViews,
 		highlightBehavior: data.highlighter_settings?.highlightBehavior ?? defaultSettings.highlightBehavior,
 		interpreterModel: data.interpreter_settings?.interpreterModel || defaultSettings.interpreterModel,
 		models: sanitizedModels,
@@ -239,6 +243,7 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 		highlighter_settings: {
 			highlighterEnabled: generalSettings.highlighterEnabled,
 			alwaysShowHighlights: generalSettings.alwaysShowHighlights,
+			syncHighlightsAcrossViews: generalSettings.syncHighlightsAcrossViews,
 			highlightBehavior: generalSettings.highlightBehavior
 		},
 		interpreter_settings: {

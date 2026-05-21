@@ -13,6 +13,7 @@ export const generalSettings: Settings = {
 	openBehavior: 'popup',
 	highlighterEnabled: false,
 	alwaysShowHighlights: false,
+	syncHighlightsAcrossViews: true,
 	highlightBehavior: 'no-highlights',
 	showMoreActionsButton: false,
 	interpreterModel: '',

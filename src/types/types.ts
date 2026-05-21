@@ -76,6 +76,9 @@ export interface Settings {
 	openBehavior: 'popup' | 'embedded' | 'reader';
 	highlighterEnabled: boolean;
 	alwaysShowHighlights: boolean;
+	// Re-anchor highlights by their text so a highlight made in reader view is
+	// visible in native view (and vice versa). Default on.
+	syncHighlightsAcrossViews: boolean;
 	highlightBehavior: string;
 	interpreterModel?: string;
 	models: ModelConfig[];

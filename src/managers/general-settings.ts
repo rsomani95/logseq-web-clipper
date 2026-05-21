@@ -197,6 +197,7 @@ function saveSettingsFromForm(): void {
 	const betaFeaturesToggle = document.getElementById('beta-features-toggle') as HTMLInputElement;
 	const highlighterToggle = document.getElementById('highlighter-toggle') as HTMLInputElement;
 	const alwaysShowHighlightsToggle = document.getElementById('highlighter-visibility') as HTMLInputElement;
+	const syncHighlightsToggle = document.getElementById('highlighter-sync-views') as HTMLInputElement;
 	const highlightBehaviorSelect = document.getElementById('highlighter-behavior') as HTMLSelectElement;
 
 	const updatedSettings = {
@@ -206,6 +207,7 @@ function saveSettingsFromForm(): void {
 		betaFeatures: betaFeaturesToggle?.checked ?? generalSettings.betaFeatures,
 		highlighterEnabled: highlighterToggle?.checked ?? generalSettings.highlighterEnabled,
 		alwaysShowHighlights: alwaysShowHighlightsToggle?.checked ?? generalSettings.alwaysShowHighlights,
+		syncHighlightsAcrossViews: syncHighlightsToggle?.checked ?? generalSettings.syncHighlightsAcrossViews,
 		highlightBehavior: highlightBehaviorSelect?.value ?? generalSettings.highlightBehavior
 	};
 
@@ -365,6 +367,10 @@ function initializeHighlighterSettings(): void {
 
 	initializeSettingToggle('highlighter-visibility', generalSettings.alwaysShowHighlights, (checked) => {
 		saveSettings({ ...generalSettings, alwaysShowHighlights: checked });
+	});
+
+	initializeSettingToggle('highlighter-sync-views', generalSettings.syncHighlightsAcrossViews, (checked) => {
+		saveSettings({ ...generalSettings, syncHighlightsAcrossViews: checked });
 	});
 
 	const highlightBehaviorSelect = document.getElementById('highlighter-behavior') as HTMLSelectElement;

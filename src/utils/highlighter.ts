@@ -2,7 +2,7 @@ import browser from './browser-polyfill';
 import { getElementXPath, getElementByXPath, setElementHTML } from './dom-utils';
 import {
 	handleMouseUp,
-	planHighlightOverlayRects,
+	renderHighlight,
 	removeExistingHighlights,
 	handleTouchStart,
 	handleTouchMove,
@@ -10,6 +10,7 @@ import {
 	markHighlightJustCreated,
 	refreshNoteIndicators,
 } from './highlighter-overlays';
+import { createAnchorContext, AnchorContext } from './highlight-anchoring';
 import { detectBrowser, addBrowserClassToHtml } from './browser-detection';
 import dayjs from 'dayjs';
 import { generalSettings, loadSettings } from './storage-utils';
@@ -207,6 +208,11 @@ export interface HighlightData {
 	// When one selection crosses multiple blocks, all resulting highlights
 	// share a groupId so they delete, clip, and visually associate together.
 	groupId?: string;
+	// Short text immediately before/after the selection, captured at creation.
+	// Used to disambiguate the quote when re-anchoring across reader/native
+	// views (a TextQuoteSelector's prefix/suffix). See highlight-anchoring.ts.
+	before?: string;
+	after?: string;
 }
 
 export interface TextHighlightData extends HighlightData {
@@ -710,13 +716,20 @@ function getHighlightRanges(range: Range): AnyHighlightData[] {
 			setElementHTML(wrapper, innerHtml);
 			const htmlContent = wrapper.outerHTML;
 
+			const txStart = getTextOffset(blockElement, blockRange.startContainer, blockRange.startOffset);
+			const txEnd = getTextOffset(blockElement, blockRange.endContainer, blockRange.endOffset);
+			// Capture a little surrounding text so the quote can be located
+			// unambiguously when re-anchored in the other view.
+			const blockText = blockElement.textContent ?? '';
 			newHighlights.push({
 				xpath: getElementXPath(blockElement),
 				content: htmlContent,
 				type: 'text',
 				id: `${timestamp}_tx_${i}`,
-				startOffset: getTextOffset(blockElement, blockRange.startContainer, blockRange.startOffset),
-				endOffset: getTextOffset(blockElement, blockRange.endContainer, blockRange.endOffset),
+				startOffset: txStart,
+				endOffset: txEnd,
+				before: blockText.slice(Math.max(0, txStart - 32), txStart),
+				after: blockText.slice(txEnd, txEnd + 32),
 			});
 		} catch (e) {
 			console.warn('Error creating text highlight for block:', blockElement, e);
@@ -1066,11 +1079,18 @@ export function applyHighlights() {
 	// overlay, so we can't early-return on highlights.length === 0.
 	removeExistingHighlights();
 
+	// When cross-view sync is on, highlights whose stored xpath doesn't resolve
+	// in this DOM are re-anchored by text. The anchor index is built lazily and
+	// shared, so pages where every xpath resolves (same view) pay nothing.
+	const syncOn = generalSettings.syncHighlightsAcrossViews;
+	let ctx: AnchorContext | null | undefined;
+	const getCtx = (): AnchorContext | null => {
+		if (ctx === undefined) ctx = syncOn ? createAnchorContext(document) : null;
+		return ctx;
+	};
+
 	highlights.forEach((highlight) => {
-		const container = getElementByXPath(highlight.xpath);
-		if (container) {
-			planHighlightOverlayRects(container, highlight);
-		}
+		renderHighlight(highlight, getCtx, syncOn);
 	});
 
 	lastAppliedVersion = highlightsVersion;

@@ -2,6 +2,7 @@ import {
 	handleTextSelection,
 	highlightElement,
 	AnyHighlightData,
+	ElementHighlightData,
 	BLOCK_HIGHLIGHT_TAGS,
 	highlights,
 	isApplyingHighlights,
@@ -16,6 +17,14 @@ import {
 } from './highlighter';
 import { openNoteBox } from './note-input';
 import { syncNoteIndicators, removeNoteIndicators, NoteItem, NoteRect } from './note-indicators';
+import {
+	AnchorContext,
+	findQuoteRange,
+	getQuoteText,
+	normalizeText,
+	findImageSrc,
+	sameImageSrc,
+} from './highlight-anchoring';
 import { throttle } from './throttle';
 import { getElementByXPath, isDarkColor, setElementHTML } from './dom-utils';
 import { getMessage } from './i18n';
@@ -108,26 +117,38 @@ function findTextNodeAtOffset(element: Element, offset: number): { node: Node, o
 	return null;
 }
 
-export function renderTextHighlight(highlight: { id: string; xpath: string; startOffset: number; endOffset: number }): void {
-	const hl = ensureUserHighlight();
-	if (!hl) return;
-	const container = getElementByXPath(highlight.xpath);
-	if (!container) return;
-	const start = findTextNodeAtOffset(container, highlight.startOffset);
-	const end = findTextNodeAtOffset(container, highlight.endOffset);
-	if (!start || !end) return;
+// Build a Range from a text highlight's stored xpath + character offsets, or
+// null when the xpath no longer resolves in this DOM (e.g. the other view).
+export function buildRangeFromOffsets(xpath: string, startOffset: number, endOffset: number): Range | null {
+	const container = getElementByXPath(xpath);
+	if (!container) return null;
+	const start = findTextNodeAtOffset(container, startOffset);
+	const end = findTextNodeAtOffset(container, endOffset);
+	if (!start || !end) return null;
 	try {
 		const range = document.createRange();
 		range.setStart(start.node, start.offset);
 		range.setEnd(end.node, end.offset);
-		if (range.collapsed) return;
-		hl.add(range);
-		const existing = textHighlightRanges.get(highlight.id);
-		if (existing) existing.push(range);
-		else textHighlightRanges.set(highlight.id, [range]);
+		return range.collapsed ? null : range;
 	} catch (e) {
-		console.warn('Failed to build Range for text highlight', highlight.id, e);
+		console.warn('Failed to build Range from offsets', xpath, e);
+		return null;
 	}
+}
+
+// Paint a text highlight from a resolved Range and remember it for hit-testing.
+function addTextRange(id: string, range: Range): void {
+	const hl = ensureUserHighlight();
+	if (!hl) return;
+	hl.add(range);
+	const existing = textHighlightRanges.get(id);
+	if (existing) existing.push(range);
+	else textHighlightRanges.set(id, [range]);
+}
+
+export function renderTextHighlight(highlight: { id: string; xpath: string; startOffset: number; endOffset: number }): void {
+	const range = buildRangeFromOffsets(highlight.xpath, highlight.startOffset, highlight.endOffset);
+	if (range) addTextRange(highlight.id, range);
 }
 
 export function clearTextHighlights(): void {
@@ -438,6 +459,72 @@ export function planHighlightOverlayRects(target: Element, highlight: AnyHighlig
 		overlay.classList.add('obsidian-highlight-overlay-dark');
 	}
 	document.body.appendChild(overlay);
+}
+
+// Render one highlight, re-anchoring by text when its stored xpath doesn't
+// resolve in the current DOM (cross-view sync). `getCtx` lazily builds the
+// shared text index, so views where every xpath resolves pay nothing.
+export function renderHighlight(
+	highlight: AnyHighlightData,
+	getCtx: () => AnchorContext | null,
+	syncOn: boolean,
+): void {
+	if (highlight.type === 'text') {
+		let range = buildRangeFromOffsets(highlight.xpath, highlight.startOffset, highlight.endOffset);
+		if (syncOn) {
+			const quote = getQuoteText(highlight.content);
+			// The xpath may resolve in the other view but to the wrong node, so
+			// verify the text matches before trusting it; otherwise re-anchor.
+			const fastOk = !!range && normalizeText(range.toString()) === normalizeText(quote);
+			if (!fastOk) {
+				const ctx = getCtx();
+				const reanchored = ctx
+					? findQuoteRange(quote, ctx, { prefix: highlight.before, suffix: highlight.after })
+					: null;
+				if (reanchored) range = reanchored;
+			}
+		}
+		if (range) addTextRange(highlight.id, range);
+		return;
+	}
+
+	// Element highlight (figure / img / table / pre / picture).
+	let target = getElementByXPath(highlight.xpath);
+	if (syncOn && !elementMatchesHighlight(target, highlight)) {
+		const found = resolveElementByContent(highlight, getCtx());
+		if (found) target = found;
+	}
+	if (target) planHighlightOverlayRects(target, highlight);
+}
+
+// Does an xpath-resolved element actually correspond to this highlight? Used to
+// decide whether to trust the xpath or re-anchor in the other view.
+function elementMatchesHighlight(el: Element | null, highlight: ElementHighlightData): boolean {
+	if (!el) return false;
+	const src = findImageSrc(highlight.content);
+	if (src) {
+		const img = el.tagName === 'IMG' ? (el as HTMLImageElement) : el.querySelector('img');
+		return !!img && sameImageSrc(img.getAttribute('src'), src, document.baseURI);
+	}
+	const quote = normalizeText(getQuoteText(highlight.content));
+	if (!quote) return true; // nothing to verify against — trust the xpath
+	return normalizeText(el.textContent ?? '').includes(quote.slice(0, 80));
+}
+
+// Best-effort element re-anchor in the current DOM: images by src, other block
+// elements by locating their text and taking the nearest block ancestor.
+function resolveElementByContent(highlight: ElementHighlightData, ctx: AnchorContext | null): Element | null {
+	const src = findImageSrc(highlight.content);
+	if (src) {
+		const imgs = Array.from(document.querySelectorAll('img'));
+		return imgs.find(img => sameImageSrc(img.getAttribute('src'), src, document.baseURI)) ?? null;
+	}
+	if (!ctx) return null;
+	const range = findQuoteRange(getQuoteText(highlight.content), ctx);
+	if (!range) return null;
+	const start = range.startContainer;
+	const elNode = start.nodeType === Node.ELEMENT_NODE ? (start as Element) : start.parentElement;
+	return elNode?.closest('figure, table, pre, picture, img') ?? elNode;
 }
 
 function getEffectiveBackgroundColor(element: HTMLElement): string {
