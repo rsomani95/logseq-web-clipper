@@ -92,6 +92,9 @@ export interface Settings {
 	// Re-anchor highlights by their text so a highlight made in reader view is
 	// visible in native view (and vice versa). Default on.
 	syncHighlightsAcrossViews: boolean;
+	// Always show the dotted connector tying a reader margin note to its
+	// highlight (vs only on hover/edit). Default off.
+	persistentNoteConnectors: boolean;
 	highlightBehavior: string;
 	interpreterModel?: string;
 	models: ModelConfig[];

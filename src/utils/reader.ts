@@ -8,6 +8,7 @@ import { getDomain } from './string-utils';
 import type { HighlighterAPI } from './highlighter';
 import * as localHighlighter from './highlighter';
 import { removeExistingHighlights as localRemoveExistingHighlights } from './highlighter-overlays';
+import { editNoteInMargin as localEditNoteInMargin } from './note-indicators';
 
 // Bridge: on a live page with reader mode (case 2), content.js already loaded
 // and owns the highlighter module. reader-script.js delegates to it via this
@@ -20,6 +21,7 @@ function hl(): HighlighterAPI {
 	return _hl ??= window.__obsidianHighlighter ?? {
 		...localHighlighter,
 		removeExistingHighlights: localRemoveExistingHighlights,
+		editNoteInMargin: localEditNoteInMargin,
 		ensureHighlighterCSS: () => Reader.ensureHighlighterCSS(document),
 	};
 }
@@ -2415,17 +2417,30 @@ export class Reader {
 			const last = rects.length > 0 ? rects[rects.length - 1] : range.getBoundingClientRect();
 			const anchorRect = { left: last.left, top: last.top, right: last.right, bottom: last.bottom };
 			hide();
-			openNoteBox({
+			const onCommit = (note: string) => {
+				const s = doc.getSelection();
+				if (!s) return;
+				s.removeAllRanges();
+				s.addRange(range);
+				hl().handleTextSelection(s, note ? [note] : []);
+			};
+			// Reader margin: write the note in place, aligned to the selection.
+			// Route via the bridge so on a live page it reaches the content-script
+			// instance that owns the margin cards. Falls back to the floating box
+			// when margin mode isn't available (e.g. a narrow viewport).
+			const handled = hl().editNoteInMargin({
 				doc,
-				anchorRect,
-				onSubmit: (note) => {
-					const s = doc.getSelection();
-					if (!s) return;
-					s.removeAllRanges();
-					s.addRange(range);
-					hl().handleTextSelection(s, note ? [note] : []);
+				initialValue: '',
+				getRect: () => {
+					const rs = range.getClientRects();
+					const l = rs.length > 0 ? rs[rs.length - 1] : range.getBoundingClientRect();
+					return { top: l.top, bottom: l.bottom, left: l.left, right: l.right, endRight: l.right, endTop: l.top, endBottom: l.bottom };
 				},
+				onCommit,
 			});
+			if (!handled) {
+				openNoteBox({ doc, anchorRect, onSubmit: onCommit });
+			}
 		});
 
 		const update = () => {

@@ -14,6 +14,7 @@ import { createAnchorContext, AnchorContext } from './highlight-anchoring';
 import { detectBrowser, addBrowserClassToHtml } from './browser-detection';
 import dayjs from 'dayjs';
 import { generalSettings, loadSettings } from './storage-utils';
+import type { EditNoteInMarginOptions } from './note-indicators';
 
 /**
  * Helper function to create SVG elements
@@ -124,6 +125,7 @@ export interface HighlighterAPI {
 	saveHighlights: typeof saveHighlights;
 	updateHighlighterMenu: typeof updateHighlighterMenu;
 	removeExistingHighlights: () => void;
+	editNoteInMargin: (opts: EditNoteInMarginOptions) => boolean;
 	ensureHighlighterCSS: () => void;
 }
 

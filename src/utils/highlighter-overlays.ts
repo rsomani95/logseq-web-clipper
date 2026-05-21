@@ -16,7 +16,8 @@ import {
 	groupHighlights,
 } from './highlighter';
 import { openNoteBox } from './note-input';
-import { syncNoteIndicators, removeNoteIndicators, NoteItem, NoteRect } from './note-indicators';
+import { syncNoteIndicators, removeNoteIndicators, editNoteInMargin, setHoveredHighlight, NoteItem, NoteRect } from './note-indicators';
+import { generalSettings } from './storage-utils';
 import {
 	AnchorContext,
 	findQuoteRange,
@@ -240,12 +241,23 @@ function ensureHighlightNoteButton(): HTMLButtonElement {
 		e.preventDefault();
 		const id = currentDeleteTargetId;
 		const anchor = currentActionAnchor;
-		if (!id || !anchor) return;
-		openNoteBox({
-			anchorRect: anchor,
-			initialValue: getHighlightNote(id),
-			onSubmit: (note) => setHighlightNote(id, note),
+		if (!id) return;
+		// In reader margin mode, edit the note in place (aligned to the highlight);
+		// otherwise fall back to the floating box.
+		const repId = noteRepByPiece.get(id) ?? id;
+		const handled = editNoteInMargin({
+			doc: document,
+			id: repId,
+			initialValue: getHighlightNote(repId),
+			getRect: () => noteRectForHighlight(repId),
 		});
+		if (!handled && anchor) {
+			openNoteBox({
+				anchorRect: anchor,
+				initialValue: getHighlightNote(repId),
+				onSubmit: (note) => setHighlightNote(repId, note),
+			});
+		}
 		hideHighlightDeleteButton();
 	});
 	document.body.appendChild(btn);
@@ -589,6 +601,11 @@ function handleHighlightHover(event: MouseEvent) {
 		const cursor = onHighlight ? 'pointer' : '';
 		if (cursor !== lastCursor) { document.body.style.cursor = cursor; lastCursor = cursor; }
 
+		// Hovering a noted highlight lights up its margin card + connector.
+		const overlayId = overlay?.dataset.highlightId;
+		const repId = textId ? noteRepByPiece.get(textId) : (overlayId ? noteRepByPiece.get(overlayId) : undefined);
+		setHoveredHighlight(repId ?? null);
+
 		const onButton = !!target?.closest('.obsidian-highlight-delete');
 
 		if (altKey && (onHighlight || onButton)) {
@@ -684,19 +701,38 @@ function getGroupNoteRect(group: AnyHighlightData[]): NoteRect | null {
 	return { top, bottom, left, right, endRight: last.right, endTop: last.top, endBottom: last.bottom };
 }
 
+// Maps each highlight piece id → its note's representative id (group[0].id), so
+// the hover hit-test can light up the right margin card. Only highlights that
+// carry a note appear here; rebuilt on every refreshNoteIndicators.
+const noteRepByPiece = new Map<string, string>();
+
+// Live NoteRect for a highlight by id (resolving its group), for in-margin edits.
+function noteRectForHighlight(id: string): NoteRect | null {
+	const target = highlights.find((h: AnyHighlightData) => h.id === id);
+	if (!target) return null;
+	const group = target.groupId
+		? highlights.filter((h: AnyHighlightData) => h.groupId === target.groupId)
+		: [target];
+	return getGroupNoteRect(group);
+}
+
 // (Re)build the note indicators (inline icons / reader margin cards) for every
 // highlight that carries a note. Called after each (re)render of highlights;
 // note-indicators owns its own reposition-on-scroll/resize/reflow.
 export function refreshNoteIndicators(): void {
 	const items: NoteItem[] = [];
+	noteRepByPiece.clear();
 	for (const group of groupHighlights(highlights)) {
 		const id = group[0].id;
 		const note = getHighlightNote(id);
 		if (!note) continue;
+		for (const piece of group) noteRepByPiece.set(piece.id, id);
 		items.push({ id, note, getRect: () => getGroupNoteRect(group) });
 	}
 	syncNoteIndicators(items, {
 		doc: document,
+		persistentConnectors: generalSettings.persistentNoteConnectors,
+		setNote: (id, note) => setHighlightNote(id, note),
 		edit: (id, anchor) => {
 			openNoteBox({
 				anchorRect: anchor,

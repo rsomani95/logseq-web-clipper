@@ -44,6 +44,12 @@
 	"syncHighlightsAcrossViewsDescription": {
 		"message": "Show the highlights and notes you make in reader view when reading the same page in native view, and vice versa. Matches by text, so highlights re-anchor across the two layouts."
 	},
+	"persistentNoteConnectors": {
+		"message": "Always show note connectors"
+	},
+	"persistentNoteConnectorsDescription": {
+		"message": "In reader view, keep the dotted line that ties each margin note to its highlight visible at all times. When off, it appears only when you hover or edit a note."
+	},
 	"apiKeyMissing": {
 		"message": "No API key"
 	},

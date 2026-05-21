@@ -19,6 +19,7 @@ export const generalSettings: Settings = {
 	highlighterEnabled: false,
 	alwaysShowHighlights: false,
 	syncHighlightsAcrossViews: true,
+	persistentNoteConnectors: false,
 	highlightBehavior: 'no-highlights',
 	showMoreActionsButton: false,
 	interpreterModel: '',

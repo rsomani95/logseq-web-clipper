@@ -198,6 +198,7 @@ function saveSettingsFromForm(): void {
 	const highlighterToggle = document.getElementById('highlighter-toggle') as HTMLInputElement;
 	const alwaysShowHighlightsToggle = document.getElementById('highlighter-visibility') as HTMLInputElement;
 	const syncHighlightsToggle = document.getElementById('highlighter-sync-views') as HTMLInputElement;
+	const noteConnectorsToggle = document.getElementById('highlighter-note-connectors') as HTMLInputElement;
 	const highlightBehaviorSelect = document.getElementById('highlighter-behavior') as HTMLSelectElement;
 
 	const updatedSettings = {
@@ -208,6 +209,7 @@ function saveSettingsFromForm(): void {
 		highlighterEnabled: highlighterToggle?.checked ?? generalSettings.highlighterEnabled,
 		alwaysShowHighlights: alwaysShowHighlightsToggle?.checked ?? generalSettings.alwaysShowHighlights,
 		syncHighlightsAcrossViews: syncHighlightsToggle?.checked ?? generalSettings.syncHighlightsAcrossViews,
+		persistentNoteConnectors: noteConnectorsToggle?.checked ?? generalSettings.persistentNoteConnectors,
 		highlightBehavior: highlightBehaviorSelect?.value ?? generalSettings.highlightBehavior
 	};
 
@@ -371,6 +373,10 @@ function initializeHighlighterSettings(): void {
 
 	initializeSettingToggle('highlighter-sync-views', generalSettings.syncHighlightsAcrossViews, (checked) => {
 		saveSettings({ ...generalSettings, syncHighlightsAcrossViews: checked });
+	});
+
+	initializeSettingToggle('highlighter-note-connectors', generalSettings.persistentNoteConnectors, (checked) => {
+		saveSettings({ ...generalSettings, persistentNoteConnectors: checked });
 	});
 
 	const highlightBehaviorSelect = document.getElementById('highlighter-behavior') as HTMLSelectElement;

@@ -18,6 +18,7 @@ export let generalSettings: Settings = {
 	highlighterEnabled: true,
 	alwaysShowHighlights: false,
 	syncHighlightsAcrossViews: true,
+	persistentNoteConnectors: false,
 	highlightBehavior: 'highlight-inline',
 	showMoreActionsButton: false,
 	interpreterModel: '',
@@ -83,6 +84,7 @@ interface StorageData {
 		highlighterEnabled?: boolean;
 		alwaysShowHighlights?: boolean;
 		syncHighlightsAcrossViews?: boolean;
+		persistentNoteConnectors?: boolean;
 		highlightBehavior?: string;
 	};
 	reader_settings?: {
@@ -142,6 +144,7 @@ export async function loadSettings(): Promise<Settings> {
 		highlighterEnabled: true,
 		alwaysShowHighlights: true,
 		syncHighlightsAcrossViews: true,
+		persistentNoteConnectors: false,
 		highlightBehavior: 'highlight-inline',
 		interpreterModel: '',
 		models: [],
@@ -208,6 +211,7 @@ export async function loadSettings(): Promise<Settings> {
 		highlighterEnabled: data.highlighter_settings?.highlighterEnabled ?? defaultSettings.highlighterEnabled,
 		alwaysShowHighlights: data.highlighter_settings?.alwaysShowHighlights ?? defaultSettings.alwaysShowHighlights,
 		syncHighlightsAcrossViews: data.highlighter_settings?.syncHighlightsAcrossViews ?? defaultSettings.syncHighlightsAcrossViews,
+		persistentNoteConnectors: data.highlighter_settings?.persistentNoteConnectors ?? defaultSettings.persistentNoteConnectors,
 		highlightBehavior: data.highlighter_settings?.highlightBehavior ?? defaultSettings.highlightBehavior,
 		interpreterModel: data.interpreter_settings?.interpreterModel || defaultSettings.interpreterModel,
 		models: sanitizedModels,
@@ -264,6 +268,7 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 			highlighterEnabled: generalSettings.highlighterEnabled,
 			alwaysShowHighlights: generalSettings.alwaysShowHighlights,
 			syncHighlightsAcrossViews: generalSettings.syncHighlightsAcrossViews,
+			persistentNoteConnectors: generalSettings.persistentNoteConnectors,
 			highlightBehavior: generalSettings.highlightBehavior
 		},
 		interpreter_settings: {
