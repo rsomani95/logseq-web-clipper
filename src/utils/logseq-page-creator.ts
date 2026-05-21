@@ -172,6 +172,11 @@ export async function mergeHighlightsIntoExistingPage(
 	}
 
 	const fresh = highlights.filter((h) => !existing.has(normalizeHighlightText(h.text)))
+	console.log(
+		`[logseq-web-clipper] re-import: ${highlights.length} incoming highlight(s), ` +
+			`${existing.size} already on page, ${fresh.length} new to add ` +
+			`(Highlights block ${highlightsBlock ? 'found' : 'absent — will create'}).`,
+	)
 	if (fresh.length === 0) return 0
 
 	const newBlocks = fresh.map(highlightToBlock)
@@ -223,6 +228,10 @@ export async function saveToLogseq(
 			// Don't duplicate the page — but if this clip carries highlights the
 			// existing page doesn't have yet (e.g. it was clipped before they were
 			// made), merge those in rather than no-op'ing.
+			console.log(
+				`[logseq-web-clipper] re-import: matched existing page; payload carries ` +
+					`${(input.highlights ?? []).length} highlight(s).`,
+			)
 			const added = await mergeHighlightsIntoExistingPage(api, existing.uuid, input.highlights ?? [])
 			try {
 				await api.openPage(existing.title)

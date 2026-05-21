@@ -1102,11 +1102,12 @@ function determineMainAction() {
 // Highlights are assembled into their own "Highlights" section by the page
 // creator, so they ride alongside the body in the save payload rather than
 // being baked into the content textarea. Source is the same {{highlights}}
-// export the templating engine sees (currentVariables.highlights), shaped as
-// ExportedHighlight[] — { text, timestamp, notes? }. A highlight may carry
-// multiple notes after merges; we join them into the single note we render.
+// export the templating engine sees — keyed, like every variable, as
+// '{{highlights}}' (not a bare name) — shaped as ExportedHighlight[]:
+// { text, timestamp, notes? }. A highlight may carry multiple notes after
+// merges; we join them into the single note we render.
 function collectClipHighlights(): ClipHighlight[] {
-	const raw = currentVariables.highlights;
+	const raw = currentVariables['{{highlights}}'];
 	if (!raw) return [];
 	try {
 		const parsed = JSON.parse(raw) as { text?: string; notes?: string[] }[];

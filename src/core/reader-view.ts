@@ -5,7 +5,7 @@ import { ReaderSettings } from '../types/types';
 import { getFontCss } from '../utils/font-utils';
 import { getDomain } from '../utils/string-utils';
 import { extractContentBySelector as extractContentBySelectorShared } from '../utils/shared';
-import { setPageUrl, setPageTitle, updatePageDomainSettings, getHighlights, repositionHighlights } from '../utils/highlighter';
+import { setPageUrl, setPageTitle, updatePageDomainSettings, getHighlightsData, repositionHighlights } from '../utils/highlighter';
 import { throttle } from '../utils/throttle';
 import { loadSettings } from '../utils/storage-utils';
 import Defuddle from 'defuddle';
@@ -394,7 +394,9 @@ async function setupReaderPageMessageHandler(articleUrl: string, defuddleResult:
 		}
 
 		if (message.action === 'getPageContent') {
-			sendResponse({ ...cachedContent, highlights: getHighlights() });
+			// Full highlight objects (incl. notes) from the reader's in-memory set
+			// so the clip's Highlights section + notes reflect the page.
+			sendResponse({ ...cachedContent, highlights: getHighlightsData() });
 			return true;
 		}
 

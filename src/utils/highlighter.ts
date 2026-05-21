@@ -1089,6 +1089,34 @@ export function getHighlights(): string[] {
 	return highlights.map(h => h.content);
 }
 
+// Full highlight objects for the current page (incl. notes), for clip
+// extraction. getHighlights() returns content strings only and drops notes.
+export function getHighlightsData(): AnyHighlightData[] {
+	return highlights;
+}
+
+// Reads this page's highlights straight from storage (full objects, incl.
+// notes), without mutating the in-memory set or painting, then unions with the
+// in-memory set by id. Clip extraction uses this so a just-added highlight is
+// included even when the content script's in-memory array is stale — e.g. after
+// exiting reader reloads the page and re-creates the content script empty — and
+// also covers the reverse (a fresh highlight whose async save hasn't landed).
+export async function readStoredHighlights(): Promise<AnyHighlightData[]> {
+	let stored: AnyHighlightData[] = [];
+	try {
+		const url = normalizeUrl(getPageUrl());
+		const result = await browser.storage.local.get('highlights');
+		const all = (result.highlights || {}) as Record<string, StoredData>;
+		stored = all[url]?.highlights ?? [];
+	} catch (err) {
+		console.warn('[logseq-web-clipper] readStoredHighlights failed:', err);
+	}
+	const byId = new Map<string, AnyHighlightData>();
+	for (const h of stored) byId.set(h.id, h);
+	for (const h of highlights) if (!byId.has(h.id)) byId.set(h.id, h);
+	return [...byId.values()];
+}
+
 // Group highlights that share a groupId (produced by a single multi-block
 // selection) so export/display treats them as one logical highlight. Ungrouped
 // highlights pass through as single-element arrays. Order is preserved.

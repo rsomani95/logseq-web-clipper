@@ -93,7 +93,7 @@ declare global {
 		extractedContent: { [key: string]: string };
 		schemaOrgData: any;
 		fullHtml: string;
-		highlights: string[];
+		highlights: highlighter.AnyHighlightData[];
 		title: string;
 		description: string;
 		domain: string;
@@ -273,7 +273,10 @@ declare global {
 					extractedContent: extractedContent,
 					favicon: defuddled.favicon,
 					fullHtml: cleanedHtml,
-					highlights: highlighter.getHighlights(),
+					// Full objects (incl. notes), read from storage so a just-added
+					// highlight is included even if this content script's in-memory
+					// array is stale (e.g. after a reader-exit page reload).
+					highlights: await highlighter.readStoredHighlights(),
 					image: defuddled.image,
 					language: defuddled.language || '',
 					parseTime: defuddled.parseTime,
