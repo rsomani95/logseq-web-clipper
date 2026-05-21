@@ -16,9 +16,15 @@
 // initializes. Not gated: deep-links like `?section=properties` still resolve
 // the panel, but nothing reaches those by hand once the nav is gone.
 
+// `!important` because some of these inherit `display` at a higher specificity
+// from upstream: `#template-list` is a `<ul>`, so the `.nav-list, #sidebar ul {
+// display: flex }` rule (`#sidebar ul` = 1,0,1) outranks a bare `#template-list`
+// (1,0,0) and un-hides it. A bare `!important` force-hide sidesteps the
+// specificity arms race entirely — these are deliberately suppressed, full stop.
+
 // Properties tab (sidebar nav entry).
 #sidebar li[data-section='properties'] {
-	display: none;
+	display: none !important;
 }
 
 // Templates: the "Templates" heading (today the only `.sidebar-heading`), the
@@ -26,5 +32,5 @@
 #sidebar .sidebar-heading,
 #new-template-btn,
 #template-list {
-	display: none;
+	display: none !important;
 }
