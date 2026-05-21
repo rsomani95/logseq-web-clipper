@@ -414,8 +414,34 @@ function placeCaretEnd(el: HTMLElement): void {
 	if (sel) { sel.removeAllRanges(); sel.addRange(range); }
 }
 
-function readEditableText(el: HTMLElement): string {
-	return el.innerText ?? el.textContent ?? '';
+// Serialize a contenteditable's content to plain text deterministically.
+//
+// `innerText` is unreliable for this: a blank line between two paragraphs leaves
+// Chrome with an empty `<div><br></div>`, and innerText counts *both* the block
+// boundary and the filler <br> against it — so one blank line round-trips as two
+// (the reported "gap expands" bug). We walk the DOM instead: a <br> is one
+// newline, and a block element opens a new line only when content already
+// precedes it (the *next* block contributes its own leading newline, so we never
+// emit a trailing one that would double up).
+const EDITABLE_BLOCK_TAGS = /^(DIV|P|LI|H[1-6]|BLOCKQUOTE|PRE|SECTION|ARTICLE|UL|OL|FIGURE|TABLE|TR)$/;
+export function readEditableText(el: HTMLElement): string {
+	let out = '';
+	const walk = (node: Node): void => {
+		for (const child of Array.from(node.childNodes)) {
+			if (child.nodeType === Node.TEXT_NODE) {
+				out += child.textContent ?? '';
+			} else if (child.nodeName === 'BR') {
+				out += '\n';
+			} else if (child.nodeType === Node.ELEMENT_NODE) {
+				if (EDITABLE_BLOCK_TAGS.test(child.nodeName) && out !== '' && !out.endsWith('\n')) {
+					out += '\n';
+				}
+				walk(child);
+			}
+		}
+	};
+	walk(el);
+	return out;
 }
 
 function startEdit(id: string): void {
