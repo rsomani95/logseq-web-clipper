@@ -11,25 +11,25 @@ import {
 import type { BatchBlock } from './markdown-to-outliner'
 
 describe('highlightToBlock', () => {
-	test('wraps a single-line highlight as a blockquote', () => {
-		expect(highlightToBlock({ text: 'hello world' })).toEqual({ content: '> hello world' })
+	test('emits a single-line highlight as a plain block (no blockquote prefix)', () => {
+		expect(highlightToBlock({ text: 'hello world' })).toEqual({ content: 'hello world' })
 	})
 
-	test('prefixes every line and blanks with the quote marker', () => {
+	test('emits multi-line text verbatim', () => {
 		expect(highlightToBlock({ text: 'line one\n\nline two' })).toEqual({
-			content: '> line one\n>\n> line two',
+			content: 'line one\n\nline two',
 		})
 	})
 
 	test('attaches a note as an indented child block', () => {
 		expect(highlightToBlock({ text: 'quote', note: 'my thought' })).toEqual({
-			content: '> quote',
+			content: 'quote',
 			children: [{ content: 'my thought' }],
 		})
 	})
 
 	test('ignores a blank/whitespace-only note', () => {
-		expect(highlightToBlock({ text: 'quote', note: '   ' })).toEqual({ content: '> quote' })
+		expect(highlightToBlock({ text: 'quote', note: '   ' })).toEqual({ content: 'quote' })
 	})
 })
 
@@ -48,8 +48,8 @@ describe('buildClipBlocks', () => {
 			{
 				content: 'Highlights',
 				children: [
-					{ content: '> first' },
-					{ content: '> second', children: [{ content: 'note 2' }] },
+					{ content: 'first' },
+					{ content: 'second', children: [{ content: 'note 2' }] },
 				],
 			},
 		])
@@ -97,18 +97,20 @@ describe('mergeHighlightsIntoExistingPage', () => {
 	test('appends only new highlights under an existing Highlights block', async () => {
 		const tree: LogseqBlockEntity[] = [
 			{ uuid: 'pc', title: 'Page Content', children: [{ uuid: 'b1', title: 'Body.' }] },
+			// 'h1' is a legacy `> `-prefixed highlight (clipped before we dropped
+			// the blockquote prefix) — it must still dedupe against clean incoming.
 			{ uuid: 'hl', title: 'Highlights', children: [{ uuid: 'h1', title: '> already here' }] },
 		]
 		const { api, inserts } = stubApi(tree)
 		const incoming: ClipHighlight[] = [
-			{ text: 'already here' }, // dup of existing (quote-insensitive)
+			{ text: 'already here' }, // dup of the legacy entry (quote-insensitive)
 			{ text: 'brand new', note: 'thought' },
 		]
 		expect(await mergeHighlightsIntoExistingPage(api, 'page-uuid', incoming)).toBe(1)
 		expect(inserts).toHaveLength(1)
 		expect(inserts[0].parent).toBe('hl')
 		expect(inserts[0].blocks).toEqual([
-			{ content: '> brand new', children: [{ content: 'thought' }] },
+			{ content: 'brand new', children: [{ content: 'thought' }] },
 		])
 	})
 
@@ -121,7 +123,7 @@ describe('mergeHighlightsIntoExistingPage', () => {
 		expect(inserts).toHaveLength(1)
 		expect(inserts[0].parent).toBe('page-uuid')
 		expect(inserts[0].blocks).toEqual([
-			{ content: 'Highlights', children: [{ content: '> new one' }] },
+			{ content: 'Highlights', children: [{ content: 'new one' }] },
 		])
 	})
 

@@ -83,19 +83,13 @@ function toJournalDate(value: string): string | null {
 const PAGE_CONTENT_HEADING = 'Page Content'
 const HIGHLIGHTS_HEADING = 'Highlights'
 
-/** Prefix each line with `> ` so the block renders as a blockquote in Logseq. */
-function toBlockquote(text: string): string {
-	return text
-		.split(/\r?\n/)
-		.map((line) => (line.trim() === '' ? '>' : `> ${line}`))
-		.join('\n')
-}
-
 /**
- * Canonical form of a highlight's text, for dedupe on re-import: strip a leading
- * blockquote marker from each line and collapse all whitespace. So a highlight
- * already on the page (stored as `> foo`) matches the same incoming highlight
- * (`foo`) regardless of quoting or wrapping differences.
+ * Canonical form of a highlight's text, for dedupe on re-import: strip any
+ * leading blockquote marker from each line and collapse all whitespace.
+ *
+ * We no longer emit `> ` (see `highlightToBlock`), but pages clipped before that
+ * change stored each highlight as `> foo`; stripping the marker here keeps a
+ * re-clip's dedup matching those legacy blocks against the new clean form.
  */
 export function normalizeHighlightText(text: string): string {
 	return text
@@ -106,9 +100,18 @@ export function normalizeHighlightText(text: string): string {
 		.trim()
 }
 
-/** One highlight → a blockquote block, with its note (if any) as a child block. */
+/**
+ * One highlight → a plain block, with its note (if any) as a child block.
+ *
+ * The text is emitted verbatim — deliberately NOT wrapped in a `> ` blockquote.
+ * Logseq DB graphs dropped Markdown blockquote parsing (`> foo` now renders
+ * literally), and a native quote is a block property
+ * (`:logseq.property.node/display-type` = the keyword `:quote`) whose value
+ * can't be set over the JSON HTTP API: the value arrives as a string and fails
+ * Logseq's `keyword?` validation. A clean block is the correct, lossless shape.
+ */
 export function highlightToBlock(h: ClipHighlight): BatchBlock {
-	const block: BatchBlock = { content: toBlockquote(h.text) }
+	const block: BatchBlock = { content: h.text }
 	const note = h.note?.trim()
 	if (note) block.children = [{ content: note }]
 	return block

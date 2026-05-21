@@ -153,7 +153,7 @@ export async function initializePageContent(
 		}
 
 		// Highlights are no longer inlined into the body. The Logseq page creator
-		// emits them as their own "Highlights" section (each a blockquote, with
+		// emits them as their own "Highlights" section (each a plain block, with
 		// notes nested beneath), so the body stays clean. `processHighlights`
 		// (and its helpers below) are kept for upstream parity / clean merges but
 		// intentionally not called here.
