@@ -26,6 +26,10 @@ interface OpenNoteBoxOptions {
 
 const STYLE_ID = 'obsidian-note-box-style';
 const BOX_WIDTH = 300;
+// Auto-grow bounds for the note textarea.
+const MIN_TEXTAREA_HEIGHT = 72; // resting height; matches the CSS min-height
+const MAX_TEXTAREA_ROWS = 15;   // upper bound on natural growth
+const VIEWPORT_MARGIN = 16;     // keep this much gap below the box within the viewport
 
 let activeBox: HTMLElement | null = null;
 let activeCleanup: (() => void) | null = null;
@@ -55,7 +59,8 @@ function injectStyle(doc: Document): void {
 .obsidian-note-box textarea {
 	width: 100%;
 	min-height: 72px;
-	resize: vertical;
+	resize: none;
+	overflow-y: hidden;
 	box-sizing: border-box;
 	padding: 8px;
 	background: #2a2a2a;
@@ -154,12 +159,49 @@ export function openNoteBox(opts: OpenNoteBoxOptions): void {
 	box.style.left = `${clampedLeft + win.scrollX}px`;
 	box.style.top = `${opts.anchorRect.bottom + win.scrollY + 8}px`;
 
+	// Auto-grow: the textarea expands with its content (no manual drag handle),
+	// up to MAX_TEXTAREA_ROWS, and never past the bottom of the viewport so the
+	// Save/Cancel row stays reachable. The viewport bound is recomputed on
+	// scroll/resize, so when the user frees up space the note can keep growing.
+	const autoGrow = () => {
+		const cs = win.getComputedStyle(textarea);
+		const fontSize = parseFloat(cs.fontSize) || 13;
+		let lineHeight = parseFloat(cs.lineHeight);
+		if (!lineHeight || lineHeight < fontSize) lineHeight = fontSize * 1.4;
+		const padV = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+		const borderV = (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
+
+		textarea.style.height = 'auto';
+		const needed = textarea.scrollHeight + borderV;
+		const rowCap = Math.round(MAX_TEXTAREA_ROWS * lineHeight) + padV + borderV;
+		const chrome = box.offsetHeight - textarea.offsetHeight; // padding + gap + actions row
+		const spaceBelow = win.innerHeight - box.getBoundingClientRect().top - chrome - VIEWPORT_MARGIN;
+
+		const cap = Math.max(MIN_TEXTAREA_HEIGHT, Math.min(rowCap, spaceBelow));
+		const height = Math.min(needed, cap);
+		textarea.style.height = `${height}px`;
+		textarea.style.overflowY = needed > height ? 'auto' : 'hidden';
+	};
+
+	let growScheduled = false;
+	const scheduleGrow = () => {
+		if (growScheduled) return;
+		growScheduled = true;
+		win.requestAnimationFrame(() => { growScheduled = false; autoGrow(); });
+	};
+	textarea.addEventListener('input', autoGrow);
+	// Capture phase catches scrolls from nested scroll containers too.
+	doc.addEventListener('scroll', scheduleGrow, { capture: true, passive: true });
+	win.addEventListener('resize', scheduleGrow);
+
 	let submitted = false;
 	const onPointerDown = (e: Event) => {
 		if (!box.contains(e.target as Node)) close();
 	};
 	const close = () => {
 		doc.removeEventListener('pointerdown', onPointerDown, true);
+		doc.removeEventListener('scroll', scheduleGrow, { capture: true });
+		win.removeEventListener('resize', scheduleGrow);
 		box.remove();
 		if (activeBox === box) activeBox = null;
 		activeCleanup = null;
@@ -196,4 +238,5 @@ export function openNoteBox(opts: OpenNoteBoxOptions): void {
 	textarea.focus();
 	const len = textarea.value.length;
 	textarea.setSelectionRange(len, len);
+	autoGrow();
 }

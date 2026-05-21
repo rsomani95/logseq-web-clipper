@@ -29,8 +29,8 @@ How: in `logseq-shared/src/schema.ts`, 12 of the 13 fields are marked `ownedBy: 
 bun install
 
 # Extension (the clipper itself)
-npm run dev:chrome        # webpack watch → dist/chrome (load unpacked in Chrome)
-npm run build:chrome      # production build + zip to builds/
+npm run dev:chrome        # webpack watch → dist/ (load unpacked in Chrome; firefox/safari → dist_firefox/dist_safari)
+npm run build:chrome      # production build → dist/ + zip to builds/
 bunx vitest run           # run all tests
 bunx vitest run path/to.test.ts   # single file
 bunx tsc --noEmit         # typecheck extension
