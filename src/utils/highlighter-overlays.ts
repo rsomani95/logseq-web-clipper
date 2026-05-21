@@ -10,7 +10,10 @@ import {
 	saveHighlights,
 	updateHighlights,
 	updateHighlighterMenu,
+	getHighlightNote,
+	setHighlightNote,
 } from './highlighter';
+import { openNoteBox } from './note-input';
 import { throttle } from './throttle';
 import { getElementByXPath, isDarkColor, setElementHTML } from './dom-utils';
 import { getMessage } from './i18n';
@@ -169,7 +172,11 @@ function findTextHighlightAtPoint(x: number, y: number): string | null {
 // Positioned center-top above the highlight's bounding box.
 
 let highlightDeleteButton: HTMLButtonElement | null = null;
+let highlightNoteButton: HTMLButtonElement | null = null;
 let currentDeleteTargetId: string | null = null;
+// Viewport rect of the highlight the action buttons currently target, so the
+// note box can anchor itself below that highlight.
+let currentActionAnchor: { left: number; top: number; right: number; bottom: number } | null = null;
 let deleteButtonShownViaAlt = false;
 
 function ensureHighlightDeleteButton(): HTMLButtonElement {
@@ -193,42 +200,86 @@ function ensureHighlightDeleteButton(): HTMLButtonElement {
 	return btn;
 }
 
+// "Note" action button, shown beside Remove when a highlight is clicked. Reuses
+// the .obsidian-selection-action pill styling (and its existing click-ignore
+// handling in this file) so no new CSS or boundary-selector wiring is needed.
+function ensureHighlightNoteButton(): HTMLButtonElement {
+	if (highlightNoteButton) return highlightNoteButton;
+	const btn = document.createElement('button');
+	btn.type = 'button';
+	btn.className = 'obsidian-selection-action obsidian-highlight-note';
+	btn.setAttribute('aria-label', 'Note');
+	setElementHTML(btn, `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Note</span>`);
+	btn.style.display = 'none';
+	btn.addEventListener('mousedown', e => e.stopPropagation());
+	btn.addEventListener('click', (e) => {
+		e.stopPropagation();
+		e.preventDefault();
+		const id = currentDeleteTargetId;
+		const anchor = currentActionAnchor;
+		if (!id || !anchor) return;
+		openNoteBox({
+			anchorRect: anchor,
+			initialValue: getHighlightNote(id),
+			onSubmit: (note) => setHighlightNote(id, note),
+		});
+		hideHighlightDeleteButton();
+	});
+	document.body.appendChild(btn);
+	highlightNoteButton = btn;
+	return btn;
+}
+
 function showHighlightDeleteButtonForText(id: string): void {
 	const ranges = textHighlightRanges.get(id);
 	if (!ranges || ranges.length === 0) return;
 	const rects = ranges[0].getClientRects();
 	if (rects.length === 0) return;
 	// Compute bounding box across all line rects for center-top positioning.
-	let left = Infinity, right = -Infinity, top = Infinity;
+	let left = Infinity, right = -Infinity, top = Infinity, bottom = -Infinity;
 	for (let i = 0; i < rects.length; i++) {
 		if (rects[i].left < left) left = rects[i].left;
 		if (rects[i].right > right) right = rects[i].right;
 		if (rects[i].top < top) top = rects[i].top;
+		if (rects[i].bottom > bottom) bottom = rects[i].bottom;
 	}
-	positionDeleteButton(id, (left + right) / 2, top);
+	positionHighlightActions(id, { left, top, right, bottom });
 }
 
 function showHighlightDeleteButtonForOverlay(overlay: HTMLElement): void {
 	const id = overlay.dataset.highlightId;
 	if (!id) return;
-	const rect = overlay.getBoundingClientRect();
-	positionDeleteButton(id, (rect.left + rect.right) / 2, rect.top);
+	const r = overlay.getBoundingClientRect();
+	positionHighlightActions(id, { left: r.left, top: r.top, right: r.right, bottom: r.bottom });
 }
 
-function positionDeleteButton(id: string, centerX: number, top: number): void {
-	const btn = ensureHighlightDeleteButton();
+// Positions the Note + Remove buttons as a centered pair above the highlight,
+// and records the highlight's rect so the note box can anchor beneath it.
+function positionHighlightActions(id: string, box: { left: number; top: number; right: number; bottom: number }): void {
+	const noteBtn = ensureHighlightNoteButton();
+	const delBtn = ensureHighlightDeleteButton();
 	currentDeleteTargetId = id;
-	btn.style.display = 'flex';
-	const btnWidth = btn.offsetWidth || 80;
-	const idealLeft = centerX - btnWidth / 2;
-	const clampedLeft = Math.max(4, Math.min(idealLeft, window.innerWidth - btnWidth - 4));
-	btn.style.left = `${clampedLeft + window.scrollX}px`;
-	btn.style.top = `${top + window.scrollY - 28}px`;
+	currentActionAnchor = box;
+	noteBtn.style.display = 'flex';
+	delBtn.style.display = 'flex';
+	const gap = 6;
+	const noteW = noteBtn.offsetWidth || 64;
+	const delW = delBtn.offsetWidth || 80;
+	const total = noteW + gap + delW;
+	const centerX = (box.left + box.right) / 2;
+	const left = Math.max(4, Math.min(centerX - total / 2, window.innerWidth - total - 4));
+	const top = box.top + window.scrollY - 28;
+	noteBtn.style.left = `${left + window.scrollX}px`;
+	noteBtn.style.top = `${top}px`;
+	delBtn.style.left = `${left + noteW + gap + window.scrollX}px`;
+	delBtn.style.top = `${top}px`;
 }
 
 export function hideHighlightDeleteButton(): void {
 	if (highlightDeleteButton) highlightDeleteButton.style.display = 'none';
+	if (highlightNoteButton) highlightNoteButton.style.display = 'none';
 	currentDeleteTargetId = null;
+	currentActionAnchor = null;
 }
 
 async function deleteHighlightById(id: string): Promise<void> {

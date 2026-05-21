@@ -31,6 +31,7 @@ import { saveFile } from './file-utils';
 import { parseForClip } from './clip-utils';
 import { updateSidebarWidth, addResizeHandle, cleanupResizeHandlers } from './iframe-resize';
 import { setElementHTML, setSVGChildren, serializeChildren } from './dom-utils';
+import { openNoteBox } from './note-input';
 
 // Mobile viewport settings
 const VIEWPORT = 'width=device-width, initial-scale=1, maximum-scale=1';
@@ -2362,31 +2363,70 @@ export class Reader {
 	private static registerSelectionToHighlightButton(doc: Document) {
 		// Idempotent: if Reader.apply runs again without a page reload (e.g.
 		// SPA navigation where we re-enter reader), don't stack a second
-		// button + three more listeners on the same document.
+		// toolbar + listeners on the same document.
 		if (doc.querySelector('.obsidian-selection-action')) return;
-		const btn = doc.createElement('button');
-		btn.type = 'button';
-		btn.className = 'obsidian-selection-action';
-		btn.setAttribute('aria-label', getMessage('highlightSelection'));
-		setElementHTML(btn, `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></svg><span>${getMessage('highlightSelection')}</span>`);
-		btn.style.display = 'none';
-		// Preserve the selection when the pointer goes down on the button —
-		// otherwise the browser clears it before click handlers run.
-		btn.addEventListener('mousedown', e => e.preventDefault());
-		btn.addEventListener('click', (e) => {
+
+		// Two pills sharing the .obsidian-selection-action styling: "Highlight"
+		// creates a highlight; "Note" creates a highlight AND attaches a note in
+		// one step (Kindle-style).
+		const makeButton = (label: string, iconSvg: string): HTMLButtonElement => {
+			const b = doc.createElement('button');
+			b.type = 'button';
+			b.className = 'obsidian-selection-action';
+			b.setAttribute('aria-label', label);
+			setElementHTML(b, `${iconSvg}<span>${label}</span>`);
+			b.style.display = 'none';
+			// Preserve the selection when the pointer goes down — otherwise the
+			// browser clears it before the click handler runs.
+			b.addEventListener('mousedown', e => e.preventDefault());
+			doc.body.appendChild(b);
+			return b;
+		};
+
+		const highlightIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></svg>`;
+		const noteIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
+
+		const highlightBtn = makeButton(getMessage('highlightSelection'), highlightIcon);
+		const noteBtn = makeButton('Note', noteIcon);
+
+		const hide = () => { highlightBtn.style.display = 'none'; noteBtn.style.display = 'none'; };
+
+		highlightBtn.addEventListener('click', (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 			const sel = doc.getSelection();
 			if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
-			// Create the highlight without entering highlighter mode — the
-			// user's intent is a single edit, not a session. handleTextSelection
-			// reads the live selection and clears it on return.
+			// Create the highlight without entering highlighter mode — the user's
+			// intent is a single edit, not a session.
 			hl().handleTextSelection(sel);
 			hide();
 		});
-		doc.body.appendChild(btn);
 
-		const hide = () => { btn.style.display = 'none'; };
+		noteBtn.addEventListener('click', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			const sel = doc.getSelection();
+			if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
+			// Capture the range + a viewport anchor BEFORE the note box steals
+			// focus (which collapses the selection); restore and highlight it on
+			// save, with the note attached.
+			const range = sel.getRangeAt(0).cloneRange();
+			const rects = range.getClientRects();
+			const last = rects.length > 0 ? rects[rects.length - 1] : range.getBoundingClientRect();
+			const anchorRect = { left: last.left, top: last.top, right: last.right, bottom: last.bottom };
+			hide();
+			openNoteBox({
+				doc,
+				anchorRect,
+				onSubmit: (note) => {
+					const s = doc.getSelection();
+					if (!s) return;
+					s.removeAllRanges();
+					s.addRange(range);
+					hl().handleTextSelection(s, note ? [note] : []);
+				},
+			});
+		});
 
 		const update = () => {
 			if (!this.isActive) return hide();
@@ -2399,13 +2439,21 @@ export class Reader {
 			const rects = range.getClientRects();
 			if (rects.length === 0) return hide();
 			const last = rects[rects.length - 1];
-			btn.style.display = 'flex';
-			// Ensure the button stays within the viewport.
-			const btnWidth = btn.offsetWidth || 90;
+			highlightBtn.style.display = 'flex';
+			noteBtn.style.display = 'flex';
+			// Lay the two pills out as a pair ending near the selection, clamped
+			// to the viewport.
+			const gap = 6;
+			const hlW = highlightBtn.offsetWidth || 90;
+			const noteW = noteBtn.offsetWidth || 64;
+			const total = hlW + gap + noteW;
 			const idealLeft = last.right + 2;
-			const clampedLeft = Math.min(idealLeft, window.innerWidth - btnWidth - 4);
-			btn.style.left = `${Math.max(4, clampedLeft) + window.scrollX}px`;
-			btn.style.top = `${last.bottom + window.scrollY - 6}px`;
+			const left = Math.max(4, Math.min(idealLeft, window.innerWidth - total - 4));
+			const top = last.bottom + window.scrollY - 6;
+			highlightBtn.style.left = `${left + window.scrollX}px`;
+			highlightBtn.style.top = `${top}px`;
+			noteBtn.style.left = `${left + hlW + gap + window.scrollX}px`;
+			noteBtn.style.top = `${top}px`;
 		};
 
 		// mouseup / keyup catch the end of a drag-select or shift-arrow select;
@@ -2414,9 +2462,8 @@ export class Reader {
 		doc.addEventListener('keyup', (e) => {
 			if (e.shiftKey || e.key === 'Shift') setTimeout(update, 0);
 		});
-		// selectionchange covers mobile (long-press + handles, no mouseup)
-		// and desktop keyboard selection (Ctrl+A, Shift+arrows). Debounced
-		// to avoid repositioning the button mid-drag on desktop.
+		// selectionchange covers mobile (long-press + handles, no mouseup) and
+		// desktop keyboard selection. Debounced to avoid repositioning mid-drag.
 		let selChangeTimer: ReturnType<typeof setTimeout> | null = null;
 		doc.addEventListener('selectionchange', () => {
 			const sel = doc.getSelection();

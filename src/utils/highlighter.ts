@@ -862,6 +862,36 @@ function addHighlight(highlight: AnyHighlightData, notes?: string[]) {
 	commitHighlightChanges();
 }
 
+// Returns the note text currently on a highlight, joining the group's notes if
+// it's a multi-block highlight. Empty string when there's no note. Used to
+// pre-fill the note box when editing an existing highlight.
+export function getHighlightNote(id: string): string {
+	const target = highlights.find(h => h.id === id);
+	if (!target) return '';
+	const members = target.groupId
+		? highlights.filter(h => h.groupId === target.groupId)
+		: [target];
+	return members.flatMap(h => h.notes ?? []).map(n => n.trim()).filter(Boolean).join('\n\n');
+}
+
+// Sets (or clears, when blank) the single note on a highlight. For a grouped
+// (multi-block) highlight the note is stored on the clicked piece and cleared
+// on the rest, so export's note-merge yields exactly this one note. Mirrors the
+// commit path used by add/delete (history + apply + save).
+export function setHighlightNote(id: string, note: string): void {
+	const target = highlights.find(h => h.id === id);
+	if (!target) return;
+	const trimmed = note.trim();
+	const groupId = target.groupId;
+	const next = highlights.map(h => {
+		const inScope = groupId ? h.groupId === groupId : h.id === id;
+		if (!inScope) return h;
+		return { ...h, notes: h.id === id && trimmed ? [trimmed] : [] };
+	});
+	updateHighlights(next);
+	commitHighlightChanges();
+}
+
 export function sortHighlights() {
 	// Precompute positions once. The previous implementation called
 	// getElementByXPath and getBoundingClientRect inside the comparator, which
