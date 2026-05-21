@@ -709,7 +709,11 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 						return;
 					}
 					const api = createLogseqAPI({ baseUrl, token });
-					const result = await saveToLogseq(api, payload);
+					const result = await saveToLogseq(api, payload, {
+						pageContentBlockName: generalSettings.logseqCaptureSettings.pageContentBlockName,
+						highlightsBlockName: generalSettings.logseqCaptureSettings.highlightsBlockName,
+						useHeadingMarkers: generalSettings.logseqCaptureSettings.useHeadingMarkers,
+					});
 					sendResponse({ success: true, result });
 				} catch (err) {
 					console.error('saveToLogseq failed:', err);

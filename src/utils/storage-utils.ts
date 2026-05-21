@@ -6,6 +6,11 @@ import { copyToClipboard } from 'core/popup';
 export type { Settings, ModelConfig, PropertyType, HistoryEntry, Provider, Rating };
 
 export let generalSettings: Settings = {
+	logseqCaptureSettings: {
+		pageContentBlockName: 'Page Content',
+		highlightsBlockName: 'Highlights',
+		useHeadingMarkers: false
+	},
 	logseqApiBaseUrl: 'http://127.0.0.1:12315',
 	logseqApiToken: '',
 	betaFeatures: false,
@@ -69,6 +74,11 @@ interface StorageData {
 		baseUrl?: string;
 		token?: string;
 	};
+	logseq_capture_settings?: {
+		pageContentBlockName?: string;
+		highlightsBlockName?: string;
+		useHeadingMarkers?: boolean;
+	};
 	highlighter_settings?: {
 		highlighterEnabled?: boolean;
 		alwaysShowHighlights?: boolean;
@@ -119,6 +129,11 @@ export async function loadSettings(): Promise<Settings> {
 	
 	// Load default settings first
 	const defaultSettings: Settings = {
+		logseqCaptureSettings: {
+			pageContentBlockName: 'Page Content',
+			highlightsBlockName: 'Highlights',
+			useHeadingMarkers: false
+		},
 		logseqApiBaseUrl: 'http://127.0.0.1:12315',
 		logseqApiToken: '',
 		showMoreActionsButton: false,
@@ -178,6 +193,11 @@ export async function loadSettings(): Promise<Settings> {
 
 	// Load user settings
 	const loadedSettings: Settings = {
+		logseqCaptureSettings: {
+			pageContentBlockName: data.logseq_capture_settings?.pageContentBlockName ?? defaultSettings.logseqCaptureSettings.pageContentBlockName,
+			highlightsBlockName: data.logseq_capture_settings?.highlightsBlockName ?? defaultSettings.logseqCaptureSettings.highlightsBlockName,
+			useHeadingMarkers: data.logseq_capture_settings?.useHeadingMarkers ?? defaultSettings.logseqCaptureSettings.useHeadingMarkers
+		},
 		logseqApiBaseUrl: data.logseq_settings?.baseUrl ?? defaultSettings.logseqApiBaseUrl,
 		logseqApiToken: data.logseq_settings?.token ?? defaultSettings.logseqApiToken,
 		showMoreActionsButton: data.general_settings?.showMoreActionsButton ?? defaultSettings.showMoreActionsButton,
@@ -255,6 +275,11 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 			defaultPromptContext: generalSettings.defaultPromptContext
 		},
 		property_types: generalSettings.propertyTypes,
+		logseq_capture_settings: {
+			pageContentBlockName: generalSettings.logseqCaptureSettings.pageContentBlockName,
+			highlightsBlockName: generalSettings.logseqCaptureSettings.highlightsBlockName,
+			useHeadingMarkers: generalSettings.logseqCaptureSettings.useHeadingMarkers
+		},
 		reader_settings: {
 			fontSize: generalSettings.readerSettings.fontSize,
 			lineHeight: generalSettings.readerSettings.lineHeight,

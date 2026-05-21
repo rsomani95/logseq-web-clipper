@@ -68,6 +68,19 @@ export interface ReaderSettings {
 	customCss: string;
 }
 
+// Logseq-specific capture config, surfaced in the "Logseq Capture" settings
+// tab. Controls how a clip is shaped in the graph (block names, heading style)
+// — distinct from the API connection settings (logseqApiBaseUrl/Token).
+export interface LogseqCaptureSettings {
+	/** Name of the block the clipped article body nests under. */
+	pageContentBlockName: string;
+	/** Name of the block highlights nest under. */
+	highlightsBlockName: string;
+	/** Keep Markdown `#` markers on heading blocks. Off → heading hierarchy is
+	 * conveyed by indentation alone. */
+	useHeadingMarkers: boolean;
+}
+
 export interface Settings {
 	logseqApiBaseUrl: string;
 	logseqApiToken: string;
@@ -88,6 +101,7 @@ export interface Settings {
 	defaultPromptContext: string;
 	propertyTypes: PropertyType[];
 	readerSettings: ReaderSettings;
+	logseqCaptureSettings: LogseqCaptureSettings;
 	stats: {
 		addToLogseq: number;
 		saveFile: number;

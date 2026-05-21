@@ -80,6 +80,22 @@ function toJournalDate(value: string): string | null {
 	return `${yyyy}-${mm}-${dd}`
 }
 
+/**
+ * Logseq-specific capture config (surfaced in the "Logseq Capture" settings
+ * tab). Optional everywhere with sane defaults, so the pure builders stay
+ * usable standalone in tests; real values flow from
+ * generalSettings.logseqCaptureSettings via the background worker.
+ */
+export interface LogseqCaptureOptions {
+	/** Block the clipped article body nests under. Default "Page Content". */
+	pageContentBlockName?: string
+	/** Block highlights nest under. Default "Highlights". */
+	highlightsBlockName?: string
+	/** Keep Markdown `#` markers on heading blocks. Default true. */
+	useHeadingMarkers?: boolean
+}
+
+// Defaults for the block names above; also the dedupe anchor for re-imports.
 const PAGE_CONTENT_HEADING = 'Page Content'
 const HIGHLIGHTS_HEADING = 'Highlights'
 
@@ -122,12 +138,21 @@ export function highlightToBlock(h: ClipHighlight): BatchBlock {
  * (always present, so re-imports have a stable shape to merge into), plus a
  * "Highlights" section when there are any highlights.
  */
-export function buildClipBlocks(contentMarkdown: string, highlights: ClipHighlight[]): BatchBlock[] {
+export function buildClipBlocks(
+	contentMarkdown: string,
+	highlights: ClipHighlight[],
+	options: LogseqCaptureOptions = {},
+): BatchBlock[] {
+	const pageContentName = options.pageContentBlockName?.trim() || PAGE_CONTENT_HEADING
+	const highlightsName = options.highlightsBlockName?.trim() || HIGHLIGHTS_HEADING
 	const blocks: BatchBlock[] = [
-		{ content: PAGE_CONTENT_HEADING, children: markdownToBatchBlocks(contentMarkdown) },
+		{
+			content: pageContentName,
+			children: markdownToBatchBlocks(contentMarkdown, { useHeadingMarkers: options.useHeadingMarkers }),
+		},
 	]
 	if (highlights.length > 0) {
-		blocks.push({ content: HIGHLIGHTS_HEADING, children: highlights.map(highlightToBlock) })
+		blocks.push({ content: highlightsName, children: highlights.map(highlightToBlock) })
 	}
 	return blocks
 }
@@ -156,6 +181,7 @@ export async function mergeHighlightsIntoExistingPage(
 	api: LogseqAPI,
 	pageUuid: string,
 	highlights: ClipHighlight[],
+	highlightsBlockName: string = HIGHLIGHTS_HEADING,
 ): Promise<number> {
 	if (highlights.length === 0) return 0
 
@@ -167,7 +193,7 @@ export async function mergeHighlightsIntoExistingPage(
 		return 0
 	}
 
-	const highlightsBlock = findChildBlockByText(tree, HIGHLIGHTS_HEADING)
+	const highlightsBlock = findChildBlockByText(tree, highlightsBlockName)
 	const existing = new Set<string>()
 	for (const child of highlightsBlock?.children ?? []) {
 		const t = blockText(child)
@@ -187,7 +213,7 @@ export async function mergeHighlightsIntoExistingPage(
 		if (highlightsBlock?.uuid) {
 			await api.insertBatchBlock(highlightsBlock.uuid, newBlocks)
 		} else {
-			await api.insertBatchBlock(pageUuid, [{ content: HIGHLIGHTS_HEADING, children: newBlocks }])
+			await api.insertBatchBlock(pageUuid, [{ content: highlightsBlockName, children: newBlocks }])
 		}
 	} catch (err) {
 		console.warn('[logseq-web-clipper] re-import: failed to append highlights', err)
@@ -199,6 +225,7 @@ export async function mergeHighlightsIntoExistingPage(
 export async function saveToLogseq(
 	api: LogseqAPI,
 	input: SaveToLogseqInput,
+	options: LogseqCaptureOptions = {},
 ): Promise<SaveToLogseqResult> {
 	const { noteName, content, properties } = input
 
@@ -235,7 +262,7 @@ export async function saveToLogseq(
 				`[logseq-web-clipper] re-import: matched existing page; payload carries ` +
 					`${(input.highlights ?? []).length} highlight(s).`,
 			)
-			const added = await mergeHighlightsIntoExistingPage(api, existing.uuid, input.highlights ?? [])
+			const added = await mergeHighlightsIntoExistingPage(api, existing.uuid, input.highlights ?? [], options.highlightsBlockName)
 			try {
 				await api.openPage(existing.title)
 			} catch (err) {
@@ -327,7 +354,7 @@ export async function saveToLogseq(
 		}
 	}
 
-	const blocks = buildClipBlocks(content, input.highlights ?? [])
+	const blocks = buildClipBlocks(content, input.highlights ?? [], options)
 	if (blocks.length > 0) {
 		await api.insertBatchBlock(page.uuid, blocks)
 	}

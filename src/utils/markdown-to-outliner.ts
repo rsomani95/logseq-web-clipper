@@ -146,7 +146,14 @@ function parseParagraph(lines: string[], start: number): { content: string; next
 	return { content: buf.join('\n').trim(), next: i }
 }
 
-export function markdownToBatchBlocks(md: string): BatchBlock[] {
+export function markdownToBatchBlocks(
+	md: string,
+	options: { useHeadingMarkers?: boolean } = {},
+): BatchBlock[] {
+	// Heading blocks keep their `#` markers by default; the Logseq Capture
+	// setting can turn them off so heading depth reads from indentation alone
+	// (the headingStack nesting below already encodes the hierarchy either way).
+	const useHeadingMarkers = options.useHeadingMarkers ?? true
 	const lines = md.split(/\r?\n/)
 	const root: BatchBlock[] = []
 	// headingStack[level] holds the most recent heading block at that level.
@@ -177,7 +184,10 @@ export function markdownToBatchBlocks(md: string): BatchBlock[] {
 		const headingMatch = HEADING_RE.exec(line)
 		if (headingMatch) {
 			const level = headingMatch[1].length
-			const block: BatchBlock = { content: `${headingMatch[1]} ${headingMatch[2].trim()}` }
+			const headingText = headingMatch[2].trim()
+			const block: BatchBlock = {
+				content: useHeadingMarkers ? `${headingMatch[1]} ${headingText}` : headingText,
+			}
 			let parent: BatchBlock | null = null
 			for (let lv = level - 1; lv >= 1; lv--) {
 				if (headingStack[lv]) {

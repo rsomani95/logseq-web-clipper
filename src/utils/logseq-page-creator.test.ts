@@ -58,6 +58,30 @@ describe('buildClipBlocks', () => {
 	test('omits the Highlights section when there are none', () => {
 		expect(buildClipBlocks('Body.', []).some((b) => b.content === 'Highlights')).toBe(false)
 	})
+
+	test('uses custom block names from options', () => {
+		expect(
+			buildClipBlocks('Body.', [{ text: 'h' }], {
+				pageContentBlockName: 'Article',
+				highlightsBlockName: 'Notes',
+			}),
+		).toEqual([
+			{ content: 'Article', children: [{ content: 'Body.' }] },
+			{ content: 'Notes', children: [{ content: 'h' }] },
+		])
+	})
+
+	test('falls back to defaults when option block names are blank', () => {
+		expect(
+			buildClipBlocks('Body.', [], { pageContentBlockName: '  ', highlightsBlockName: '' }),
+		).toEqual([{ content: 'Page Content', children: [{ content: 'Body.' }] }])
+	})
+
+	test('passes useHeadingMarkers through to the outliner', () => {
+		expect(buildClipBlocks('# Title', [], { useHeadingMarkers: false })).toEqual([
+			{ content: 'Page Content', children: [{ content: 'Title' }] },
+		])
+	})
 })
 
 describe('normalizeHighlightText', () => {

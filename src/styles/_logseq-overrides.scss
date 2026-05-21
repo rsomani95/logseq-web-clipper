@@ -1,0 +1,30 @@
+// Fork-owned (logseq-web-clipper) — not from upstream obsidian-clipper.
+// Isolated in its own partial so `git pull upstream` stays clean.
+//
+// Hides settings surfaces that are vestigial in this Logseq-only fork. Neither
+// changes what lands in Logseq:
+//   - Properties tab: an Obsidian property-type registry (the types.json
+//     import/export). The Logseq write path is driven entirely by
+//     logseq-shared/src/schema.ts, never this registry.
+//   - Templates management UI: the Default template still loads and drives the
+//     popup; only the editor / list / "New template" affordances are hidden.
+//     Tweak value-mappings in createDefaultTemplate (template-manager.ts).
+//
+// We hide rather than delete: the DOM + JS stay intact (settings.ts and
+// updateTemplateList still query these nodes), and each panel initializes
+// lazily only when its section is shown — so a hidden nav entry just never
+// initializes. Not gated: deep-links like `?section=properties` still resolve
+// the panel, but nothing reaches those by hand once the nav is gone.
+
+// Properties tab (sidebar nav entry).
+#sidebar li[data-section='properties'] {
+	display: none;
+}
+
+// Templates: the "Templates" heading (today the only `.sidebar-heading`), the
+// New template button, and the per-template list.
+#sidebar .sidebar-heading,
+#new-template-btn,
+#template-list {
+	display: none;
+}

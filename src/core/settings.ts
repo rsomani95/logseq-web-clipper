@@ -14,6 +14,7 @@ import { initializeGeneralSettings } from '../managers/general-settings';
 import { initializeInterpreterSettings } from '../managers/interpreter-settings';
 import { showSettingsSection, initializeSidebar } from '../managers/settings-section-ui';
 import { initializeReaderSettings } from '../managers/reader-settings';
+import { initializeLogseqCaptureSettings } from '../managers/logseq-capture-settings';
 import { initializeAutoSave } from '../utils/auto-save';
 import { handleTemplateDrag, initializeDragAndDrop } from '../utils/drag-and-drop';
 import { exportTemplate, showTemplateImportModal, copyTemplateToClipboard } from '../utils/import-export';
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 			await initializeGeneralSettings();
 			await initializeReaderSettings();
+			await initializeLogseqCaptureSettings();
 			
 			// Initialize interpreter settings with error handling
 			try {
@@ -206,7 +208,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 	async function handleUrlParameters(): Promise<void> {
 		const { section, templateId } = getUrlParameters();
 
-		if (section === 'general' || section === 'interpreter' || section === 'properties' || section === 'highlighter' || section === 'reader') {
+		// Templates and Properties are hidden in this Logseq fork (their sidebar
+		// entries are removed in _logseq-overrides.scss). A stale URL such as
+		// `?section=templates&template=…` could still deep-link the template
+		// editor open on reload, so redirect those sections to General.
+		if (section === 'templates' || section === 'properties') {
+			showSettingsSection('general');
+			return;
+		}
+
+		if (section === 'general' || section === 'interpreter' || section === 'highlighter' || section === 'reader' || section === 'logseq-capture') {
 			showSettingsSection(section);
 		} else if (templateId) {
 			const template = findTemplateById(templateId);

@@ -7,6 +7,11 @@ import type { Settings } from '../types/types';
 export default {} as any;
 
 export const generalSettings: Settings = {
+	logseqCaptureSettings: {
+		pageContentBlockName: 'Page Content',
+		highlightsBlockName: 'Highlights',
+		useHeadingMarkers: false,
+	},
 	logseqApiBaseUrl: 'http://127.0.0.1:12315',
 	logseqApiToken: '',
 	betaFeatures: false,

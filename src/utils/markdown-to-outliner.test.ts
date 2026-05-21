@@ -53,6 +53,26 @@ describe('markdownToBatchBlocks', () => {
 		])
 	})
 
+	test('keeps heading markers by default', () => {
+		expect(markdownToBatchBlocks('## A\n')).toEqual([{ content: '## A' }])
+	})
+
+	test('strips heading markers when useHeadingMarkers is false; nesting is unchanged', () => {
+		const md = '# Top\n\nintro.\n\n## A\n\na-text.\n'
+		expect(markdownToBatchBlocks(md, { useHeadingMarkers: false })).toEqual([
+			{
+				content: 'Top',
+				children: [
+					{ content: 'intro.' },
+					{
+						content: 'A',
+						children: [{ content: 'a-text.' }],
+					},
+				],
+			},
+		])
+	})
+
 	test('flat unordered list', () => {
 		const md = '- one\n- two\n- three\n'
 		expect(markdownToBatchBlocks(md)).toEqual([

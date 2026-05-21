@@ -21,6 +21,7 @@
 						<li data-section="reader"><div class="nav-item-icon"><i data-lucide="book-open"></i></div><span data-i18n="reader">Reader</span></li>
 						<li data-section="highlighter"><div class="nav-item-icon"><i data-lucide="highlighter"></i></div><span data-i18n="highlighter">Highlighter</span></li>
 						<li data-section="interpreter"><div class="nav-item-icon"><i data-lucide="quote"></i></div><span data-i18n="interpreter">Interpreter</span></li>
+						<li data-section="logseq-capture"><div class="nav-item-icon"><i data-lucide="list-tree"></i></div><span>Logseq Capture</span></li>
 						<li data-section="properties"><div class="nav-item-icon"><i data-lucide="archive"></i></div><span data-i18n="properties">Properties</span></li>
 						<li class="sidebar-heading" data-i18n="templatesHeading">Templates</li>
 					</ul>
@@ -554,6 +555,49 @@
 									<textarea id="default-prompt-context" rows="4" placeholder="{{fullHtml}}" spellcheck="false"></textarea>
 								</div>
 								
+								</div>
+							</div>
+						</form>
+					</div>
+
+					<div id="logseq-capture-section" class="settings-section">
+						<div class="settings-section-header">
+							<h2>Logseq Capture</h2>
+						</div>
+						<form id="logseq-capture-settings-form">
+							<div class="setting-group">
+								<div class="setting-items">
+									<div class="setting-item mod-horizontal">
+										<div class="setting-item-info">
+											<label for="logseq-capture-page-block">Page content block</label>
+											<div class="setting-item-description">Block your clipped article nests under. Default <strong>Page Content</strong>.</div>
+										</div>
+										<div class="setting-item-control">
+											<input type="text" id="logseq-capture-page-block" placeholder="Page Content" autocomplete="off" spellcheck="false" />
+										</div>
+									</div>
+
+									<div class="setting-item mod-horizontal">
+										<div class="setting-item-info">
+											<label for="logseq-capture-highlights-block">Highlights block</label>
+											<div class="setting-item-description">Block your highlights nest under. Default <strong>Highlights</strong>.</div>
+										</div>
+										<div class="setting-item-control">
+											<input type="text" id="logseq-capture-highlights-block" placeholder="Highlights" autocomplete="off" spellcheck="false" />
+										</div>
+									</div>
+
+									<div class="setting-item mod-horizontal mod-toggle">
+										<div class="setting-item-info">
+											<label for="logseq-capture-heading-markers">Markdown heading markers</label>
+											<div class="setting-item-description">Keep <strong>#</strong> on headings. Off: heading levels show through indentation only.</div>
+										</div>
+										<div class="setting-item-control">
+											<div class="checkbox-container">
+												<input type="checkbox" id="logseq-capture-heading-markers" />
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</form>
