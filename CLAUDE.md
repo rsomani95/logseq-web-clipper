@@ -29,7 +29,7 @@ How: in `logseq-shared/src/schema.ts`, 12 of the 13 fields are marked `ownedBy: 
 bun install
 
 # Extension (the clipper itself)
-npm run dev:chrome        # webpack watch → dist/ (load unpacked in Chrome; firefox/safari → dist_firefox/dist_safari)
+npm run dev:chrome        # webpack watch → dev/ (load unpacked from dev/ in Chrome; firefox/safari → dev_firefox/dev_safari)
 npm run build:chrome      # production build → dist/ + zip to builds/
 bunx vitest run           # run all tests
 bunx vitest run path/to.test.ts   # single file
@@ -40,6 +40,8 @@ cd logseq-plugin && bun run dev          # vite watch
 cd logseq-plugin && bun run build        # production build → dist/
 cd logseq-plugin && bunx tsc --noEmit    # typecheck plugin
 ```
+
+**Build-output gotcha:** dev and prod write to *different* folders. `dev:chrome` (development) → **`dev/`**; `build:chrome` (production) → **`dist/`** (`dev_firefox`/`dev_safari` and `dist_firefox`/`dist_safari` for the other browsers). While developing, **load the `dev/` folder unpacked** — `dist/` only changes when you run a production build, so pointing Chrome at `dist/` while running the watch silently runs a stale build.
 
 **`tsc` gotcha:** there is no monorepo-wide tsconfig. Run typecheck from the package dir you care about (`bunx tsc --noEmit` at root checks the extension; `cd logseq-plugin && bunx tsc --noEmit` checks the plugin). Running `tsc` from `~/` silently does nothing.
 
