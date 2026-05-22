@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="solarized-light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reader notes — prototype</title>
+<style>
+	/* ---- Theme tokens (mirrors src/styles/_reader-themes.scss) ---------------- */
+	:root {
+		--background-primary: #fff;
+		--background-primary-alt: #fcfcfc;
+		--text-normal: #111;
+		--text-muted: #5c5c5c;
+		--text-faint: #ababab;
+		--background-modifier-border: #e0e0e0;
+		--color-yellow: #e0ac00;
+		--font-text: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+		--font-ui: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+	}
+	html[data-theme="solarized-light"] {
+		--background-primary: #fdf6e3;
+		--background-primary-alt: #eee8d5;
+		--text-normal: #073642;
+		--text-muted: #586e75;
+		--text-faint: #93a1a1;
+		--background-modifier-border: #e9e1c8;
+		--color-yellow: #b58900;
+	}
+	html[data-theme="solarized-dark"] {
+		--background-primary: #002b36;
+		--background-primary-alt: #073642;
+		--text-normal: #839496;
+		--text-muted: #93a1a1;
+		--text-faint: #586e75;
+		--background-modifier-border: #19414b;
+		--color-yellow: #b58900;
+	}
+
+	/* Derived annotation tokens — everything below reads from the theme above. */
+	:root {
+		--hl-underline: color-mix(in srgb, var(--color-yellow) 65%, transparent);
+		--hl-underline-strong: var(--color-yellow);
+		--connector: color-mix(in srgb, var(--text-muted) 55%, transparent);
+	}
+
+	* { box-sizing: border-box; }
+	html, body { margin: 0; }
+	body {
+		background: var(--background-primary);
+		color: var(--text-normal);
+		font-family: var(--font-text);
+		font-size: 19px;
+		line-height: 1.62;
+		-webkit-font-smoothing: antialiased;
+		transition: background .2s ease, color .2s ease;
+	}
+
+	.page {
+		position: relative;
+		width: min(1040px, calc(100vw - 48px));
+		margin: 72px auto 200px;
+	}
+	article { max-width: 39em; }
+	article h1 {
+		font-size: 1.9em; line-height: 1.2; font-weight: 700;
+		margin: 0 0 .8em; text-wrap: balance;
+	}
+	article p { margin: 0 0 1.1em; }
+
+	/* ---- Highlight: a thin underline, identical for noted & plain ------------- */
+	.hl {
+		text-decoration: underline;
+		text-decoration-color: var(--hl-underline);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 4px;
+		text-decoration-skip-ink: none;
+		cursor: pointer;
+		transition: text-decoration-color .14s ease, background .14s ease;
+		border-radius: 2px;
+	}
+	.hl:hover,
+	.hl.is-linked { text-decoration-color: var(--hl-underline-strong); }
+	body.emphasis .hl.is-linked { background: color-mix(in srgb, var(--color-yellow) 12%, transparent); }
+
+	/* ---- Margin note cards ---------------------------------------------------- */
+	.margin {
+		position: absolute;
+		top: 0; right: 0;
+		width: 280px; height: 100%;
+	}
+	.card {
+		position: absolute;
+		left: 0; width: 100%;
+		padding: 2px 0 2px 14px;
+		border-left: 2px solid var(--background-modifier-border);
+		color: var(--text-muted);
+		font-family: var(--font-ui);
+		font-size: 13.5px;
+		line-height: 1.5;
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+		cursor: pointer;
+		transition: top .18s ease, color .14s ease, border-color .14s ease, background .14s ease;
+		border-radius: 0 6px 6px 0;
+	}
+	.card:hover,
+	.card.is-linked { color: var(--text-normal); border-left-color: var(--hl-underline-strong); }
+	body.emphasis .card.is-linked { background: color-mix(in srgb, var(--text-muted) 7%, transparent); }
+
+	/* Seamless in-place editing: the card text itself becomes editable.
+	   No box, no mode switch — just a caret and a whisper of background. */
+	.card.editing {
+		background: color-mix(in srgb, var(--text-muted) 6%, transparent);
+		color: var(--text-normal);
+		outline: none;
+		cursor: text;
+	}
+	.card[contenteditable="true"]:empty::before {
+		content: 'Add a note…';
+		color: var(--text-faint);
+	}
+
+	/* ---- Connector ------------------------------------------------------------ */
+	svg.connectors {
+		position: absolute; inset: 0;
+		width: 100%; height: 100%;
+		overflow: visible; pointer-events: none;
+		z-index: 10;
+	}
+	svg.connectors path {
+		fill: none;
+		stroke: var(--connector);
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-dasharray: 0.1 7;       /* round dots, ~7px apart */
+		opacity: 0;
+		transition: opacity .15s ease;
+	}
+	svg.connectors path.show { opacity: .4; }          /* persistent (Always mode) */
+	svg.connectors path.show-strong { opacity: 1; }    /* hovered / editing */
+
+	/* ---- Controls ------------------------------------------------------------- */
+	.controls {
+		position: fixed; top: 16px; right: 16px; z-index: 100;
+		display: flex; flex-direction: column; gap: 9px;
+		width: 236px; padding: 14px;
+		background: var(--background-primary-alt);
+		border: 1px solid var(--background-modifier-border);
+		border-radius: 12px;
+		font-family: var(--font-ui); font-size: 12.5px;
+		color: var(--text-muted);
+		box-shadow: 0 4px 18px rgba(0,0,0,.12);
+	}
+	.controls h2 {
+		margin: 0 0 2px; font-size: 12px; font-weight: 600;
+		letter-spacing: .04em; text-transform: uppercase; color: var(--text-faint);
+	}
+	.controls label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+	.controls select {
+		font-family: inherit; font-size: 12.5px;
+		padding: 3px 6px; border-radius: 6px;
+		border: 1px solid var(--background-modifier-border);
+		background: var(--background-primary); color: var(--text-normal);
+	}
+	.controls .row-check { justify-content: flex-start; gap: 7px; cursor: pointer; }
+	.controls .hint {
+		margin: 2px 0 0; padding-top: 9px;
+		border-top: 1px solid var(--background-modifier-border);
+		font-size: 11.5px; line-height: 1.45; color: var(--text-faint);
+	}
+</style>
+</head>
+<body class="emphasis">
+
+<div class="controls">
+	<h2>Prototype controls</h2>
+	<label>Theme
+		<select id="theme">
+			<option value="solarized-light">Solarized light</option>
+			<option value="solarized-dark">Solarized dark</option>
+			<option value="default">Default light</option>
+		</select>
+	</label>
+	<label>Connector
+		<select id="connmode">
+			<option value="hover">Hover only</option>
+			<option value="always">Always</option>
+			<option value="off">Off</option>
+		</select>
+	</label>
+	<label class="row-check"><input type="checkbox" id="emphasis" checked> Hover emphasis</label>
+	<p class="hint">Click a highlight or a note to edit — the text becomes editable <em>right in the margin</em>, and notes below reflow as it grows. Click away to save, Esc to cancel.</p>
+</div>
+
+<div class="page">
+	<svg class="connectors"></svg>
+	<article>
+		<h1>The shape of attention</h1>
+		<p>We talk about attention as if it were a spotlight — a single beam we point at one thing and then another. <span class="hl" data-hl="h1">But attention is less like a spotlight than like a posture: a way of holding the whole body of the mind toward the world.</span> The metaphor we choose quietly decides what we think is possible to fix.</p>
+		<p>There is a popular idea that attention is a renewable resource, depleted by use and restored by rest. It is a comforting picture, and partly true. <span class="hl" data-hl="h2">Yet the deepest kinds of attention seem to deepen the more they are used, not less — the practiced reader does not tire of reading the way the novice does.</span> The economy of a skill is not the economy of a battery.</p>
+		<p><span class="hl" data-hl="h3">What we call focus is often just the absence of competing invitations.</span> Remove the notifications, the open tabs, the half-formed intentions, and concentration arrives almost on its own. We have been treating a problem of subtraction as a problem of will.</p>
+		<p>The history of reading is partly a history of furniture and light: the lectern, the carrel, the reading lamp. <span class="hl" data-hl="h4">Every era invents the architecture its attention requires</span>, and ours is only beginning to build for the screen.</p>
+		<p>So the question is not how to force the mind to attend, but how to arrange a world worth attending to. <span class="hl" data-hl="h5">A page, after all, is a kind of room.</span> The work is to make the room quiet enough that thinking can happen in it.</p>
+	</article>
+	<div class="margin" id="margin"></div>
+</div>
+
+<script>
+	const notes = {
+		h1: "Core claim — pull this to the top of the page.",
+		h2: "This sits against the earlier 'attention is renewable' line. Follow up: is the real split depth vs. duration, not use vs. rest?",
+		h3: "Nice phrasing — possible section title. Echoes Deutsch on knowledge as 'reach'.",
+		h4: "Find the original source for this.",
+		// h5 intentionally has NO note → a plain highlight, no margin card.
+	};
+	const ALL_IDS = ['h1', 'h2', 'h3', 'h4', 'h5'];
+	const GAP = 12;
+
+	const page = document.querySelector('.page');
+	const article = document.querySelector('article');
+	const margin = document.getElementById('margin');
+	const svg = document.querySelector('svg.connectors');
+	const connModeSel = document.getElementById('connmode');
+
+	const cards = new Map();
+	const connPaths = new Map();
+	let editingId = null;
+	let originalText = '';
+	let activeId = null;
+
+	function relRect(el) {
+		const p = page.getBoundingClientRect();
+		const r = el.getBoundingClientRect();
+		return { left: r.left - p.left, top: r.top - p.top, right: r.right - p.left, bottom: r.bottom - p.top, width: r.width, height: r.height };
+	}
+	const spanFor = (id) => article.querySelector(`[data-hl="${id}"]`);
+
+	// rounded-polyline: straight runs, soft turns
+	function roundedPath(pts, r) {
+		if (pts.length < 2) return '';
+		const len = (a, b) => Math.hypot(b.x - a.x, b.y - a.y);
+		let d = `M ${pts[0].x} ${pts[0].y}`;
+		for (let i = 1; i < pts.length - 1; i++) {
+			const p0 = pts[i - 1], p1 = pts[i], p2 = pts[i + 1];
+			const l1 = len(p0, p1) || 1, l2 = len(p1, p2) || 1;
+			const r1 = Math.min(r, l1 / 2), r2 = Math.min(r, l2 / 2);
+			const c1 = { x: p1.x + (p0.x - p1.x) / l1 * r1, y: p1.y + (p0.y - p1.y) / l1 * r1 };
+			const c2 = { x: p1.x + (p2.x - p1.x) / l2 * r2, y: p1.y + (p2.y - p1.y) / l2 * r2 };
+			d += ` L ${c1.x} ${c1.y} Q ${p1.x} ${p1.y} ${c2.x} ${c2.y}`;
+		}
+		const last = pts[pts.length - 1];
+		return d + ` L ${last.x} ${last.y}`;
+	}
+
+	function pathD(id, card) {
+		const sr = relRect(spanFor(id));
+		const ar = relRect(article);
+		const tr = relRect(card);
+		const startX = ar.right;                       // exit at the column edge, never cross body text
+		const startY = (sr.top + sr.bottom) / 2;
+		const endX = tr.left;
+		const endY = tr.top + Math.min(16, tr.height / 2);
+		const gutterX = startX + (endX - startX) * 0.5;
+		return roundedPath([
+			{ x: startX, y: startY },
+			{ x: gutterX, y: startY },
+			{ x: gutterX, y: endY },
+			{ x: endX, y: endY },
+		], 10);
+	}
+
+	function ensurePath(id) {
+		let p = connPaths.get(id);
+		if (!p) {
+			p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			svg.appendChild(p);
+			connPaths.set(id, p);
+		}
+		return p;
+	}
+
+	function redrawConnectors() {
+		const mode = connModeSel.value;
+		for (const [id, p] of [...connPaths]) {
+			if (!(id in notes)) { p.remove(); connPaths.delete(id); }
+		}
+		for (const id of Object.keys(notes)) {
+			const card = cards.get(id);
+			if (!card) continue;
+			const p = ensurePath(id);
+			p.setAttribute('d', pathD(id, card));
+			p.classList.remove('show', 'show-strong');
+			if (mode === 'off') continue;
+			if (id === activeId) p.classList.add('show-strong');
+			else if (mode === 'always') p.classList.add('show');
+		}
+	}
+
+	function setActive(id) {
+		activeId = id;
+		for (const [hid, card] of cards) {
+			const on = hid === id;
+			spanFor(hid)?.classList.toggle('is-linked', on);
+			card.classList.toggle('is-linked', on);
+		}
+		redrawConnectors();
+	}
+
+	// collision-stacked margin layout (like layoutMargin); editing card participates
+	function layoutCards() {
+		const entries = Object.keys(notes)
+			.filter(id => cards.has(id))
+			.map(id => ({ id, card: cards.get(id), top: relRect(spanFor(id)).top }))
+			.sort((a, b) => a.top - b.top);
+		let cursor = -Infinity;
+		for (const e of entries) {
+			const top = Math.max(e.top, cursor + GAP);
+			e.card.style.top = `${top}px`;
+			cursor = top + e.card.offsetHeight;
+		}
+	}
+
+	function buildCard(id) {
+		const card = document.createElement('div');
+		card.className = 'card';
+		card.textContent = notes[id];
+		card.addEventListener('click', () => { if (editingId !== id) startEdit(id); });
+		card.addEventListener('mouseenter', () => { if (!editingId) setActive(id); });
+		card.addEventListener('mouseleave', () => { if (!editingId) setActive(null); });
+		card.addEventListener('input', () => { if (editingId === id) { layoutCards(); redrawConnectors(); } });
+		card.addEventListener('keydown', (e) => {
+			if (editingId !== id) return;
+			if (e.key === 'Escape') { e.preventDefault(); card.innerText = originalText; card.blur(); }
+		});
+		card.addEventListener('blur', () => { if (editingId === id) commitEdit(); });
+		margin.appendChild(card);
+		cards.set(id, card);
+	}
+
+	function render() {
+		for (const [id, el] of [...cards]) {
+			if (!(id in notes)) { el.remove(); cards.delete(id); }
+		}
+		for (const id of Object.keys(notes)) {
+			if (!cards.has(id)) buildCard(id);
+			else if (editingId !== id) cards.get(id).textContent = notes[id];
+		}
+		layoutCards();
+		redrawConnectors();
+	}
+
+	function placeCaretEnd(el) {
+		const range = document.createRange();
+		range.selectNodeContents(el);
+		range.collapse(false);
+		const sel = window.getSelection();
+		sel.removeAllRanges();
+		sel.addRange(range);
+	}
+
+	function startEdit(id) {
+		if (editingId && editingId !== id) commitEdit();
+		if (!(id in notes)) notes[id] = '';
+		render();
+		const card = cards.get(id);
+		editingId = id;
+		originalText = notes[id];
+		card.classList.add('editing');
+		card.setAttribute('contenteditable', 'true');
+		card.spellcheck = false;
+		card.textContent = notes[id];
+		setActive(id);
+		card.focus();
+		placeCaretEnd(card);
+	}
+
+	function commitEdit() {
+		const id = editingId;
+		if (!id) return;
+		const card = cards.get(id);
+		const text = (card ? card.innerText : '').trim();
+		editingId = null;
+		if (card) { card.removeAttribute('contenteditable'); card.classList.remove('editing'); }
+		if (text) notes[id] = text; else delete notes[id];
+		render();
+		setActive(null);
+	}
+
+	// highlights
+	for (const id of ALL_IDS) {
+		const span = spanFor(id);
+		if (!span) continue;
+		span.addEventListener('mouseenter', () => { if (!editingId && id in notes) setActive(id); });
+		span.addEventListener('mouseleave', () => { if (!editingId) setActive(null); });
+		span.addEventListener('click', () => startEdit(id));
+	}
+
+	// controls
+	document.getElementById('theme').addEventListener('change', (e) => {
+		document.documentElement.dataset.theme = e.target.value;
+		requestAnimationFrame(() => { layoutCards(); redrawConnectors(); });
+	});
+	connModeSel.addEventListener('change', redrawConnectors);
+	document.getElementById('emphasis').addEventListener('change', (e) => {
+		document.body.classList.toggle('emphasis', e.target.checked);
+	});
+	window.addEventListener('resize', () => { layoutCards(); redrawConnectors(); });
+
+	render();
+	window.addEventListener('load', () => requestAnimationFrame(() => { layoutCards(); redrawConnectors(); }));
+</script>
+</body>
+</html>
