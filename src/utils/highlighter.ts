@@ -296,9 +296,10 @@ export function undo() {
 		const lastAction = highlightHistory.pop();
 		if (lastAction) {
 			redoHistory.push(lastAction);
+			const before = highlights;
 			highlights = [...lastAction.oldHighlights];
 			bumpHighlightsVersion();
-			commitHighlightChanges();
+			commitHighlightChanges(before);
 			updateUndoRedoButtons();
 		}
 	}
@@ -309,9 +310,10 @@ export function redo() {
 		const nextAction = redoHistory.pop();
 		if (nextAction) {
 			highlightHistory.push(nextAction);
+			const before = highlights;
 			highlights = [...nextAction.newHighlights];
 			bumpHighlightsVersion();
-			commitHighlightChanges();
+			commitHighlightChanges(before);
 			updateUndoRedoButtons();
 		}
 	}
@@ -600,7 +602,7 @@ export function handleTextSelection(selection: Selection, notes?: string[]): str
 		addToHistory('add', oldGlobalHighlights, highlights);
 		
 		sortHighlights();
-		commitHighlightChanges();
+		commitHighlightChanges(oldGlobalHighlights);
 		markHighlightJustCreated();
 		// First piece is the group's representative — the id notes attach to
 		// (set/getHighlightNote merge by group). Returned so a caller can target a
@@ -886,7 +888,7 @@ function addHighlight(highlight: AnyHighlightData, notes?: string[]) {
 	bumpHighlightsVersion();
 	addToHistory('add', oldHighlights, mergedHighlights);
 	sortHighlights();
-	commitHighlightChanges();
+	commitHighlightChanges(oldHighlights);
 }
 
 // Returns the note text currently on a highlight, joining the group's notes if
@@ -908,6 +910,7 @@ export function getHighlightNote(id: string): string {
 export function setHighlightNote(id: string, note: string): void {
 	const target = highlights.find(h => h.id === id);
 	if (!target) return;
+	const before = highlights;
 	const trimmed = note.trim();
 	const groupId = target.groupId;
 	const next = highlights.map(h => {
@@ -916,15 +919,23 @@ export function setHighlightNote(id: string, note: string): void {
 		return { ...h, notes: h.id === id && trimmed ? [trimmed] : [] };
 	});
 	updateHighlights(next);
-	commitHighlightChanges();
+	commitHighlightChanges(before);
 }
 
 export function sortHighlights() {
-	// Precompute positions once. The previous implementation called
-	// getElementByXPath and getBoundingClientRect inside the comparator, which
-	// forced synchronous layout O(n log n) times per sort.
+	highlights = sortHighlightsByPosition(highlights);
+}
+
+// Pure document-order sort, used both for the in-memory render set and when
+// adopting a stored set from another tab. Returns a new array. Unresolved
+// xpaths (e.g. a highlight made in the other view) sort as equal and keep their
+// relative order.
+function sortHighlightsByPosition(arr: AnyHighlightData[]): AnyHighlightData[] {
+	// Precompute positions once. Calling getElementByXPath and
+	// getBoundingClientRect inside the comparator forces synchronous layout
+	// O(n log n) times per sort.
 	const positions = new Map<AnyHighlightData, { top: number; left: number; resolved: boolean }>();
-	for (const h of highlights) {
+	for (const h of arr) {
 		const el = getElementByXPath(h.xpath);
 		if (el) {
 			const rect = el.getBoundingClientRect();
@@ -933,7 +944,7 @@ export function sortHighlights() {
 			positions.set(h, { top: 0, left: 0, resolved: false });
 		}
 	}
-	highlights.sort((a, b) => {
+	return [...arr].sort((a, b) => {
 		const pa = positions.get(a)!;
 		const pb = positions.get(b)!;
 		if (!pa.resolved || !pb.resolved) return 0;
@@ -1040,37 +1051,95 @@ function mergeHighlights(h1: AnyHighlightData, h2: AnyHighlightData): AnyHighlig
 	return h1;
 }
 
+// Remember a site's display name from its og:site_name meta, keyed by hostname,
+// so highlights.html / the popup can label it. Best-effort, fire-and-forget.
+function captureOgSiteName(rawUrl: string): void {
+	const ogSiteName = document.querySelector('meta[property="og:site_name"]')?.getAttribute('content');
+	if (!ogSiteName) return;
+	const hostname = new URL(rawUrl).hostname.replace(/^www\./, '');
+	browser.storage.local.get('domains').then((result: { domains?: Record<string, DomainSettings> }) => {
+		const domains = result.domains || {};
+		if (!domains[hostname]?.site) {
+			if (!domains[hostname]) domains[hostname] = {};
+			domains[hostname].site = ogSiteName;
+			browser.storage.local.set({ domains });
+		}
+	});
+}
+
+// Wholesale write of this page's in-memory set to storage. Only safe when the
+// caller's in-memory set is known-fresh (the one-time migration on load); every
+// user mutation persists via persistHighlights instead, which writes a delta and
+// can't clobber another tab's edits.
 export function saveHighlights() {
 	const rawUrl = getPageUrl();
 	const url = normalizeUrl(rawUrl);
-	if (highlights.length > 0) {
-		const title = pageTitle || document.title || undefined;
-		const data: StoredData = { highlights, url, title };
-		browser.storage.local.get('highlights').then((result: { highlights?: HighlightsStorage }) => {
-			const allHighlights: HighlightsStorage = result.highlights || {};
-			allHighlights[url] = data;
-			browser.storage.local.set({ highlights: allHighlights });
-		});
-		const ogSiteName = document.querySelector('meta[property="og:site_name"]')?.getAttribute('content');
-		if (ogSiteName) {
-			const hostname = new URL(rawUrl).hostname.replace(/^www\./, '');
-			browser.storage.local.get('domains').then((result: { domains?: Record<string, DomainSettings> }) => {
-				const domains = result.domains || {};
-				if (!domains[hostname]?.site) {
-					if (!domains[hostname]) domains[hostname] = {};
-					domains[hostname].site = ogSiteName;
-					browser.storage.local.set({ domains });
-				}
-			});
-		}
-	} else {
-		browser.storage.local.get('highlights').then((result: { highlights?: HighlightsStorage }) => {
-			const allHighlights: HighlightsStorage = result.highlights || {};
+	browser.storage.local.get('highlights').then((result: { highlights?: HighlightsStorage }) => {
+		const allHighlights: HighlightsStorage = result.highlights || {};
+		if (highlights.length > 0) {
+			allHighlights[url] = { highlights, url, title: pageTitle || document.title || undefined };
+		} else {
 			delete allHighlights[url];
 			if (rawUrl !== url) delete allHighlights[rawUrl];
-			browser.storage.local.set({ highlights: allHighlights });
-		});
-	}
+		}
+		browser.storage.local.set({ highlights: allHighlights });
+	});
+	if (highlights.length > 0) captureOgSiteName(rawUrl);
+}
+
+// Serializes this tab's writes so two quick mutations can't interleave their
+// read-modify-write and drop one another.
+let highlightWriteChain: Promise<void> = Promise.resolve();
+
+// Persist a mutation as a DELTA against the freshest stored state. `before`/
+// `after` are this tab's in-memory set around the change; we derive what the
+// user actually removed and what they added/changed, then apply only that to
+// whatever storage currently holds. A background tab with a stale copy therefore
+// can't resurrect a highlight deleted elsewhere (the bug where deleted
+// highlights reappeared on import): its untouched items aren't re-written, and a
+// deletion removes the id from the live stored set rather than overwriting it.
+export function persistHighlights(before: AnyHighlightData[], after: AnyHighlightData[]): Promise<void> {
+	const rawUrl = getPageUrl();
+	const url = normalizeUrl(rawUrl);
+	const afterById = new Map(after.map(h => [h.id, h] as const));
+	const removedIds = new Set(before.filter(h => !afterById.has(h.id)).map(h => h.id));
+	const beforeJsonById = new Map(before.map(h => [h.id, JSON.stringify(h)] as const));
+	const upserts = after.filter(h => beforeJsonById.get(h.id) !== JSON.stringify(h));
+	const title = pageTitle || document.title || undefined;
+
+	highlightWriteChain = highlightWriteChain.then(async () => {
+		const result = await browser.storage.local.get('highlights');
+		const all = (result.highlights || {}) as HighlightsStorage;
+		const stored = all[url]?.highlights ?? [];
+		const byId = new Map<string, AnyHighlightData>();
+		for (const h of stored) if (!removedIds.has(h.id)) byId.set(h.id, h);
+		for (const h of upserts) byId.set(h.id, h);
+		const merged = [...byId.values()];
+		if (merged.length > 0) {
+			all[url] = { highlights: merged, url, title };
+		} else {
+			delete all[url];
+			if (rawUrl !== url) delete all[rawUrl];
+		}
+		await browser.storage.local.set({ highlights: all });
+	}).catch(err => console.warn('[logseq-web-clipper] persistHighlights failed:', err));
+
+	if (after.length > 0) captureOgSiteName(rawUrl);
+	return highlightWriteChain;
+}
+
+// Adopt a set of highlights coming FROM storage (cross-tab change event or a
+// visibility re-sync) as the in-memory render set, repainting only when it
+// actually differs. The single funnel for "storage changed → update what's
+// painted", so the screen always reflects storage.
+function adoptStoredHighlights(next: AnyHighlightData[]): void {
+	const sorted = sortHighlightsByPosition(next);
+	if (JSON.stringify(sorted) === JSON.stringify(highlights)) return;
+	highlights = sorted;
+	bumpHighlightsVersion();
+	invalidateHighlightCache();
+	applyHighlights();
+	updateHighlighterMenu();
 }
 
 export function invalidateHighlightCache() {
@@ -1088,39 +1157,54 @@ export function applyHighlights() {
 
 	isApplyingHighlights = true;
 
-	// Clear renders only (overlays + text highlights). Note cards are reconciled
-	// below by refreshNoteIndicators — tearing them down here would flicker every
-	// card and drop an in-progress in-margin edit. Always clear renders, since
-	// deleting the last highlight must also tear down its overlay.
-	clearHighlightRenders();
+	// Wrap the whole pass: if any single highlight throws while rendering, the
+	// finally still resets isApplyingHighlights — otherwise the flag stuck true
+	// and every future repaint silently early-returned (a wedged-render bug).
+	try {
+		// Clear renders only (overlays + text highlights). Note cards are reconciled
+		// below by refreshNoteIndicators — tearing them down here would flicker every
+		// card and drop an in-progress in-margin edit. Always clear renders, since
+		// deleting the last highlight must also tear down its overlay.
+		clearHighlightRenders();
 
-	// When cross-view sync is on, highlights whose stored xpath doesn't resolve
-	// in this DOM are re-anchored by text. The anchor index is built lazily and
-	// shared, so pages where every xpath resolves (same view) pay nothing.
-	const syncOn = generalSettings.syncHighlightsAcrossViews;
-	let ctx: AnchorContext | null | undefined;
-	const getCtx = (): AnchorContext | null => {
-		if (ctx === undefined) ctx = syncOn ? createAnchorContext(document) : null;
-		return ctx;
-	};
+		// When cross-view sync is on, highlights whose stored xpath doesn't resolve
+		// in this DOM are re-anchored by text. The anchor index is built lazily and
+		// shared, so pages where every xpath resolves (same view) pay nothing.
+		const syncOn = generalSettings.syncHighlightsAcrossViews;
+		let ctx: AnchorContext | null | undefined;
+		const getCtx = (): AnchorContext | null => {
+			if (ctx === undefined) ctx = syncOn ? createAnchorContext(document) : null;
+			return ctx;
+		};
 
-	highlights.forEach((highlight) => {
-		renderHighlight(highlight, getCtx, syncOn);
-	});
+		highlights.forEach((highlight) => {
+			// Isolate each highlight so one that fails to render (e.g. a cross-view
+			// re-anchor edge case) can't abort the rest of the pass.
+			try {
+				renderHighlight(highlight, getCtx, syncOn);
+			} catch (err) {
+				console.warn('[logseq-web-clipper] renderHighlight failed for', highlight.id, err);
+			}
+		});
 
-	lastAppliedVersion = highlightsVersion;
-	isApplyingHighlights = false;
+		lastAppliedVersion = highlightsVersion;
+	} finally {
+		isApplyingHighlights = false;
+	}
 	syncHoverListener();
 	// Repaint note indicators (inline icons / reader margin cards) against the
 	// freshly rendered highlights — text Ranges and element overlays now exist.
 	refreshNoteIndicators();
 }
 
-// Apply, save, and update UI after highlight changes.
-// The popup/side-panel detects changes via storage.local.onChanged.
-function commitHighlightChanges() {
+// Apply, persist, and update UI after a highlight change. `before` is the
+// in-memory set as it was BEFORE this mutation; persistHighlights diffs it
+// against the new set and writes only the delta, so a background tab can't
+// clobber another view's edits. The popup/side-panel and other tabs pick up the
+// change via storage.local.onChanged.
+function commitHighlightChanges(before: AnyHighlightData[]) {
 	applyHighlights();
-	saveHighlights();
+	void persistHighlights(before, highlights);
 	updateHighlighterMenu();
 }
 
@@ -1128,32 +1212,14 @@ export function getHighlights(): string[] {
 	return highlights.map(h => h.content);
 }
 
-// Full highlight objects for the current page (incl. notes), for clip
-// extraction. getHighlights() returns content strings only and drops notes.
+// Full highlight objects for the current page (incl. notes). This is the SINGLE
+// source for clip extraction: the live in-memory set is exactly what's painted
+// on the page, so if a highlight isn't here it isn't on the page and isn't
+// clipped. We deliberately do NOT union with storage — that union is what used
+// to import already-deleted highlights. In-memory is kept in lockstep with
+// storage by loadHighlights, the onChanged listener, and the visibility re-sync.
 export function getHighlightsData(): AnyHighlightData[] {
 	return highlights;
-}
-
-// Reads this page's highlights straight from storage (full objects, incl.
-// notes), without mutating the in-memory set or painting, then unions with the
-// in-memory set by id. Clip extraction uses this so a just-added highlight is
-// included even when the content script's in-memory array is stale — e.g. after
-// exiting reader reloads the page and re-creates the content script empty — and
-// also covers the reverse (a fresh highlight whose async save hasn't landed).
-export async function readStoredHighlights(): Promise<AnyHighlightData[]> {
-	let stored: AnyHighlightData[] = [];
-	try {
-		const url = normalizeUrl(getPageUrl());
-		const result = await browser.storage.local.get('highlights');
-		const all = (result.highlights || {}) as Record<string, StoredData>;
-		stored = all[url]?.highlights ?? [];
-	} catch (err) {
-		console.warn('[logseq-web-clipper] readStoredHighlights failed:', err);
-	}
-	const byId = new Map<string, AnyHighlightData>();
-	for (const h of stored) byId.set(h.id, h);
-	for (const h of highlights) if (!byId.has(h.id)) byId.set(h.id, h);
-	return [...byId.values()];
 }
 
 // Group highlights that share a groupId (produced by a single multi-block
@@ -1208,26 +1274,48 @@ export function collapseGroupsForExport(
 	});
 }
 
-// Cross-tab sync: when another tab/extension page (e.g. highlights.html)
-// deletes or modifies highlights for this URL, pick up the change.
-// The bridge check ensures only the owning module instance acts: if the
-// bridge exists and points to a DIFFERENT copy of applyHighlights (i.e.,
-// we're reader-script but content.js owns the bridge), we skip — content.js's
-// listener will handle it. Without this, both bundles render and you get
-// duplicate overlays / delete buttons.
+// Only the module instance that owns this tab's highlight state should react to
+// storage/visibility changes. On a live-page reader both content.js and
+// reader-script import this module; the bridge points at content.js's copy, so
+// reader-script bails here and lets content.js handle it (otherwise both bundles
+// render → duplicate overlays / delete buttons).
+function ownsHighlightState(): boolean {
+	const bridge = window.__obsidianHighlighter;
+	return !bridge || bridge.applyHighlights === applyHighlights;
+}
+
+// Cross-tab sync: when another tab/extension page (e.g. highlights.html) deletes
+// or modifies highlights for this URL, adopt the new stored set as what's
+// painted here.
 browser.storage.onChanged.addListener((changes, area) => {
 	if (area !== 'local' || !changes.highlights) return;
-	const bridge = window.__obsidianHighlighter;
-	if (bridge && bridge.applyHighlights !== applyHighlights) return;
+	if (!ownsHighlightState()) return;
 	const url = normalizeUrl(getPageUrl());
 	const newAll = (changes.highlights.newValue || {}) as HighlightsStorage;
-	const newForUrl = newAll[url]?.highlights ?? [];
-	if (JSON.stringify(newForUrl) === JSON.stringify(highlights)) return;
-	highlights = newForUrl;
-	bumpHighlightsVersion();
-	invalidateHighlightCache();
-	applyHighlights();
-	updateHighlighterMenu();
+	adoptStoredHighlights(newAll[url]?.highlights ?? []);
+});
+
+// A tab that was frozen (back/forward cache) or discarded by the browser can
+// miss the storage change events above, leaving its painted highlights — and
+// therefore any clip taken from it — stale. Re-read storage whenever the page
+// becomes visible again so the screen (and the clip) always matches storage.
+async function resyncHighlightsFromStorage(): Promise<void> {
+	if (!ownsHighlightState()) return;
+	try {
+		const url = normalizeUrl(getPageUrl());
+		const result = await browser.storage.local.get('highlights');
+		const all = (result.highlights || {}) as HighlightsStorage;
+		adoptStoredHighlights(all[url]?.highlights ?? []);
+	} catch (err) {
+		console.warn('[logseq-web-clipper] resyncHighlightsFromStorage failed:', err);
+	}
+}
+
+document.addEventListener('visibilitychange', () => {
+	if (document.visibilityState === 'visible') void resyncHighlightsFromStorage();
+});
+window.addEventListener('pageshow', (event) => {
+	if ((event as PageTransitionEvent).persisted) void resyncHighlightsFromStorage();
 });
 
 export async function loadHighlights() {
@@ -1250,6 +1338,7 @@ export async function loadHighlights() {
 	if (storedData && Array.isArray(storedData.highlights) && storedData.highlights.length > 0) {
 		highlights = storedData.highlights;
 		const migrated = migrateStoredHighlights();
+		sortHighlights();
 		bumpHighlightsVersion();
 		await loadSettings();
 		// Always render so the click-to-remove affordance works regardless
@@ -1303,22 +1392,17 @@ function migrateStoredHighlights(): boolean {
 }
 
 export function clearHighlights() {
-	const url = normalizeUrl(getPageUrl());
 	const oldHighlights = [...highlights];
-	browser.storage.local.get('highlights').then((result: { highlights?: HighlightsStorage }) => {
-		const allHighlights: HighlightsStorage = result.highlights || {};
-		delete allHighlights[url];
-		browser.storage.local.set({ highlights: allHighlights }).then(() => {
-			highlights = [];
-			bumpHighlightsVersion();
-			removeExistingHighlights();
-			syncHoverListener();
-			console.log('Highlights cleared for:', url);
-			browser.runtime.sendMessage({ action: "highlightsCleared" });
-			updateHighlighterMenu();
-			addToHistory('remove', oldHighlights, []);
-		});
-	});
+	highlights = [];
+	bumpHighlightsVersion();
+	removeExistingHighlights();
+	syncHoverListener();
+	// Delta-remove exactly the highlights this view had, so a clear can't also
+	// nuke a highlight another tab added to the same page concurrently.
+	void persistHighlights(oldHighlights, []);
+	browser.runtime.sendMessage({ action: "highlightsCleared" });
+	updateHighlighterMenu();
+	addToHistory('remove', oldHighlights, []);
 }
 
 export function updateHighlighterMenu() {

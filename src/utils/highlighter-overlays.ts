@@ -8,7 +8,7 @@ import {
 	isApplyingHighlights,
 	sortHighlights,
 	applyHighlights,
-	saveHighlights,
+	persistHighlights,
 	updateHighlights,
 	updateHighlighterMenu,
 	getHighlightNote,
@@ -326,6 +326,7 @@ export function hideHighlightDeleteButton(): void {
 export async function deleteHighlightById(id: string): Promise<void> {
 	const target = highlights.find((h: AnyHighlightData) => h.id === id);
 	if (!target) return;
+	const before = highlights;
 	// If the highlight is part of a group (multi-block selection), remove the
 	// whole group so the user's single selection acts as one logical delete.
 	const next = target.groupId
@@ -336,7 +337,7 @@ export async function deleteHighlightById(id: string): Promise<void> {
 	hideHighlightDeleteButton();
 	sortHighlights();
 	applyHighlights();
-	saveHighlights();
+	void persistHighlights(before, highlights);
 	updateHighlighterMenu();
 }
 

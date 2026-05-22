@@ -274,10 +274,11 @@ declare global {
 					extractedContent: extractedContent,
 					favicon: defuddled.favicon,
 					fullHtml: cleanedHtml,
-					// Full objects (incl. notes), read from storage so a just-added
-					// highlight is included even if this content script's in-memory
-					// array is stale (e.g. after a reader-exit page reload).
-					highlights: await highlighter.readStoredHighlights(),
+					// Exactly the highlights painted on this page (the live in-memory
+					// render set), so the clip mirrors what the user sees — if it's not
+					// on the page, it isn't clipped. Kept in lockstep with storage by
+					// loadHighlights + the onChanged/visibility re-sync.
+					highlights: highlighter.getHighlightsData(),
 					image: defuddled.image,
 					language: defuddled.language || '',
 					parseTime: defuddled.parseTime,
