@@ -2,7 +2,6 @@ import type { PropertySchema } from '@logseq/libs/dist/LSPlugin'
 
 import {
 	PROPERTIES,
-	PROPERTY_NAMESPACE,
 	WEB_CLIPPING_TAG,
 	ZOTERO_PROPERTY_NAMESPACE,
 	ident,
@@ -21,10 +20,11 @@ import {
 // the missing Zotero schema and offers to set it up first (or falls back
 // to web-owned creation when the user doesn't have zoterolocal installed).
 //
-// Why we set hide/description on the property block instead of via
-// `upsertProperty`'s options: per zoterolocal's notes, the `name` opt is a
-// no-op in current Logseq-DB and the SDK rewrites `schema.hide` to the
-// unqualified `:hide?` while the UI reads `:logseq.property/hide?`.
+// Why we set title/hide/description on the property block instead of via
+// `upsertProperty`'s schema/options: per zoterolocal's SDK notes, the
+// `name` opt is a no-op (so we set the display title via `updateBlock`)
+// and the SDK rewrites `schema.hide` to the unqualified `:hide?` while
+// the UI reads `:logseq.property/hide?`.
 
 export async function setLogseqDbSchema(): Promise<void> {
 	const settingUpMsg = await logseq.UI.showMsg('Setting up Web Clipper schema...', 'warning', {
@@ -57,9 +57,7 @@ export async function setLogseqDbSchema(): Promise<void> {
 			type: prop.type,
 			cardinality: prop.cardinality,
 		}
-		await logseq.Editor.upsertProperty(kebab(prop.name), schema, { name: prop.display })
-
-		const property = await logseq.Editor.getProperty(`${PROPERTY_NAMESPACE}/${kebab(prop.name)}`)
+		const property = await logseq.Editor.upsertProperty(kebab(prop.name), schema)
 		if (!property?.uuid) continue
 
 		if (property.title !== prop.display) {
