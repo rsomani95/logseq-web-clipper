@@ -225,7 +225,9 @@ export function openNoteBox(opts: OpenNoteBoxOptions): void {
 		if (e.key === 'Escape') {
 			e.preventDefault();
 			close();
-		} else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+		} else if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+			// Enter commits; Shift+Enter inserts a newline (textarea default).
+			// Skip while composing (IME) so confirming a candidate doesn't submit.
 			e.preventDefault();
 			submit();
 		}

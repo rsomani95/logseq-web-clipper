@@ -11,6 +11,7 @@ export const generalSettings: Settings = {
 		pageContentBlockName: 'Page Content',
 		highlightsBlockName: 'Highlights',
 		useHeadingMarkers: false,
+		populatePageTags: false,
 	},
 	logseqApiBaseUrl: 'http://127.0.0.1:12315',
 	logseqApiToken: '',

@@ -771,6 +771,11 @@ async function fillTemplateFieldValues(currentTabId: number, template: Template 
 		const inputElement = document.getElementById(property.name) as HTMLInputElement;
 		if (!inputElement) continue;
 
+		// "Populate tags from page" off (default): leave the tags field empty so the
+		// user can add tags manually, instead of pre-filling it from page keywords.
+		// The field is still built in the skeleton, so it stays visible and editable.
+		if (property.name === 'tags' && !generalSettings.logseqCaptureSettings.populatePageTags) continue;
+
 		let value = compiledPropertyValues[i];
 		const propertyType = inputElement.getAttribute('data-type') || 'text';
 

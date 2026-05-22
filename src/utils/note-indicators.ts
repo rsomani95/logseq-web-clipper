@@ -174,14 +174,14 @@ function injectStyle(doc: Document): void {
 }
 .obsidian-reader-note-connectors path {
 	fill: none;
-	stroke: color-mix(in srgb, var(--text-muted, #888) 55%, transparent);
+	stroke: color-mix(in srgb, var(--text-muted, #888) 70%, transparent);
 	stroke-width: 2;
 	stroke-linecap: round;
 	stroke-dasharray: 0.1 7;
 	opacity: 0;
 	transition: opacity 0.15s ease;
 }
-.obsidian-reader-note-connectors path.show { opacity: 0.4; }
+.obsidian-reader-note-connectors path.show { opacity: 0.55; }
 .obsidian-reader-note-connectors path.show-strong { opacity: 1; }
 `;
 	(doc.head ?? doc.documentElement).appendChild(style);
@@ -249,7 +249,10 @@ function createCard(doc: Document, item: NoteItem): HTMLElement {
 	card.addEventListener('keydown', (e) => {
 		if (editingId !== item.id) return;
 		if (e.key === 'Escape') { e.preventDefault(); cancelEdit(); }
-		else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); commitEdit(); }
+		// Enter commits; Shift+Enter inserts a newline (contenteditable default).
+		// Skip while an IME composition is active so confirming a candidate
+		// doesn't prematurely commit the note.
+		else if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); commitEdit(); }
 	});
 	card.addEventListener('blur', () => { if (editingId === item.id) commitEdit(); });
 	return card;

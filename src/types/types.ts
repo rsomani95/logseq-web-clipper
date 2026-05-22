@@ -79,6 +79,11 @@ export interface LogseqCaptureSettings {
 	/** Keep Markdown `#` markers on heading blocks. Off → heading hierarchy is
 	 * conveyed by indentation alone. */
 	useHeadingMarkers: boolean;
+	/** Pre-fill the `tags` field from the page's own keywords. Off by default —
+	 * page keywords are usually noise. When off the `tags` field still shows in
+	 * the popup (so you can tag manually), it just starts empty. Set via the
+	 * Logseq Capture tab. */
+	populatePageTags: boolean;
 }
 
 export interface Settings {
@@ -93,7 +98,7 @@ export interface Settings {
 	// visible in native view (and vice versa). Default on.
 	syncHighlightsAcrossViews: boolean;
 	// Always show the dotted connector tying a reader margin note to its
-	// highlight (vs only on hover/edit). Default off.
+	// highlight (vs only on hover/edit). Default on.
 	persistentNoteConnectors: boolean;
 	highlightBehavior: string;
 	interpreterModel?: string;

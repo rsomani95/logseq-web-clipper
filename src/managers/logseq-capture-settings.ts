@@ -47,4 +47,15 @@ export async function initializeLogseqCaptureSettings(): Promise<void> {
 			});
 		},
 	);
+
+	initializeSettingToggle(
+		'logseq-capture-populate-tags',
+		generalSettings.logseqCaptureSettings.populatePageTags,
+		(checked) => {
+			saveSettings({
+				...generalSettings,
+				logseqCaptureSettings: { ...generalSettings.logseqCaptureSettings, populatePageTags: checked },
+			});
+		},
+	);
 }

@@ -9,7 +9,8 @@ export let generalSettings: Settings = {
 	logseqCaptureSettings: {
 		pageContentBlockName: 'Page Content',
 		highlightsBlockName: 'Highlights',
-		useHeadingMarkers: false
+		useHeadingMarkers: false,
+		populatePageTags: false
 	},
 	logseqApiBaseUrl: 'http://127.0.0.1:12315',
 	logseqApiToken: '',
@@ -18,7 +19,7 @@ export let generalSettings: Settings = {
 	highlighterEnabled: true,
 	alwaysShowHighlights: false,
 	syncHighlightsAcrossViews: true,
-	persistentNoteConnectors: false,
+	persistentNoteConnectors: true,
 	highlightBehavior: 'highlight-inline',
 	showMoreActionsButton: false,
 	interpreterModel: '',
@@ -79,6 +80,7 @@ interface StorageData {
 		pageContentBlockName?: string;
 		highlightsBlockName?: string;
 		useHeadingMarkers?: boolean;
+		populatePageTags?: boolean;
 	};
 	highlighter_settings?: {
 		highlighterEnabled?: boolean;
@@ -134,7 +136,8 @@ export async function loadSettings(): Promise<Settings> {
 		logseqCaptureSettings: {
 			pageContentBlockName: 'Page Content',
 			highlightsBlockName: 'Highlights',
-			useHeadingMarkers: false
+			useHeadingMarkers: false,
+			populatePageTags: false
 		},
 		logseqApiBaseUrl: 'http://127.0.0.1:12315',
 		logseqApiToken: '',
@@ -144,7 +147,7 @@ export async function loadSettings(): Promise<Settings> {
 		highlighterEnabled: true,
 		alwaysShowHighlights: true,
 		syncHighlightsAcrossViews: true,
-		persistentNoteConnectors: false,
+		persistentNoteConnectors: true,
 		highlightBehavior: 'highlight-inline',
 		interpreterModel: '',
 		models: [],
@@ -199,7 +202,8 @@ export async function loadSettings(): Promise<Settings> {
 		logseqCaptureSettings: {
 			pageContentBlockName: data.logseq_capture_settings?.pageContentBlockName ?? defaultSettings.logseqCaptureSettings.pageContentBlockName,
 			highlightsBlockName: data.logseq_capture_settings?.highlightsBlockName ?? defaultSettings.logseqCaptureSettings.highlightsBlockName,
-			useHeadingMarkers: data.logseq_capture_settings?.useHeadingMarkers ?? defaultSettings.logseqCaptureSettings.useHeadingMarkers
+			useHeadingMarkers: data.logseq_capture_settings?.useHeadingMarkers ?? defaultSettings.logseqCaptureSettings.useHeadingMarkers,
+			populatePageTags: data.logseq_capture_settings?.populatePageTags ?? defaultSettings.logseqCaptureSettings.populatePageTags
 		},
 		logseqApiBaseUrl: data.logseq_settings?.baseUrl ?? defaultSettings.logseqApiBaseUrl,
 		logseqApiToken: data.logseq_settings?.token ?? defaultSettings.logseqApiToken,
@@ -283,7 +287,8 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 		logseq_capture_settings: {
 			pageContentBlockName: generalSettings.logseqCaptureSettings.pageContentBlockName,
 			highlightsBlockName: generalSettings.logseqCaptureSettings.highlightsBlockName,
-			useHeadingMarkers: generalSettings.logseqCaptureSettings.useHeadingMarkers
+			useHeadingMarkers: generalSettings.logseqCaptureSettings.useHeadingMarkers,
+			populatePageTags: generalSettings.logseqCaptureSettings.populatePageTags
 		},
 		reader_settings: {
 			fontSize: generalSettings.readerSettings.fontSize,
