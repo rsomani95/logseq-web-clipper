@@ -39,7 +39,7 @@
 		"message": "无 API 密钥"
 	},
 	"apiKeysWarning": {
-		"message": "使用外部提供商即表示您同意其条款和隐私政策。解释器请求直接发送给您选择的提供商。Obsidian 不会收集或存储任何关于您请求的数据。"
+		"message": "使用外部提供商即表示您同意其条款和隐私政策。解释器请求直接发送给您选择的提供商。Logseq 不会收集或存储任何关于您请求的数据。"
 	},
 	"appendToDaily": {
 		"message": "添加到日记末尾"
@@ -90,7 +90,7 @@
 		"message": "保存方式"
 	},
 	"clipBehaviorDescription": {
-		"message": "选择如何将高亮内容保存到 Obsidian。定义 $strong_start${{content}}$strong_end$ 变量。",
+		"message": "选择如何将高亮内容保存到 Logseq。定义 $strong_start${{content}}$strong_end$ 变量。",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian 无法访问你的剪贴板。请尝试此处的故障排除说明：$1",
+		"message": "Logseq 无法访问你的剪贴板。请尝试此处的故障排除说明：$1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "关闭"
 	},
 	"commandOpenClipper": {
-		"message": "打开 Obsidian 剪藏器"
+		"message": "打开 Logseq 剪藏器"
 	},
 	"commandQuickClip": {
 		"message": "快速剪藏"
@@ -190,13 +190,13 @@
 		"message": "复制"
 	},
 	"earlyAccessDescription": {
-		"message": "使用需要最新$link_start$早期访问版本$link_end$的 Obsidian 功能。目前需要 Obsidian 1.7.2 或更高版本。",
+		"message": "使用需要最新$link_start$早期访问版本$link_end$的 Logseq 功能。目前需要 Logseq 1.7.2 或更高版本。",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "嵌入式"
 	},
 	"enableHighlighterDescription": {
-		"message": "在网页上高亮内容并保存到 Obsidian。"
+		"message": "在网页上高亮内容并保存到 Logseq。"
 	},
 	"enableInterpreter": {
 		"message": "启用解释器"
@@ -266,7 +266,7 @@
 		"message": "导出属性"
 	},
 	"exportPropertiesDescription": {
-		"message": "将网页剪藏器的属性保存到 $strong_start$types.json$strong_end$ 文件，可以导入到 Obsidian 保管库或其他设备上的网页剪藏器。",
+		"message": "将网页剪藏器的属性保存到 $strong_start$types.json$strong_end$ 文件，可以导入到 Logseq 保管库或其他设备上的网页剪藏器。",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "以私密且持久的格式保存网页内容，可离线访问。Obsidian 官方浏览器扩展。"
+		"message": "以私密且持久的格式保存网页内容，可离线访问。Logseq 官方浏览器扩展。"
 	},
 	"extensionName": {
-		"message": "Obsidian 网页剪藏器"
+		"message": "Logseq 网页剪藏器"
 	},
 	"failedToCopyText": {
 		"message": "复制文本失败"
@@ -400,7 +400,7 @@
 		"message": "导入属性"
 	},
 	"importPropertiesDescription": {
-		"message": "要从 Obsidian 导入属性，请在保管库中找到 $strong_2_start$.obsidian$strong_2_end$ 文件夹中的 $strong_1_start$types.json$strong_1_end$ 文件。请注意，该文件夹在大多数操作系统中默认是隐藏的。",
+		"message": "要从 Logseq 导入属性，请在保管库中找到 $strong_2_start$.obsidian$strong_2_end$ 文件夹中的 $strong_1_start$types.json$strong_1_end$ 文件。请注意，该文件夹在大多数操作系统中默认是隐藏的。",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

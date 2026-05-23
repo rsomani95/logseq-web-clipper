@@ -39,7 +39,7 @@
 		"message": "Kein API-Schlüssel"
 	},
 	"apiKeysWarning": {
-		"message": "Durch die Nutzung eines externen Anbieters stimmst du dessen Nutzungsbedingungen und Datenschutzrichtlinien zu. Interpreter-Anfragen werden direkt an den von Dir gewählten Anbieter gesendet. Obsidian sammelt und speichert keine Daten über Deine Anfragen."
+		"message": "Durch die Nutzung eines externen Anbieters stimmst du dessen Nutzungsbedingungen und Datenschutzrichtlinien zu. Interpreter-Anfragen werden direkt an den von Dir gewählten Anbieter gesendet. Logseq sammelt und speichert keine Daten über Deine Anfragen."
 	},
 	"appendToDaily": {
 		"message": "Zum Ende der Tagesnotiz hinzufügen"
@@ -90,7 +90,7 @@
 		"message": "Speicherverhalten"
 	},
 	"clipBehaviorDescription": {
-		"message": "Wähle wie markierter Inhalt in Obsidian gespeichert wird. Definiert die $strong_start${{content}}$strong_end$ Variable.",
+		"message": "Wähle wie markierter Inhalt in Logseq gespeichert wird. Definiert die $strong_start${{content}}$strong_end$ Variable.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian kann nicht auf deine Zwischenablage zugreifen. Probiere die Anweisungen zur Fehlerbehebung hier: $1",
+		"message": "Logseq kann nicht auf deine Zwischenablage zugreifen. Probiere die Anweisungen zur Fehlerbehebung hier: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Schließen"
 	},
 	"commandOpenClipper": {
-		"message": "Obsidian Web-Clipper öffnen"
+		"message": "Logseq Web-Clipper öffnen"
 	},
 	"commandQuickClip": {
 		"message": "Schnelles Ausschneiden"
@@ -190,13 +190,13 @@
 		"message": "Duplizieren"
 	},
 	"earlyAccessDescription": {
-		"message": "Verwende Funktionen, welche die neueste $link_start$Early Access Version$link_end$ von Obsidian erfordern. Erfordert derzeit Obsidian 1.7.2 oder höher.",
+		"message": "Verwende Funktionen, welche die neueste $link_start$Early Access Version$link_end$ von Logseq erfordern. Erfordert derzeit Logseq 1.7.2 oder höher.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Eingebettet"
 	},
 	"enableHighlighterDescription": {
-		"message": "Hebe Inhalte auf Webseiten hervor, die Du in Obsidian speichern möchtest."
+		"message": "Hebe Inhalte auf Webseiten hervor, die Du in Logseq speichern möchtest."
 	},
 	"enableInterpreter": {
 		"message": "Interpreter aktivieren"
@@ -266,7 +266,7 @@
 		"message": "Eigenschaften exportieren"
 	},
 	"exportPropertiesDescription": {
-		"message": "Speichert Deine Web-Clipper Eigenschaften in einer $strong_start$types.json$strong_end$ Datei, die in Deinem Obsidian-Vault oder in Web-Clipper auf anderen Geräten importiert werden kann.",
+		"message": "Speichert Deine Web-Clipper Eigenschaften in einer $strong_start$types.json$strong_end$ Datei, die in Deinem Logseq-Vault oder in Web-Clipper auf anderen Geräten importiert werden kann.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Speichet Deine Webinhalte in einem privaten und dauerhaften Format, auf das Du offline zugreifen kannst. Die offizielle Browser-Erweiterung für Obsidian."
+		"message": "Speichet Deine Webinhalte in einem privaten und dauerhaften Format, auf das Du offline zugreifen kannst. Die offizielle Browser-Erweiterung für Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web-Clipper"
+		"message": "Logseq Web-Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Text konnte nicht kopiert werden"
@@ -400,7 +400,7 @@
 		"message": "Eigenschaften importieren"
 	},
 	"importPropertiesDescription": {
-		"message": "Um Deine Eigenschaften aus Obsidian zu importieren, suche die $strong_1_start$types.json$strong_1_end$ Datei im $strong_2_start$.obsidian$strong_2_end$ Ordner in Deinem Vault. Beachte, dass dieser Ordner standardmäßig auf den meisten Betriebssystemen versteckt ist.",
+		"message": "Um Deine Eigenschaften aus Logseq zu importieren, suche die $strong_1_start$types.json$strong_1_end$ Datei im $strong_2_start$.obsidian$strong_2_end$ Ordner in Deinem Vault. Beachte, dass dieser Ordner standardmäßig auf den meisten Betriebssystemen versteckt ist.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

@@ -39,7 +39,7 @@
 		"message": "Chave API ausente"
 	},
 	"apiKeysWarning": {
-		"message": "Ao usar um provedor externo, você concorda com seus termos e política de privacidade. As solicitações do interpretador são enviadas diretamente ao provedor que você escolher. O Obsidian não coleta nem armazena nenhum dado sobre suas solicitações."
+		"message": "Ao usar um provedor externo, você concorda com seus termos e política de privacidade. As solicitações do interpretador são enviadas diretamente ao provedor que você escolher. O Logseq não coleta nem armazena nenhum dado sobre suas solicitações."
 	},
 	"appendToDaily": {
 		"message": "Adicionar à nota diária, no final"
@@ -90,7 +90,7 @@
 		"message": "Comportamento da captura"
 	},
 	"clipBehaviorDescription": {
-		"message": "Escolha como o conteúdo destacado será salvo no Obsidian. Define a variável $strong_start${{content}}$strong_end$.",
+		"message": "Escolha como o conteúdo destacado será salvo no Logseq. Define a variável $strong_start${{content}}$strong_end$.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "O Obsidian não consegue acessar sua área de transferência. Tente as instruções de solução de problemas aqui: $1",
+		"message": "O Logseq não consegue acessar sua área de transferência. Tente as instruções de solução de problemas aqui: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Fechar"
 	},
 	"commandOpenClipper": {
-		"message": "Abrir Obsidian Clipper"
+		"message": "Abrir Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Captura rápida"
@@ -190,13 +190,13 @@
 		"message": "Duplicar"
 	},
 	"earlyAccessDescription": {
-		"message": "Use recursos que exigem a $link_start$versão de acesso antecipado$link_end$ mais recente do Obsidian. Atualmente, requer a versão 1.7.2 ou posterior.",
+		"message": "Use recursos que exigem a $link_start$versão de acesso antecipado$link_end$ mais recente do Logseq. Atualmente, requer a versão 1.7.2 ou posterior.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Embutido"
 	},
 	"enableHighlighterDescription": {
-		"message": "Demarque o conteúdo de páginas da internet para que possa salvar no Obsidian."
+		"message": "Demarque o conteúdo de páginas da internet para que possa salvar no Logseq."
 	},
 	"enableInterpreter": {
 		"message": "Habilitar interpretador"
@@ -266,7 +266,7 @@
 		"message": "Exportar propriedades"
 	},
 	"exportPropertiesDescription": {
-		"message": "Salve as propriedades do Web Clipper em um arquivo $strong_start$types.json$strong_end$ que pode ser importado para o cofre do Obsidian, ou para o Web Clipper em outros dispositivos.",
+		"message": "Salve as propriedades do Web Clipper em um arquivo $strong_start$types.json$strong_end$ que pode ser importado para o cofre do Logseq, ou para o Web Clipper em outros dispositivos.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Salve o conteúdo da internet em um formato privado e durável, que pode ser acessado off-line. A extensão de navegador oficial do Obsidian."
+		"message": "Salve o conteúdo da internet em um formato privado e durável, que pode ser acessado off-line. A extensão de navegador oficial do Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Falha ao copiar o texto"
@@ -400,7 +400,7 @@
 		"message": "Importar propriedades"
 	},
 	"importPropertiesDescription": {
-		"message": "Para importar suas propriedades do Obsidian, localize o arquivo $strong_1_start$types.json$strong_1_end$ no pasta $strong_2_start$.obsidian$strong_2_end$ dentro do seu Cofre. Observe que essa pasta é ocultada por padrão na maioria dos sistemas operacionais.",
+		"message": "Para importar suas propriedades do Logseq, localize o arquivo $strong_1_start$types.json$strong_1_end$ no pasta $strong_2_start$.obsidian$strong_2_end$ dentro do seu Cofre. Observe que essa pasta é ocultada por padrão na maioria dos sistemas operacionais.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

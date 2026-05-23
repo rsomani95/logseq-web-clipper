@@ -39,7 +39,7 @@
 		"message": "Geen API-sleutel"
 	},
 	"apiKeysWarning": {
-		"message": "Door een externe provider te gebruiken ga je akkoord met hun voorwaarden en privacybeleid. Interpreter-verzoeken worden direct naar de provider van jouw keuze gestuurd. Obsidian verzamelt of bewaart geen gegevens over je verzoeken."
+		"message": "Door een externe provider te gebruiken ga je akkoord met hun voorwaarden en privacybeleid. Interpreter-verzoeken worden direct naar de provider van jouw keuze gestuurd. Logseq verzamelt of bewaart geen gegevens over je verzoeken."
 	},
 	"appendToDaily": {
 		"message": "Toevoegen aan dagelijkse notitie, onderaan"
@@ -90,7 +90,7 @@
 		"message": "Clip-gedrag"
 	},
 	"clipBehaviorDescription": {
-		"message": "Kies hoe gemarkeerde inhoud wordt opgeslagen in Obsidian. Definieert de $strong_start${{content}}$strong_end$ variabele.",
+		"message": "Kies hoe gemarkeerde inhoud wordt opgeslagen in Logseq. Definieert de $strong_start${{content}}$strong_end$ variabele.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian heeft geen toegang tot je klembord. Probeer de instructies voor probleemoplossing hier: $1",
+		"message": "Logseq heeft geen toegang tot je klembord. Probeer de instructies voor probleemoplossing hier: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Sluiten"
 	},
 	"commandOpenClipper": {
-		"message": "Open Obsidian Clipper"
+		"message": "Open Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Snel knippen"
@@ -190,13 +190,13 @@
 		"message": "Dupliceren"
 	},
 	"earlyAccessDescription": {
-		"message": "Gebruik functies die de nieuwste $link_start$early access versie$link_end$ van Obsidian vereisen. Momenteel is Obsidian 1.7.2 of hoger vereist.",
+		"message": "Gebruik functies die de nieuwste $link_start$early access versie$link_end$ van Logseq vereisen. Momenteel is Logseq 1.7.2 of hoger vereist.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Ingesloten"
 	},
 	"enableHighlighterDescription": {
-		"message": "Markeer inhoud op webpagina's die je kunt opslaan in Obsidian."
+		"message": "Markeer inhoud op webpagina's die je kunt opslaan in Logseq."
 	},
 	"enableInterpreter": {
 		"message": "Interpreter inschakelen"
@@ -266,7 +266,7 @@
 		"message": "Eigenschappen exporteren"
 	},
 	"exportPropertiesDescription": {
-		"message": "Sla Web Clipper eigenschappen op in een $strong_start$types.json$strong_end$ bestand dat kan worden geïmporteerd in je Obsidian kluis of in Web Clipper op andere apparaten.",
+		"message": "Sla Web Clipper eigenschappen op in een $strong_start$types.json$strong_end$ bestand dat kan worden geïmporteerd in je Logseq kluis of in Web Clipper op andere apparaten.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Sla webinhoud op in een privé en duurzaam formaat dat je offline kunt bekijken. De officiële browserextensie voor Obsidian."
+		"message": "Sla webinhoud op in een privé en duurzaam formaat dat je offline kunt bekijken. De officiële browserextensie voor Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Tekst kopiëren mislukt"
@@ -400,7 +400,7 @@
 		"message": "Eigenschappen importeren"
 	},
 	"importPropertiesDescription": {
-		"message": "Om je eigenschappen uit Obsidian te importeren, zoek het $strong_1_start$types.json$strong_1_end$ bestand in de $strong_2_start$.obsidian$strong_2_end$ map in je kluis. Deze map is standaard verborgen op de meeste besturingssystemen.",
+		"message": "Om je eigenschappen uit Logseq te importeren, zoek het $strong_1_start$types.json$strong_1_end$ bestand in de $strong_2_start$.obsidian$strong_2_end$ map in je kluis. Deze map is standaard verborgen op de meeste besturingssystemen.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

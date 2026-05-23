@@ -39,7 +39,7 @@
 		"message": "Ei API-avainta"
 	},
 	"apiKeysWarning": {
-		"message": "Käyttämällä ulkoista palveluntarjoajaa hyväksyt heidän käyttöehtonsa ja tietosuojakäytäntönsä. Tulkin pyynnöt lähetetään suoraan valitsemallesi palveluntarjoajalle. Obsidian ei kerää tai tallenna mitään tietoja pyynnöistäsi."
+		"message": "Käyttämällä ulkoista palveluntarjoajaa hyväksyt heidän käyttöehtonsa ja tietosuojakäytäntönsä. Tulkin pyynnöt lähetetään suoraan valitsemallesi palveluntarjoajalle. Logseq ei kerää tai tallenna mitään tietoja pyynnöistäsi."
 	},
 	"appendToDaily": {
 		"message": "Lisää päivittäiseen muistiinpanoon, loppuun"
@@ -90,7 +90,7 @@
 		"message": "Leikkauksen käyttäytyminen"
 	},
 	"clipBehaviorDescription": {
-		"message": "Valitse, miten valittu sisältö tallennetaan Obsidianiin. Määrittää muuttujan $strong_start${{content}}$strong_end$",
+		"message": "Valitse, miten valittu sisältö tallennetaan Logseqiin. Määrittää muuttujan $strong_start${{content}}$strong_end$",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian ei voi käyttää leikepöytääsi. Kokeile vianmääritysohjeita täällä: $1",
+		"message": "Logseq ei voi käyttää leikepöytääsi. Kokeile vianmääritysohjeita täällä: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Sulje"
 	},
 	"commandOpenClipper": {
-		"message": "Avaa Obsidian Clipper"
+		"message": "Avaa Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Pikaleikkaus"
@@ -190,13 +190,13 @@
 		"message": "Monista"
 	},
 	"earlyAccessDescription": {
-		"message": "Käytä ominaisuuksia, jotka vaativat uusimman $link_start$early access -version$link_end$ Obsidianista. Vaatii tällä hetkellä Obsidian 1.7.2 tai uudemman.",
+		"message": "Käytä ominaisuuksia, jotka vaativat uusimman $link_start$early access -version$link_end$ Logseqista. Vaatii tällä hetkellä Logseq 1.7.2 tai uudemman.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Upotettu"
 	},
 	"enableHighlighterDescription": {
-		"message": "Korosta verkkosivujen sisältöä, jonka voit tallentaa Obsidianiin"
+		"message": "Korosta verkkosivujen sisältöä, jonka voit tallentaa Logseqiin"
 	},
 	"enableInterpreter": {
 		"message": "Ota tulkki käyttöön"
@@ -266,7 +266,7 @@
 		"message": "Vie ominaisuudet"
 	},
 	"exportPropertiesDescription": {
-		"message": "Tallenna Web Clipperin ominaisuudet $strong_start$types.json$strong_end$ -tiedostoon, jonka voit tuoda Obsidian-holviin tai Web Clipperiin muilla laitteilla",
+		"message": "Tallenna Web Clipperin ominaisuudet $strong_start$types.json$strong_end$ -tiedostoon, jonka voit tuoda Logseq-holviin tai Web Clipperiin muilla laitteilla",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Tallenna verkkosisältöä yksityisessä ja kestävässä muodossa, jota voit käyttää offline-tilassa. Obsidianin virallinen selainlaajennus."
+		"message": "Tallenna verkkosisältöä yksityisessä ja kestävässä muodossa, jota voit käyttää offline-tilassa. Logseqin virallinen selainlaajennus."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Tekstin kopiointi epäonnistui"
@@ -400,7 +400,7 @@
 		"message": "Tuo ominaisuudet"
 	},
 	"importPropertiesDescription": {
-		"message": "Tuodaksesi ominaisuudet Obsidianista, etsi $strong_1_start$types.json$strong_1_end$ -tiedosto holvisi $strong_2_start$.obsidian$strong_2_end$ -kansiosta. Huomaa, että tämä kansio on oletuksena piilotettu useimmissa käyttöjärjestelmissä.",
+		"message": "Tuodaksesi ominaisuudet Logseqista, etsi $strong_1_start$types.json$strong_1_end$ -tiedosto holvisi $strong_2_start$.obsidian$strong_2_end$ -kansiosta. Huomaa, että tämä kansio on oletuksena piilotettu useimmissa käyttöjärjestelmissä.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

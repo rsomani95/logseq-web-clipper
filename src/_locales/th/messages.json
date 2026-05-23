@@ -39,7 +39,7 @@
 		"message": "ไม่มีคีย์ API"
 	},
 	"apiKeysWarning": {
-		"message": "การใช้ผู้ให้บริการภายนอกถือว่าคุณยอมรับข้อกำหนดและนโยบายความเป็นส่วนตัวของพวกเขา คำขอตัวแปลจะถูกส่งตรงไปยังผู้ให้บริการที่คุณเลือก Obsidian ไม่ได้เก็บรวบรวมหรือจัดเก็บข้อมูลใดๆ เกี่ยวกับคำขอของคุณ"
+		"message": "การใช้ผู้ให้บริการภายนอกถือว่าคุณยอมรับข้อกำหนดและนโยบายความเป็นส่วนตัวของพวกเขา คำขอตัวแปลจะถูกส่งตรงไปยังผู้ให้บริการที่คุณเลือก Logseq ไม่ได้เก็บรวบรวมหรือจัดเก็บข้อมูลใดๆ เกี่ยวกับคำขอของคุณ"
 	},
 	"appendToDaily": {
 		"message": "เพิ่มไปยังบันทึกประจำวัน ที่ท้าย"
@@ -90,7 +90,7 @@
 		"message": "พฤติกรรมการคลิป"
 	},
 	"clipBehaviorDescription": {
-		"message": "เลือกวิธีบันทึกเนื้อหาที่เลือกไปยัง Obsidian กำหนดตัวแปร $strong_start${{content}}$strong_end$",
+		"message": "เลือกวิธีบันทึกเนื้อหาที่เลือกไปยัง Logseq กำหนดตัวแปร $strong_start${{content}}$strong_end$",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian ไม่สามารถเข้าถึงคลิปบอร์ดของคุณได้ ลองทำตามคำแนะนำการแก้ไขปัญหาที่นี่: $1",
+		"message": "Logseq ไม่สามารถเข้าถึงคลิปบอร์ดของคุณได้ ลองทำตามคำแนะนำการแก้ไขปัญหาที่นี่: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "ปิด"
 	},
 	"commandOpenClipper": {
-		"message": "เปิด Obsidian Clipper"
+		"message": "เปิด Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "คลิปด่วน"
@@ -190,13 +190,13 @@
 		"message": "ทำซ้ำ"
 	},
 	"earlyAccessDescription": {
-		"message": "ใช้คุณสมบัติที่ต้องการ $link_start$เวอร์ชัน early access$link_end$ ล่าสุดของ Obsidian ปัจจุบันต้องใช้ Obsidian 1.7.2 หรือใหม่กว่า",
+		"message": "ใช้คุณสมบัติที่ต้องการ $link_start$เวอร์ชัน early access$link_end$ ล่าสุดของ Logseq ปัจจุบันต้องใช้ Logseq 1.7.2 หรือใหม่กว่า",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "ฝัง"
 	},
 	"enableHighlighterDescription": {
-		"message": "ไฮไลต์เนื้อหาบนหน้าเว็บที่คุณสามารถบันทึกไปยัง Obsidian"
+		"message": "ไฮไลต์เนื้อหาบนหน้าเว็บที่คุณสามารถบันทึกไปยัง Logseq"
 	},
 	"enableInterpreter": {
 		"message": "เปิดใช้งานตัวแปล"
@@ -266,7 +266,7 @@
 		"message": "ส่งออกคุณสมบัติ"
 	},
 	"exportPropertiesDescription": {
-		"message": "บันทึกคุณสมบัติ Web Clipper ไปยังไฟล์ $strong_start$types.json$strong_end$ ที่สามารถนำเข้าไปยังคลัง Obsidian ของคุณหรือ Web Clipper บนอุปกรณ์อื่น",
+		"message": "บันทึกคุณสมบัติ Web Clipper ไปยังไฟล์ $strong_start$types.json$strong_end$ ที่สามารถนำเข้าไปยังคลัง Logseq ของคุณหรือ Web Clipper บนอุปกรณ์อื่น",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "บันทึกเนื้อหาจากเว็บในรูปแบบส่วนตัวและยั่งยืนที่คุณสามารถเข้าถึงได้แบบออฟไลน์ ส่วนขยายเบราว์เซอร์อย่างเป็นทางการสำหรับ Obsidian"
+		"message": "บันทึกเนื้อหาจากเว็บในรูปแบบส่วนตัวและยั่งยืนที่คุณสามารถเข้าถึงได้แบบออฟไลน์ ส่วนขยายเบราว์เซอร์อย่างเป็นทางการสำหรับ Logseq"
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "ไม่สามารถคัดลอกข้อความ"
@@ -400,7 +400,7 @@
 		"message": "นำเข้าคุณสมบัติ"
 	},
 	"importPropertiesDescription": {
-		"message": "ในการนำเข้าคุณสมบัติจาก Obsidian ให้ค้นหาไฟล์ $strong_1_start$types.json$strong_1_end$ ในโฟลเดอร์ $strong_2_start$.obsidian$strong_2_end$ ในคลังของคุณ โปรดทราบว่าโฟลเดอร์นี้ถูกซ่อนโดยค่าเริ่มต้นบนระบบปฏิบัติการส่วนใหญ่",
+		"message": "ในการนำเข้าคุณสมบัติจาก Logseq ให้ค้นหาไฟล์ $strong_1_start$types.json$strong_1_end$ ในโฟลเดอร์ $strong_2_start$.obsidian$strong_2_end$ ในคลังของคุณ โปรดทราบว่าโฟลเดอร์นี้ถูกซ่อนโดยค่าเริ่มต้นบนระบบปฏิบัติการส่วนใหญ่",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

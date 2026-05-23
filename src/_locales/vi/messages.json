@@ -39,7 +39,7 @@
 		"message": "Không có khóa API"
 	},
 	"apiKeysWarning": {
-		"message": "Bằng cách sử dụng nhà cung cấp bên ngoài, bạn đồng ý với điều khoản và chính sách bảo mật của họ. Các yêu cầu thông dịch được gửi trực tiếp đến nhà cung cấp bạn chọn. Obsidian không thu thập hoặc lưu trữ bất kỳ dữ liệu nào về các yêu cầu của bạn."
+		"message": "Bằng cách sử dụng nhà cung cấp bên ngoài, bạn đồng ý với điều khoản và chính sách bảo mật của họ. Các yêu cầu thông dịch được gửi trực tiếp đến nhà cung cấp bạn chọn. Logseq không thu thập hoặc lưu trữ bất kỳ dữ liệu nào về các yêu cầu của bạn."
 	},
 	"appendToDaily": {
 		"message": "Thêm vào ghi chú hàng ngày, ở cuối"
@@ -90,7 +90,7 @@
 		"message": "Hành vi lưu"
 	},
 	"clipBehaviorDescription": {
-		"message": "Chọn cách lưu nội dung đã đánh dấu vào Obsidian. Xác định biến $strong_start${{content}}$strong_end$.",
+		"message": "Chọn cách lưu nội dung đã đánh dấu vào Logseq. Xác định biến $strong_start${{content}}$strong_end$.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian không thể truy cập bảng tạm của bạn. Hãy thử làm theo hướng dẫn khắc phục sự cố tại đây: $1",
+		"message": "Logseq không thể truy cập bảng tạm của bạn. Hãy thử làm theo hướng dẫn khắc phục sự cố tại đây: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Đóng"
 	},
 	"commandOpenClipper": {
-		"message": "Mở Obsidian Clipper"
+		"message": "Mở Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Lưu nhanh"
@@ -190,13 +190,13 @@
 		"message": "Nhân bản"
 	},
 	"earlyAccessDescription": {
-		"message": "Sử dụng các tính năng yêu cầu phiên bản $link_start$early access$link_end$ mới nhất của Obsidian. Hiện yêu cầu Obsidian 1.7.2 trở lên.",
+		"message": "Sử dụng các tính năng yêu cầu phiên bản $link_start$early access$link_end$ mới nhất của Logseq. Hiện yêu cầu Logseq 1.7.2 trở lên.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Được nhúng"
 	},
 	"enableHighlighterDescription": {
-		"message": "Đánh dấu nội dung trên trang web mà bạn có thể lưu vào Obsidian."
+		"message": "Đánh dấu nội dung trên trang web mà bạn có thể lưu vào Logseq."
 	},
 	"enableInterpreter": {
 		"message": "Bật thông dịch"
@@ -266,7 +266,7 @@
 		"message": "Xuất thuộc tính"
 	},
 	"exportPropertiesDescription": {
-		"message": "Lưu thuộc tính Web Clipper vào tệp $strong_start$types.json$strong_end$ có thể được nhập vào kho lưu trữ Obsidian của bạn hoặc vào Web Clipper trên các thiết bị khác.",
+		"message": "Lưu thuộc tính Web Clipper vào tệp $strong_start$types.json$strong_end$ có thể được nhập vào kho lưu trữ Logseq của bạn hoặc vào Web Clipper trên các thiết bị khác.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Lưu nội dung từ web trong định dạng riêng tư và bền vững mà bạn có thể truy cập ngoại tuyến. Tiện ích mở rộng trình duyệt chính thức cho Obsidian."
+		"message": "Lưu nội dung từ web trong định dạng riêng tư và bền vững mà bạn có thể truy cập ngoại tuyến. Tiện ích mở rộng trình duyệt chính thức cho Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Không thể sao chép văn bản"
@@ -400,7 +400,7 @@
 		"message": "Nhập thuộc tính"
 	},
 	"importPropertiesDescription": {
-		"message": "Để nhập thuộc tính từ Obsidian, hãy tìm tệp $strong_1_start$types.json$strong_1_end$ trong thư mục $strong_2_start$.obsidian$strong_2_end$ trong kho lưu trữ của bạn. Lưu ý rằng thư mục này được ẩn theo mặc định trên hầu hết các hệ điều hành.",
+		"message": "Để nhập thuộc tính từ Logseq, hãy tìm tệp $strong_1_start$types.json$strong_1_end$ trong thư mục $strong_2_start$.obsidian$strong_2_end$ trong kho lưu trữ của bạn. Lưu ý rằng thư mục này được ẩn theo mặc định trên hầu hết các hệ điều hành.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

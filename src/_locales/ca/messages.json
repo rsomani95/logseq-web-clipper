@@ -39,7 +39,7 @@
 		"message": "Sense clau API"
 	},
 	"apiKeysWarning": {
-		"message": "En usar un proveïdor extern, accepta els seus termes i política de privacitat. Les sol·licituds de l'intèrpret s'envien directament al proveïdor que esculli. Obsidian no recopila ni emmagatzema cap dada sobre les seves sol·licituds."
+		"message": "En usar un proveïdor extern, accepta els seus termes i política de privacitat. Les sol·licituds de l'intèrpret s'envien directament al proveïdor que esculli. Logseq no recopila ni emmagatzema cap dada sobre les seves sol·licituds."
 	},
 	"appendToDaily": {
 		"message": "Agregar a la nota diària, al final"
@@ -90,7 +90,7 @@
 		"message": "Comportament de guardat"
 	},
 	"clipBehaviorDescription": {
-		"message": "Escull com es guarda el contingut ressaltat a Obsidian. Defineix la variable $strong_start${{content}}$strong_end$.",
+		"message": "Escull com es guarda el contingut ressaltat a Logseq. Defineix la variable $strong_start${{content}}$strong_end$.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "L'Obsidian no pot accedir al porta-retalls. Prova les instruccions de resolució de problemes aquí: $1",
+		"message": "L'Logseq no pot accedir al porta-retalls. Prova les instruccions de resolució de problemes aquí: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Tancar"
 	},
 	"commandOpenClipper": {
-		"message": "Obrir Obsidian Clipper"
+		"message": "Obrir Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Guardat ràpid"
@@ -190,13 +190,13 @@
 		"message": "Duplicar"
 	},
 	"earlyAccessDescription": {
-		"message": "Utilitzar funcions que requereixen la darrera versió de $link_start$accés anticipat$link_end$ d'Obsidian. Actualment, requereix Obsidian 1.7.2 o posterior.",
+		"message": "Utilitzar funcions que requereixen la darrera versió de $link_start$accés anticipat$link_end$ d'Logseq. Actualment, requereix Logseq 1.7.2 o posterior.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Incrustat"
 	},
 	"enableHighlighterDescription": {
-		"message": "Ressalti contingut en pàgines web que pot guardar a Obsidian."
+		"message": "Ressalti contingut en pàgines web que pot guardar a Logseq."
 	},
 	"enableInterpreter": {
 		"message": "Habilitar intèrpret"
@@ -266,7 +266,7 @@
 		"message": "Exportar propietats"
 	},
 	"exportPropertiesDescription": {
-		"message": "Guardar les propietats de Web Clipper en un fitxer $strong_start$types.json$strong_end$ que pot ser importat a la cambra cuirassada d'Obsidian o a Web Clipper en altres dispositius.",
+		"message": "Guardar les propietats de Web Clipper en un fitxer $strong_start$types.json$strong_end$ que pot ser importat a la cambra cuirassada d'Logseq o a Web Clipper en altres dispositius.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Guardar contingut web en un format privat i durador al qual pot accedir sense connexió. L'extensió oficial per a Obsidian."
+		"message": "Guardar contingut web en un format privat i durador al qual pot accedir sense connexió. L'extensió oficial per a Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Error en copiar el text"
@@ -400,7 +400,7 @@
 		"message": "Importar propietats"
 	},
 	"importPropertiesDescription": {
-		"message": "Per importar les seves propietats d’Obsidian, localitzi el fitxer $strong_1_start$types.json$strong_1_end$ a la carpeta $strong_2_start$.obsidian$strong_2_end$ dins de la seva cambra cuirassada. Tingui en compte que aquesta carpeta està oculta per defecte a la majoria dels sistemes operatius.",
+		"message": "Per importar les seves propietats d’Logseq, localitzi el fitxer $strong_1_start$types.json$strong_1_end$ a la carpeta $strong_2_start$.obsidian$strong_2_end$ dins de la seva cambra cuirassada. Tingui en compte que aquesta carpeta està oculta per defecte a la majoria dels sistemes operatius.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

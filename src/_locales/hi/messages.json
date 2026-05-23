@@ -90,7 +90,7 @@
 		"message": "Save karne ka tarika"
 	},
 	"clipBehaviorDescription": {
-		"message": "Chunein ki highlight ki gayi samagri ko Obsidian mein kaise save kiya jaye. $strong_start${{content}}$strong_end$ variable ko define karta hai.",
+		"message": "Chunein ki highlight ki gayi samagri ko Logseq mein kaise save kiya jaye. $strong_start${{content}}$strong_end$ variable ko define karta hai.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian आपके क्लिपबोर्ड तक पहुँच नहीं पा रहा है। यहाँ दिए गए समस्या-निवारण निर्देश आज़माएँ: $1",
+		"message": "Logseq आपके क्लिपबोर्ड तक पहुँच नहीं पा रहा है। यहाँ दिए गए समस्या-निवारण निर्देश आज़माएँ: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Band karein"
 	},
 	"commandOpenClipper": {
-		"message": "Obsidian Clipper kholein"
+		"message": "Logseq Clipper kholein"
 	},
 	"commandQuickClip": {
 		"message": "Quick clip"
@@ -190,13 +190,13 @@
 		"message": "Duplicate"
 	},
 	"earlyAccessDescription": {
-		"message": "Obsidian ke latest $link_start$early access version$link_end$ ki zarurat wali features ka upyog karein. Vartaman mein Obsidian 1.7.2 ya usse naya chahiye.",
+		"message": "Logseq ke latest $link_start$early access version$link_end$ ki zarurat wali features ka upyog karein. Vartaman mein Logseq 1.7.2 ya usse naya chahiye.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "सम्मिलित"
 	},
 	"enableHighlighterDescription": {
-		"message": "Web page par content highlight karein jise aap Obsidian mein save kar sakte hain."
+		"message": "Web page par content highlight karein jise aap Logseq mein save kar sakte hain."
 	},
 	"enableInterpreter": {
 		"message": "Interpreter enable karein"
@@ -266,7 +266,7 @@
 		"message": "Properties export karein"
 	},
 	"exportPropertiesDescription": {
-		"message": "Web Clipper properties ko $strong_start$types.json$strong_end$ file mein save karein jise aapke Obsidian vault mein, ya dusre devices par Web Clipper mein import kiya ja sakta hai.",
+		"message": "Web Clipper properties ko $strong_start$types.json$strong_end$ file mein save karein jise aapke Logseq vault mein, ya dusre devices par Web Clipper mein import kiya ja sakta hai.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Web se content ko ek private aur durable format mein save karein jise aap offline access kar sakte hain. Obsidian ka official browser extension."
+		"message": "Web se content ko ek private aur durable format mein save karein jise aap offline access kar sakte hain. Logseq ka official browser extension."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Text copy karne mein fail"
@@ -400,7 +400,7 @@
 		"message": "Properties import karein"
 	},
 	"importPropertiesDescription": {
-		"message": "Obsidian se properties import karne ke liye, apne vault mein $strong_1_start$types.json$strong_1_end$ file ko $strong_2_start$.obsidian$strong_2_end$ folder mein dhundhein. Note karein ki yeh folder default roop se adhikansh operating systems mein hidden hota hai.",
+		"message": "Logseq se properties import karne ke liye, apne vault mein $strong_1_start$types.json$strong_1_end$ file ko $strong_2_start$.obsidian$strong_2_end$ folder mein dhundhein. Note karein ki yeh folder default roop se adhikansh operating systems mein hidden hota hai.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

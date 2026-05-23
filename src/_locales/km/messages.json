@@ -39,7 +39,7 @@
 		"message": "គ្មានសោ API"
 	},
 	"apiKeysWarning": {
-		"message": "ដោយប្រើអ្នកផ្តល់សេវាខាងក្រៅ អ្នកយល់ព្រមតាមលក្ខខណ្ឌ និងគោលការណ៍ឯកជនភាពរបស់ពួកគេ។ សំណើ Interpreter ត្រូវបានផ្ញើដោយផ្ទាល់ទៅកាន់អ្នកផ្តល់សេវាដែលអ្នកជ្រើសរើស។ Obsidian មិនប្រមូល ឬរក្សាទុកទិន្នន័យណាមួយអំពីសំណើរបស់អ្នកទេ។"
+		"message": "ដោយប្រើអ្នកផ្តល់សេវាខាងក្រៅ អ្នកយល់ព្រមតាមលក្ខខណ្ឌ និងគោលការណ៍ឯកជនភាពរបស់ពួកគេ។ សំណើ Interpreter ត្រូវបានផ្ញើដោយផ្ទាល់ទៅកាន់អ្នកផ្តល់សេវាដែលអ្នកជ្រើសរើស។ Logseq មិនប្រមូល ឬរក្សាទុកទិន្នន័យណាមួយអំពីសំណើរបស់អ្នកទេ។"
 	},
 	"appendToDaily": {
 		"message": "បន្ថែមទៅកំណត់ត្រាប្រចាំថ្ងៃ នៅខាងក្រោម"
@@ -90,7 +90,7 @@
 		"message": "ឥរិយាបថការកាត់យក"
 	},
 	"clipBehaviorDescription": {
-		"message": "ជ្រើសរើសរបៀបដែលមាតិកាដែលបានរំលេចត្រូវបានរក្សាទុកទៅ Obsidian។ កំណត់អថេរ $strong_start${{content}}$strong_end$។",
+		"message": "ជ្រើសរើសរបៀបដែលមាតិកាដែលបានរំលេចត្រូវបានរក្សាទុកទៅ Logseq។ កំណត់អថេរ $strong_start${{content}}$strong_end$។",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian មិនអាចចូលប្រើក្តារតម្បៀតខ្ទាស់របស់អ្នកបានទេ។ សាកល្បងការណែនាំដោះស្រាយបញ្ហានៅទីនេះ៖ $1",
+		"message": "Logseq មិនអាចចូលប្រើក្តារតម្បៀតខ្ទាស់របស់អ្នកបានទេ។ សាកល្បងការណែនាំដោះស្រាយបញ្ហានៅទីនេះ៖ $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "បិទ"
 	},
 	"commandOpenClipper": {
-		"message": "បើក Obsidian Clipper"
+		"message": "បើក Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "កាត់យករហ័ស"
@@ -190,13 +190,13 @@
 		"message": "ចម្លងទ្វេ"
 	},
 	"earlyAccessDescription": {
-		"message": "ប្រើមុខងារដែលត្រូវការកំណែ $link_start$early access version$link_end$ ចុងក្រោយបំផុតរបស់ Obsidian។ បច្ចុប្បន្នត្រូវការ Obsidian 1.7.2 ឬថ្មីជាងនេះ។",
+		"message": "ប្រើមុខងារដែលត្រូវការកំណែ $link_start$early access version$link_end$ ចុងក្រោយបំផុតរបស់ Logseq។ បច្ចុប្បន្នត្រូវការ Logseq 1.7.2 ឬថ្មីជាងនេះ។",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "បង្កប់"
 	},
 	"enableHighlighterDescription": {
-		"message": "រំលេចមាតិកានៅលើទំព័របណ្ដាញ ដែលអ្នកអាចរក្សាទុកទៅ Obsidian។"
+		"message": "រំលេចមាតិកានៅលើទំព័របណ្ដាញ ដែលអ្នកអាចរក្សាទុកទៅ Logseq។"
 	},
 	"enableInterpreter": {
 		"message": "បើក Interpreter"
@@ -266,7 +266,7 @@
 		"message": "នាំចេញលក្ខណៈសម្បត្តិ"
 	},
 	"exportPropertiesDescription": {
-		"message": "រក្សាទុកលក្ខណៈសម្បត្តិ Web Clipper ទៅឯកសារ $strong_start$types.json$strong_end$ ដែលអាចនាំចូលទៅក្នុង vault របស់ Obsidian របស់អ្នក ឬទៅក្នុង Web Clipper លើឧបករណ៍ផ្សេងៗ។",
+		"message": "រក្សាទុកលក្ខណៈសម្បត្តិ Web Clipper ទៅឯកសារ $strong_start$types.json$strong_end$ ដែលអាចនាំចូលទៅក្នុង vault របស់ Logseq របស់អ្នក ឬទៅក្នុង Web Clipper លើឧបករណ៍ផ្សេងៗ។",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "រក្សាទុកមាតិកាពីបណ្ដាញក្នុងទម្រង់ឯកជន និងប្រើបានយូរ ដែលអ្នកអាចចូលប្រើក្រៅបណ្ដាញបាន។ ផ្នែកបន្ថែមកម្មវិធីរុករកផ្លូវការរបស់ Obsidian។"
+		"message": "រក្សាទុកមាតិកាពីបណ្ដាញក្នុងទម្រង់ឯកជន និងប្រើបានយូរ ដែលអ្នកអាចចូលប្រើក្រៅបណ្ដាញបាន។ ផ្នែកបន្ថែមកម្មវិធីរុករកផ្លូវការរបស់ Logseq។"
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "បានបរាជ័យក្នុងការចម្លងអត្ថបទ"
@@ -400,7 +400,7 @@
 		"message": "នាំចូលលក្ខណៈសម្បត្តិ"
 	},
 	"importPropertiesDescription": {
-		"message": "ដើម្បីនាំចូលលក្ខណៈសម្បត្តិរបស់អ្នកពី Obsidian សូមស្វែងរកឯកសារ $strong_1_start$types.json$strong_1_end$ នៅក្នុងថត $strong_2_start$.obsidian$strong_2_end$ ខាងក្នុង vault របស់អ្នក។ សូមចំណាំថា ថតនេះត្រូវបានលាក់ជាលំនាំដើមលើប្រព័ន្ធប្រតិបត្តិការភាគច្រើន។",
+		"message": "ដើម្បីនាំចូលលក្ខណៈសម្បត្តិរបស់អ្នកពី Logseq សូមស្វែងរកឯកសារ $strong_1_start$types.json$strong_1_end$ នៅក្នុងថត $strong_2_start$.obsidian$strong_2_end$ ខាងក្នុង vault របស់អ្នក។ សូមចំណាំថា ថតនេះត្រូវបានលាក់ជាលំនាំដើមលើប្រព័ន្ធប្រតិបត្តិការភាគច្រើន។",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

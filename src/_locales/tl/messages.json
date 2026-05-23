@@ -39,7 +39,7 @@
 		"message": "Nawawala ang API key"
 	},
 	"apiKeysWarning": {
-		"message": "Sa paggamit ng external provider, tinatanggap mo ang kanilang mga tuntunin at patakaran sa privacy. Ang mga kahilingan sa interpreter ay direktang ipinapadala sa iyong napiling provider. Hindi nangongolekta o nag-iimbak ang Obsidian ng impormasyon tungkol sa iyong mga kahilingan."
+		"message": "Sa paggamit ng external provider, tinatanggap mo ang kanilang mga tuntunin at patakaran sa privacy. Ang mga kahilingan sa interpreter ay direktang ipinapadala sa iyong napiling provider. Hindi nangongolekta o nag-iimbak ang Logseq ng impormasyon tungkol sa iyong mga kahilingan."
 	},
 	"appendToDaily": {
 		"message": "Idagdag sa daily note, sa dulo"
@@ -90,7 +90,7 @@
 		"message": "Pag-uugali ng pag-clip"
 	},
 	"clipBehaviorDescription": {
-		"message": "Piliin kung paano i-save ang napiling content sa Obsidian. Itinatakda ang variable na $strong_start${{content}}$strong_end$",
+		"message": "Piliin kung paano i-save ang napiling content sa Logseq. Itinatakda ang variable na $strong_start${{content}}$strong_end$",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Hindi ma-access ng Obsidian ang iyong clipboard. Subukan ang mga tagubilin sa pag-troubleshoot dito: $1",
+		"message": "Hindi ma-access ng Logseq ang iyong clipboard. Subukan ang mga tagubilin sa pag-troubleshoot dito: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Isara"
 	},
 	"commandOpenClipper": {
-		"message": "Buksan ang Obsidian Clipper"
+		"message": "Buksan ang Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Quick clip"
@@ -190,13 +190,13 @@
 		"message": "Kopyahin"
 	},
 	"earlyAccessDescription": {
-		"message": "Gamitin ang mga feature na nangangailangan ng pinakabagong $link_start$early access version$link_end$ ng Obsidian. Kasalukuyang kailangan ang Obsidian 1.7.2 o mas bago.",
+		"message": "Gamitin ang mga feature na nangangailangan ng pinakabagong $link_start$early access version$link_end$ ng Logseq. Kasalukuyang kailangan ang Logseq 1.7.2 o mas bago.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Naka-embed"
 	},
 	"enableHighlighterDescription": {
-		"message": "Mag-highlight ng content sa mga webpage para i-save sa Obsidian"
+		"message": "Mag-highlight ng content sa mga webpage para i-save sa Logseq"
 	},
 	"enableInterpreter": {
 		"message": "I-enable ang interpreter"
@@ -266,7 +266,7 @@
 		"message": "I-export ang mga property"
 	},
 	"exportPropertiesDescription": {
-		"message": "I-save ang mga Web Clipper property sa $strong_start$types.json$strong_end$ file, na maaaring i-import sa iyong Obsidian vault o Web Clipper sa ibang device",
+		"message": "I-save ang mga Web Clipper property sa $strong_start$types.json$strong_end$ file, na maaaring i-import sa iyong Logseq vault o Web Clipper sa ibang device",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "I-save ang web content sa pribado at pangmatagalang format, na maaaring ma-access offline. Ang opisyal na browser extension para sa Obsidian."
+		"message": "I-save ang web content sa pribado at pangmatagalang format, na maaaring ma-access offline. Ang opisyal na browser extension para sa Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Hindi makopya ang text"
@@ -400,7 +400,7 @@
 		"message": "I-import ang mga property"
 	},
 	"importPropertiesDescription": {
-		"message": "Para i-import ang mga property mula sa Obsidian, hanapin ang $strong_1_start$types.json$strong_1_end$ file sa $strong_2_start$.obsidian$strong_2_end$ folder ng iyong vault. Ang folder na ito ay nakatago by default sa karamihan ng operating system.",
+		"message": "Para i-import ang mga property mula sa Logseq, hanapin ang $strong_1_start$types.json$strong_1_end$ file sa $strong_2_start$.obsidian$strong_2_end$ folder ng iyong vault. Ang folder na ito ay nakatago by default sa karamihan ng operating system.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

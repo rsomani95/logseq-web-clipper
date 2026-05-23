@@ -39,7 +39,7 @@
 		"message": "Chybí API klíč"
 	},
 	"apiKeysWarning": {
-		"message": "Používáním externího poskytovatele souhlasíte s jejich podmínkami a zásadami ochrany osobních údajů. Požadavky překladače jsou odesílány přímo vašemu vybranému poskytovateli. Obsidian neshromažďuje ani neukládá žádné informace o vašich požadavcích."
+		"message": "Používáním externího poskytovatele souhlasíte s jejich podmínkami a zásadami ochrany osobních údajů. Požadavky překladače jsou odesílány přímo vašemu vybranému poskytovateli. Logseq neshromažďuje ani neukládá žádné informace o vašich požadavcích."
 	},
 	"appendToDaily": {
 		"message": "Připojit k denní poznámce, na konec"
@@ -90,7 +90,7 @@
 		"message": "Způsob zachycení"
 	},
 	"clipBehaviorDescription": {
-		"message": "Vyberte, jak je zvýrazněný obsah uložen do Obsidian. Definuje proměnnou $strong_start${{content}}$strong_end$.",
+		"message": "Vyberte, jak je zvýrazněný obsah uložen do Logseq. Definuje proměnnou $strong_start${{content}}$strong_end$.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian nemá přístup k vaší schránce. Zkuste pokyny k řešení problémů zde: $1",
+		"message": "Logseq nemá přístup k vaší schránce. Zkuste pokyny k řešení problémů zde: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Zavřít"
 	},
 	"commandOpenClipper": {
-		"message": "Otevřít Obsidian Clipper"
+		"message": "Otevřít Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Rychlé zachycení"
@@ -190,13 +190,13 @@
 		"message": "Duplikovat"
 	},
 	"earlyAccessDescription": {
-		"message": "Použijte funkce, které vyžadují nejnovější $link_start$verzi pro předčasný přístup$link_end$ Obsidian. Aktuálně vyžaduje Obsidian 1.7.2 nebo novější.",
+		"message": "Použijte funkce, které vyžadují nejnovější $link_start$verzi pro předčasný přístup$link_end$ Logseq. Aktuálně vyžaduje Logseq 1.7.2 nebo novější.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Vložené"
 	},
 	"enableHighlighterDescription": {
-		"message": "Zvýrazněte obsah na webových stránkách, který můžete uložit do Obsidian."
+		"message": "Zvýrazněte obsah na webových stránkách, který můžete uložit do Logseq."
 	},
 	"enableInterpreter": {
 		"message": "Povolit překladač"
@@ -266,7 +266,7 @@
 		"message": "Exportovat vlastnosti"
 	},
 	"exportPropertiesDescription": {
-		"message": "Uložte vlastnosti Web Clipper do souboru $strong_start$types.json$strong_end$, který lze importovat do vašeho trezoru Obsidian nebo do Web Clipper na jiných zařízeních.",
+		"message": "Uložte vlastnosti Web Clipper do souboru $strong_start$types.json$strong_end$, který lze importovat do vašeho trezoru Logseq nebo do Web Clipper na jiných zařízeních.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Uložte obsah z webu v soukromém a trvalém formátu, ke kterému máte přístup offline. Oficiální prohlížečové rozšíření pro Obsidian."
+		"message": "Uložte obsah z webu v soukromém a trvalém formátu, ke kterému máte přístup offline. Oficiální prohlížečové rozšíření pro Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Nepodařilo se zkopírovat text"
@@ -400,7 +400,7 @@
 		"message": "Importovat vlastnosti"
 	},
 	"importPropertiesDescription": {
-		"message": "Pro import vlastností z Obsidianu najděte soubor $strong_1_start$types.json$strong_1_end$ ve složce $strong_2_start$.obsidian$strong_2_end$ vašeho trezoru. Tato složka je ve většině operačních systémů ve výchozím nastavení skrytá.",
+		"message": "Pro import vlastností z Logsequ najděte soubor $strong_1_start$types.json$strong_1_end$ ve složce $strong_2_start$.obsidian$strong_2_end$ vašeho trezoru. Tato složka je ve většině operačních systémů ve výchozím nastavení skrytá.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

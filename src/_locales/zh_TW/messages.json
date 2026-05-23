@@ -39,7 +39,7 @@
 		"message": "無 API 金鑰"
 	},
 	"apiKeysWarning": {
-		"message": "使用外部提供者即表示您同意其條款和隐私政策。解譯器請求直接發送給您選擇的提供者。Obsidian 不會收集或儲存任何關於您請求的資料。"
+		"message": "使用外部提供者即表示您同意其條款和隐私政策。解譯器請求直接發送給您選擇的提供者。Logseq 不會收集或儲存任何關於您請求的資料。"
 	},
 	"appendToDaily": {
 		"message": "新增到每日筆記底部"
@@ -90,7 +90,7 @@
 		"message": "擷取行為"
 	},
 	"clipBehaviorDescription": {
-		"message": "選擇如何將標記的內容儲存到 Obsidian。定義 $strong_start${{content}}$strong_end$ 變數。",
+		"message": "選擇如何將標記的內容儲存到 Logseq。定義 $strong_start${{content}}$strong_end$ 變數。",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian 無法存取您的剪貼簿。請嘗試依照此處的疑難排解指示操作：$1",
+		"message": "Logseq 無法存取您的剪貼簿。請嘗試依照此處的疑難排解指示操作：$1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "關閉"
 	},
 	"commandOpenClipper": {
-		"message": "開啟 Obsidian Clipper"
+		"message": "開啟 Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "快速擷取"
@@ -190,13 +190,13 @@
 		"message": "複製"
 	},
 	"earlyAccessDescription": {
-		"message": "使用需要最新 $link_start$早期訪問版本$link_end$ 的 Obsidian 功能。目前需要 Obsidian 1.7.2 或更高版本。",
+		"message": "使用需要最新 $link_start$早期訪問版本$link_end$ 的 Logseq 功能。目前需要 Logseq 1.7.2 或更高版本。",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "嵌入式"
 	},
 	"enableHighlighterDescription": {
-		"message": "在網頁上標記內容，您可以將其儲存到 Obsidian。"
+		"message": "在網頁上標記內容，您可以將其儲存到 Logseq。"
 	},
 	"enableInterpreter": {
 		"message": "啟用解譯器"
@@ -266,7 +266,7 @@
 		"message": "匯出屬性"
 	},
 	"exportPropertiesDescription": {
-		"message": "將 Web Clipper 屬性儲存到 $strong_start$types.json$strong_end$ 檔案，可以匯入到您的 Obsidian 儲存庫，或匯入到其他裝置上的 Web Clipper。",
+		"message": "將 Web Clipper 屬性儲存到 $strong_start$types.json$strong_end$ 檔案，可以匯入到您的 Logseq 儲存庫，或匯入到其他裝置上的 Web Clipper。",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "將網路內容以私密且穩定的格式儲存下來，供您離線存取使用。這是 Obsidian 官方推出的瀏覽器擴充套件。"
+		"message": "將網路內容以私密且穩定的格式儲存下來，供您離線存取使用。這是 Logseq 官方推出的瀏覽器擴充套件。"
 	},
 	"extensionName": {
-		"message": "Obsidian 網頁擷取器"
+		"message": "Logseq 網頁擷取器"
 	},
 	"failedToCopyText": {
 		"message": "複製文字失敗"
@@ -400,7 +400,7 @@
 		"message": "匯入屬性"
 	},
 	"importPropertiesDescription": {
-		"message": "要從 Obsidian 匯入您的屬性，請在儲存庫中的 $strong_1_start$.obsidian$strong_1_end$ 資料夾中找到 $strong_2_start$types.json$strong_2_end$ 檔案。請注意，這個資料夾在大多數作業系統中預設是隱藏的。",
+		"message": "要從 Logseq 匯入您的屬性，請在儲存庫中的 $strong_1_start$.obsidian$strong_1_end$ 資料夾中找到 $strong_2_start$types.json$strong_2_end$ 檔案。請注意，這個資料夾在大多數作業系統中預設是隱藏的。",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

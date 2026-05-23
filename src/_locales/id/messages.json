@@ -39,7 +39,7 @@
 		"message": "Tidak ada kunci API"
 	},
 	"apiKeysWarning": {
-		"message": "Dengan menggunakan penyedia eksternal, Anda menyetujui persyaratan dan kebijakan privasi mereka. Permintaan interpreter dikirim langsung ke penyedia yang Anda pilih. Obsidian tidak mengumpulkan atau menyimpan data apa pun tentang permintaan Anda."
+		"message": "Dengan menggunakan penyedia eksternal, Anda menyetujui persyaratan dan kebijakan privasi mereka. Permintaan interpreter dikirim langsung ke penyedia yang Anda pilih. Logseq tidak mengumpulkan atau menyimpan data apa pun tentang permintaan Anda."
 	},
 	"appendToDaily": {
 		"message": "Tambah ke catatan harian, di bagian akhir"
@@ -90,7 +90,7 @@
 		"message": "Perilaku klip"
 	},
 	"clipBehaviorDescription": {
-		"message": "Pilih bagaimana penyimpanan konten yang telah disorot ke dalam Obsidian. Mendefinisikan variabel $strong_start${{content}}$strong_end$.",
+		"message": "Pilih bagaimana penyimpanan konten yang telah disorot ke dalam Logseq. Mendefinisikan variabel $strong_start${{content}}$strong_end$.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian tidak dapat mengakses papan klip Anda. Coba petunjuk pemecahan masalah di sini: $1",
+		"message": "Logseq tidak dapat mengakses papan klip Anda. Coba petunjuk pemecahan masalah di sini: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Tutup"
 	},
 	"commandOpenClipper": {
-		"message": "Buka Obsidian Clipper"
+		"message": "Buka Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Klip cepat"
@@ -190,13 +190,13 @@
 		"message": "Duplikat"
 	},
 	"earlyAccessDescription": {
-		"message": "Gunakan fitur yang memerlukan versi $link_start$akses awal$link_end$ terbaru dari Obsidian. Saat ini memerlukan Obsidian 1.7.2 atau yang lebih baru.",
+		"message": "Gunakan fitur yang memerlukan versi $link_start$akses awal$link_end$ terbaru dari Logseq. Saat ini memerlukan Logseq 1.7.2 atau yang lebih baru.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Tersemat"
 	},
 	"enableHighlighterDescription": {
-		"message": "Sorot konten di laman web yang dapat disimpan ke Obsidian."
+		"message": "Sorot konten di laman web yang dapat disimpan ke Logseq."
 	},
 	"enableInterpreter": {
 		"message": "Aktifkan interpreter"
@@ -266,7 +266,7 @@
 		"message": "Ekspor properti"
 	},
 	"exportPropertiesDescription": {
-		"message": "Simpan properti Web Clipper ke file $strong_start$types.json$strong_end$ yang dapat diimpor ke dalam vault Obsidian, atau ke Web Clipper di perangkat lain.",
+		"message": "Simpan properti Web Clipper ke file $strong_start$types.json$strong_end$ yang dapat diimpor ke dalam vault Logseq, atau ke Web Clipper di perangkat lain.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Simpan konten dari web dalam format yang bersifat privat dan tahan lama dan dapat diakses secara offline. Ekstensi browser resmi untuk Obsidian."
+		"message": "Simpan konten dari web dalam format yang bersifat privat dan tahan lama dan dapat diakses secara offline. Ekstensi browser resmi untuk Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Gagal menyalin teks"
@@ -400,7 +400,7 @@
 		"message": "Impor properti"
 	},
 	"importPropertiesDescription": {
-		"message": "Untuk mengimpor properti dari Obsidian, temukan file $strong_1_start$types.json$strong_1_end$ di folder $strong_2_start$.obsidian$strong_2_end$ dalam vault Anda. Sebagai catatan, folder ini tersembunyi secara default di sebagian besar sistem operasi.",
+		"message": "Untuk mengimpor properti dari Logseq, temukan file $strong_1_start$types.json$strong_1_end$ di folder $strong_2_start$.obsidian$strong_2_end$ dalam vault Anda. Sebagai catatan, folder ini tersembunyi secara default di sebagian besar sistem operasi.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

@@ -39,7 +39,7 @@
 		"message": "API কী নেই"
 	},
 	"apiKeysWarning": {
-		"message": "বাহ্যিক প্রোভাইডার ব্যবহার করে আপনি তাদের শর্তাবলী এবং গোপনীয়তা নীতির সাথে সম্মত হচ্ছেন। ইন্টারপ্রিটার রিকোয়েস্টগুলি আপনার নির্বাচিত প্রোভাইডারের কাছে সরাসরি পাঠানো হয়। Obsidian আপনার রিকোয়েস্ট সম্পর্কিত কোনও তথ্য সংগ্রহ বা সংরক্ষণ করে না।"
+		"message": "বাহ্যিক প্রোভাইডার ব্যবহার করে আপনি তাদের শর্তাবলী এবং গোপনীয়তা নীতির সাথে সম্মত হচ্ছেন। ইন্টারপ্রিটার রিকোয়েস্টগুলি আপনার নির্বাচিত প্রোভাইডারের কাছে সরাসরি পাঠানো হয়। Logseq আপনার রিকোয়েস্ট সম্পর্কিত কোনও তথ্য সংগ্রহ বা সংরক্ষণ করে না।"
 	},
 	"appendToDaily": {
 		"message": "ডেইলি নোটের শেষে যোগ করুন"
@@ -90,7 +90,7 @@
 		"message": "ক্লিপের আচরণ"
 	},
 	"clipBehaviorDescription": {
-		"message": "Obsidian এ হাইলাইট করা কনটেন্ট কীভাবে সংরক্ষণ করা হবে তা নির্বাচন করুন। এটি $strong_start${{content}}$strong_end$ ভেরিয়েবল সংজ্ঞায়িত করে।",
+		"message": "Logseq এ হাইলাইট করা কনটেন্ট কীভাবে সংরক্ষণ করা হবে তা নির্বাচন করুন। এটি $strong_start${{content}}$strong_end$ ভেরিয়েবল সংজ্ঞায়িত করে।",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian আপনার ক্লিপবোর্ডে অ্যাক্সেস করতে পারছে না। এখানে ট্রাবলশুটিং নির্দেশনা দেখুন: $1",
+		"message": "Logseq আপনার ক্লিপবোর্ডে অ্যাক্সেস করতে পারছে না। এখানে ট্রাবলশুটিং নির্দেশনা দেখুন: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "বন্ধ করুন"
 	},
 	"commandOpenClipper": {
-		"message": "Obsidian Clipper খুলুন"
+		"message": "Logseq Clipper খুলুন"
 	},
 	"commandQuickClip": {
 		"message": "দ্রুত ক্লিপ করুন"
@@ -190,13 +190,13 @@
 		"message": "ডুপ্লিকেট করুন"
 	},
 	"earlyAccessDescription": {
-		"message": "Obsidian এর সর্বশেষ $link_start$আর্লি অ্যাক্সেস সংস্করণের$link_end$ প্রয়োজনীয় ফিচারগুলো ব্যবহার করুন। বর্তমানে Obsidian 1.7.2 বা তার পরের সংস্করণ প্রয়োজন।",
+		"message": "Logseq এর সর্বশেষ $link_start$আর্লি অ্যাক্সেস সংস্করণের$link_end$ প্রয়োজনীয় ফিচারগুলো ব্যবহার করুন। বর্তমানে Logseq 1.7.2 বা তার পরের সংস্করণ প্রয়োজন।",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "এম্বেডেড"
 	},
 	"enableHighlighterDescription": {
-		"message": "ওয়েব পেজ থেকে বিষয়বস্তু হাইলাইট করে Obsidian এ সংরক্ষণ করুন।"
+		"message": "ওয়েব পেজ থেকে বিষয়বস্তু হাইলাইট করে Logseq এ সংরক্ষণ করুন।"
 	},
 	"enableInterpreter": {
 		"message": "ইন্টারপ্রিটার সক্রিয় করুন"
@@ -266,7 +266,7 @@
 		"message": "প্রোপার্টিগুলি এক্সপোর্ট করুন"
 	},
 	"exportPropertiesDescription": {
-		"message": "ওয়েব ক্লিপারের প্রোপার্টিগুলিকে একটি $strong_start$types.json$strong_end$ ফাইলে সংরক্ষণ করুন যা আপনার Obsidian ভল্টে বা অন্যান্য ডিভাইসে ওয়েব ক্লিপারে ইম্পোর্ট করা যেতে পারে।",
+		"message": "ওয়েব ক্লিপারের প্রোপার্টিগুলিকে একটি $strong_start$types.json$strong_end$ ফাইলে সংরক্ষণ করুন যা আপনার Logseq ভল্টে বা অন্যান্য ডিভাইসে ওয়েব ক্লিপারে ইম্পোর্ট করা যেতে পারে।",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "ওয়েব থেকে বিষয়বস্তু একটি ব্যক্তিগত এবং স্থায়ী ফর্ম্যাটে সংরক্ষণ করুন যা আপনি অফলাইনে অ্যাক্সেস করতে পারেন। Obsidian এর জন্য অফিসিয়াল ব্রাউজার এক্সটেনশান।"
+		"message": "ওয়েব থেকে বিষয়বস্তু একটি ব্যক্তিগত এবং স্থায়ী ফর্ম্যাটে সংরক্ষণ করুন যা আপনি অফলাইনে অ্যাক্সেস করতে পারেন। Logseq এর জন্য অফিসিয়াল ব্রাউজার এক্সটেনশান।"
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "টেক্সট কপি করতে ব্যর্থ হয়েছে"
@@ -400,7 +400,7 @@
 		"message": "প্রোপার্টিগুলি ইম্পোর্ট করুন"
 	},
 	"importPropertiesDescription": {
-		"message": "Obsidian থেকে প্রোপার্টিগুলি ইম্পোর্ট করার জন্য আপনার ভল্টের মধ্যে $strong_2_start$.obsidian$strong_2_end$ ফোল্ডারে অবস্থিত $strong_1_start$types.json$strong_1_end$ ফাইলটি খুঁজুন। মনে রাখবেন এই ফোল্ডারটি বেশিরভাগ অপারেটিং সিস্টেমে ডিফল্টভাবে লুকানো থাকে।",
+		"message": "Logseq থেকে প্রোপার্টিগুলি ইম্পোর্ট করার জন্য আপনার ভল্টের মধ্যে $strong_2_start$.obsidian$strong_2_end$ ফোল্ডারে অবস্থিত $strong_1_start$types.json$strong_1_end$ ফাইলটি খুঁজুন। মনে রাখবেন এই ফোল্ডারটি বেশিরভাগ অপারেটিং সিস্টেমে ডিফল্টভাবে লুকানো থাকে।",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

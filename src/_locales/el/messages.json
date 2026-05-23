@@ -39,7 +39,7 @@
 		"message": "Λείπει το κλειδί API"
 	},
 	"apiKeysWarning": {
-		"message": "Χρησιμοποιώντας έναν εξωτερικό πάροχο, αποδέχεστε τους όρους χρήσης και την πολιτική απορρήτου τους. Τα αιτήματα διερμηνέα αποστέλλονται απευθείας στον επιλεγμένο πάροχό σας. Το Obsidian δεν συλλέγει ούτε αποθηκεύει πληροφορίες για τα αιτήματά σας."
+		"message": "Χρησιμοποιώντας έναν εξωτερικό πάροχο, αποδέχεστε τους όρους χρήσης και την πολιτική απορρήτου τους. Τα αιτήματα διερμηνέα αποστέλλονται απευθείας στον επιλεγμένο πάροχό σας. Το Logseq δεν συλλέγει ούτε αποθηκεύει πληροφορίες για τα αιτήματά σας."
 	},
 	"appendToDaily": {
 		"message": "Προσθήκη στην ημερήσια σημείωση, στο τέλος"
@@ -90,7 +90,7 @@
 		"message": "Συμπεριφορά αποκοπής"
 	},
 	"clipBehaviorDescription": {
-		"message": "Επιλέξτε πώς θα αποθηκευτεί το επιλεγμένο περιεχόμενο στο Obsidian. Ορίζει τη μεταβλητή $strong_start${{content}}$strong_end$",
+		"message": "Επιλέξτε πώς θα αποθηκευτεί το επιλεγμένο περιεχόμενο στο Logseq. Ορίζει τη μεταβλητή $strong_start${{content}}$strong_end$",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Το Obsidian δεν μπορεί να αποκτήσει πρόσβαση στο πρόχειρό σας. Δοκιμάστε τις οδηγίες αντιμετώπισης προβλημάτων εδώ: $1",
+		"message": "Το Logseq δεν μπορεί να αποκτήσει πρόσβαση στο πρόχειρό σας. Δοκιμάστε τις οδηγίες αντιμετώπισης προβλημάτων εδώ: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Κλείσιμο"
 	},
 	"commandOpenClipper": {
-		"message": "Άνοιγμα Obsidian Clipper"
+		"message": "Άνοιγμα Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Γρήγορη αποκοπή"
@@ -190,13 +190,13 @@
 		"message": "Αντίγραφο"
 	},
 	"earlyAccessDescription": {
-		"message": "Χρησιμοποιήστε λειτουργίες που απαιτούν την πιο πρόσφατη $link_start$έκδοση πρώιμης πρόσβασης$link_end$ του Obsidian. Αυτή τη στιγμή απαιτείται Obsidian 1.7.2 ή νεότερη έκδοση.",
+		"message": "Χρησιμοποιήστε λειτουργίες που απαιτούν την πιο πρόσφατη $link_start$έκδοση πρώιμης πρόσβασης$link_end$ του Logseq. Αυτή τη στιγμή απαιτείται Logseq 1.7.2 ή νεότερη έκδοση.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Ενσωματωμένο"
 	},
 	"enableHighlighterDescription": {
-		"message": "Επισημάνετε περιεχόμενο σε ιστοσελίδες που μπορείτε να αποθηκεύσετε στο Obsidian"
+		"message": "Επισημάνετε περιεχόμενο σε ιστοσελίδες που μπορείτε να αποθηκεύσετε στο Logseq"
 	},
 	"enableInterpreter": {
 		"message": "Ενεργοποίηση διερμηνέα"
@@ -266,7 +266,7 @@
 		"message": "Εξαγωγή ιδιοτήτων"
 	},
 	"exportPropertiesDescription": {
-		"message": "Αποθηκεύστε τις ιδιότητες του Web Clipper σε ένα αρχείο $strong_start$types.json$strong_end$ που μπορεί να εισαχθεί στο θησαυροφυλάκιο Obsidian σας ή στο Web Clipper σε άλλες συσκευές",
+		"message": "Αποθηκεύστε τις ιδιότητες του Web Clipper σε ένα αρχείο $strong_start$types.json$strong_end$ που μπορεί να εισαχθεί στο θησαυροφυλάκιο Logseq σας ή στο Web Clipper σε άλλες συσκευές",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Αποθηκεύστε περιεχόμενο από τον ιστό σε ιδιωτική και βιώσιμη μορφή στην οποία έχετε πρόσβαση εκτός σύνδεσης. Η επίσημη επέκταση περιηγητή για το Obsidian."
+		"message": "Αποθηκεύστε περιεχόμενο από τον ιστό σε ιδιωτική και βιώσιμη μορφή στην οποία έχετε πρόσβαση εκτός σύνδεσης. Η επίσημη επέκταση περιηγητή για το Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Αποτυχία αντιγραφής κειμένου"
@@ -400,7 +400,7 @@
 		"message": "Εισαγωγή ιδιοτήτων"
 	},
 	"importPropertiesDescription": {
-		"message": "Για να εισάγετε ιδιότητες από το Obsidian, βρείτε το αρχείο $strong_1_start$types.json$strong_1_end$ στο φάκελο $strong_2_start$.obsidian$strong_2_end$ του θησαυροφυλακίου σας. Σημειώστε ότι αυτός ο φάκελος είναι κρυφός από προεπιλογή στα περισσότερα λειτουργικά συστήματα.",
+		"message": "Για να εισάγετε ιδιότητες από το Logseq, βρείτε το αρχείο $strong_1_start$types.json$strong_1_end$ στο φάκελο $strong_2_start$.obsidian$strong_2_end$ του θησαυροφυλακίου σας. Σημειώστε ότι αυτός ο φάκελος είναι κρυφός από προεπιλογή στα περισσότερα λειτουργικά συστήματα.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

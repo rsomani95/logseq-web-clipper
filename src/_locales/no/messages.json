@@ -39,7 +39,7 @@
 		"message": "API-nøkkel mangler"
 	},
 	"apiKeysWarning": {
-		"message": "Ved å bruke en ekstern leverandør godtar du deres vilkår og personvernregler. Tolkningsforespørsler sendes direkte til din valgte leverandør. Obsidian samler ikke inn eller lagrer informasjon om dine forespørsler."
+		"message": "Ved å bruke en ekstern leverandør godtar du deres vilkår og personvernregler. Tolkningsforespørsler sendes direkte til din valgte leverandør. Logseq samler ikke inn eller lagrer informasjon om dine forespørsler."
 	},
 	"appendToDaily": {
 		"message": "Legg til i daglig notat, på slutten"
@@ -90,7 +90,7 @@
 		"message": "Klippoppførsel"
 	},
 	"clipBehaviorDescription": {
-		"message": "Velg hvordan valgt innhold lagres i Obsidian. Setter variabelen $strong_start${{content}}$strong_end$",
+		"message": "Velg hvordan valgt innhold lagres i Logseq. Setter variabelen $strong_start${{content}}$strong_end$",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian har ikke tilgang til utklippstavlen din. Prøv feilsøkingsinstruksjonene her: $1",
+		"message": "Logseq har ikke tilgang til utklippstavlen din. Prøv feilsøkingsinstruksjonene her: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Lukk"
 	},
 	"commandOpenClipper": {
-		"message": "Åpne Obsidian Clipper"
+		"message": "Åpne Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Hurtigklipp"
@@ -190,13 +190,13 @@
 		"message": "Dupliser"
 	},
 	"earlyAccessDescription": {
-		"message": "Bruk funksjoner som krever den nyeste $link_start$tidlig tilgang-versjonen$link_end$ av Obsidian. Krever for øyeblikket Obsidian 1.7.2 eller nyere.",
+		"message": "Bruk funksjoner som krever den nyeste $link_start$tidlig tilgang-versjonen$link_end$ av Logseq. Krever for øyeblikket Logseq 1.7.2 eller nyere.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Innebygd"
 	},
 	"enableHighlighterDescription": {
-		"message": "Uthev innhold på nettsider for å lagre i Obsidian"
+		"message": "Uthev innhold på nettsider for å lagre i Logseq"
 	},
 	"enableInterpreter": {
 		"message": "Aktiver tolk"
@@ -266,7 +266,7 @@
 		"message": "Eksporter egenskaper"
 	},
 	"exportPropertiesDescription": {
-		"message": "Lagre Web Clipper-egenskaper til en $strong_start$types.json$strong_end$-fil som kan importeres til ditt Obsidian-hvelv eller Web Clipper på andre enheter",
+		"message": "Lagre Web Clipper-egenskaper til en $strong_start$types.json$strong_end$-fil som kan importeres til ditt Logseq-hvelv eller Web Clipper på andre enheter",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Lagre webinnhold i et privat og varig format som kan nås offline. Den offisielle nettleserutvidelsen for Obsidian."
+		"message": "Lagre webinnhold i et privat og varig format som kan nås offline. Den offisielle nettleserutvidelsen for Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Kunne ikke kopiere tekst"
@@ -400,7 +400,7 @@
 		"message": "Importer egenskaper"
 	},
 	"importPropertiesDescription": {
-		"message": "For å importere egenskaper fra Obsidian, finn $strong_1_start$types.json$strong_1_end$-filen i $strong_2_start$.obsidian$strong_2_end$-mappen i hvelvet ditt. Denne mappen er skjult som standard på de fleste operativsystemer.",
+		"message": "For å importere egenskaper fra Logseq, finn $strong_1_start$types.json$strong_1_end$-filen i $strong_2_start$.obsidian$strong_2_end$-mappen i hvelvet ditt. Denne mappen er skjult som standard på de fleste operativsystemer.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

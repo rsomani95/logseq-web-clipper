@@ -39,7 +39,7 @@
 		"message": "Відсутній API-ключ"
 	},
 	"apiKeysWarning": {
-		"message": "Використовуючи зовнішнього провайдера, ви погоджуєтесь з їхніми умовами використання та політикою конфіденційності. Запити інтерпретатора надсилаються безпосередньо вибраному вами провайдеру. Obsidian не збирає та не зберігає інформацію про ваші запити."
+		"message": "Використовуючи зовнішнього провайдера, ви погоджуєтесь з їхніми умовами використання та політикою конфіденційності. Запити інтерпретатора надсилаються безпосередньо вибраному вами провайдеру. Logseq не збирає та не зберігає інформацію про ваші запити."
 	},
 	"appendToDaily": {
 		"message": "Додати до щоденної нотатки, в кінець"
@@ -90,7 +90,7 @@
 		"message": "Поведінка вирізання"
 	},
 	"clipBehaviorDescription": {
-		"message": "Виберіть, як зберігати вибраний вміст в Obsidian. Встановлює змінну $strong_start${{content}}$strong_end$",
+		"message": "Виберіть, як зберігати вибраний вміст в Logseq. Встановлює змінну $strong_start${{content}}$strong_end$",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian не може отримати доступ до вашого буфера обміну. Спробуйте інструкції з усунення несправностей тут: $1",
+		"message": "Logseq не може отримати доступ до вашого буфера обміну. Спробуйте інструкції з усунення несправностей тут: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "Закрити"
 	},
 	"commandOpenClipper": {
-		"message": "Відкрити Obsidian Clipper"
+		"message": "Відкрити Logseq Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Швидке вирізання"
@@ -190,13 +190,13 @@
 		"message": "Дублювати"
 	},
 	"earlyAccessDescription": {
-		"message": "Використовувати функції, які потребують найновішої $link_start$версії раннього доступу$link_end$ Obsidian. Наразі потрібен Obsidian 1.7.2 або новіший.",
+		"message": "Використовувати функції, які потребують найновішої $link_start$версії раннього доступу$link_end$ Logseq. Наразі потрібен Logseq 1.7.2 або новіший.",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "Вбудований"
 	},
 	"enableHighlighterDescription": {
-		"message": "Виділяйте вміст на веб-сторінках для збереження в Obsidian"
+		"message": "Виділяйте вміст на веб-сторінках для збереження в Logseq"
 	},
 	"enableInterpreter": {
 		"message": "Увімкнути інтерпретатор"
@@ -266,7 +266,7 @@
 		"message": "Експортувати властивості"
 	},
 	"exportPropertiesDescription": {
-		"message": "Зберегти властивості Web Clipper у файл $strong_start$types.json$strong_end$, який можна імпортувати у ваше сховище Obsidian або Web Clipper на інших пристроях",
+		"message": "Зберегти властивості Web Clipper у файл $strong_start$types.json$strong_end$, який можна імпортувати у ваше сховище Logseq або Web Clipper на інших пристроях",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Зберігайте веб-вміст у приватному та довговічному форматі, доступному офлайн. Офіційне браузерне розширення для Obsidian."
+		"message": "Зберігайте веб-вміст у приватному та довговічному форматі, доступному офлайн. Офіційне браузерне розширення для Logseq."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Не вдалося скопіювати текст"
@@ -400,7 +400,7 @@
 		"message": "Імпортувати властивості"
 	},
 	"importPropertiesDescription": {
-		"message": "Щоб імпортувати властивості з Obsidian, знайдіть файл $strong_1_start$types.json$strong_1_end$ у папці $strong_2_start$.obsidian$strong_2_end$ вашого сховища. Ця папка за замовчуванням прихована в більшості операційних систем.",
+		"message": "Щоб імпортувати властивості з Logseq, знайдіть файл $strong_1_start$types.json$strong_1_end$ у папці $strong_2_start$.obsidian$strong_2_end$ вашого сховища. Ця папка за замовчуванням прихована в більшості операційних систем.",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"

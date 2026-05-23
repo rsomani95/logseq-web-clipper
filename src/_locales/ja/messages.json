@@ -39,7 +39,7 @@
 		"message": "\"APIキーがありません\""
 	},
 	"apiKeysWarning": {
-		"message": "外部プロバイダーを使用することで、そのプロバイダーの利用規約とプライバシーポリシーに同意したことになります。インタープリターのリクエストは選択したプロバイダーに直接送信されます。Obsidianはリクエストに関するデータを収集または保存しません。"
+		"message": "外部プロバイダーを使用することで、そのプロバイダーの利用規約とプライバシーポリシーに同意したことになります。インタープリターのリクエストは選択したプロバイダーに直接送信されます。Logseqはリクエストに関するデータを収集または保存しません。"
 	},
 	"appendToDaily": {
 		"message": "デイリーノートの末尾に追加"
@@ -90,7 +90,7 @@
 		"message": "クリップの動作"
 	},
 	"clipBehaviorDescription": {
-		"message": "ハイライトしたコンテンツをObsidianに保存する方法を選択します。$strong_start${{content}}$strong_end$変数を定義します。",
+		"message": "ハイライトしたコンテンツをLogseqに保存する方法を選択します。$strong_start${{content}}$strong_end$変数を定義します。",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -101,7 +101,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian がクリップボードにアクセスできません。こちらのトラブルシューティング手順をお試しください: $1",
+		"message": "Logseq がクリップボードにアクセスできません。こちらのトラブルシューティング手順をお試しください: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -112,7 +112,7 @@
 		"message": "閉じる"
 	},
 	"commandOpenClipper": {
-		"message": "Obsidian Clipperを開く"
+		"message": "Logseq Clipperを開く"
 	},
 	"commandQuickClip": {
 		"message": "クイッククリップ"
@@ -190,13 +190,13 @@
 		"message": "複製"
 	},
 	"earlyAccessDescription": {
-		"message": "Obsidianの最新の$link_start$アーリーアクセスバージョン$link_end$が必要な機能を使用します。現在はObsidian 1.7.2以降が必要です。",
+		"message": "Logseqの最新の$link_start$アーリーアクセスバージョン$link_end$が必要な機能を使用します。現在はLogseq 1.7.2以降が必要です。",
 		"placeholders": {
 			"link_end": {
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
+				"content": "<a href=\"https://help.obsidian.md/Logseq/Early+access+versions\" target=\"_blank\">"
 			}
 		}
 	},
@@ -219,7 +219,7 @@
 		"message": "埋め込み"
 	},
 	"enableHighlighterDescription": {
-		"message": "WebページのコンテンツをハイライトしてObsidianに保存できます。"
+		"message": "WebページのコンテンツをハイライトしてLogseqに保存できます。"
 	},
 	"enableInterpreter": {
 		"message": "インタープリターを有効化"
@@ -266,7 +266,7 @@
 		"message": "プロパティをエクスポート"
 	},
 	"exportPropertiesDescription": {
-		"message": "Web Clipperのプロパティを$strong_start$types.json$strong_end$ファイルに保存します。このファイルはObsidian保管庫や他のデバイスのWeb Clipperにインポートできます。",
+		"message": "Web Clipperのプロパティを$strong_start$types.json$strong_end$ファイルに保存します。このファイルはLogseq保管庫や他のデバイスのWeb Clipperにインポートできます。",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -277,10 +277,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Webコンテンツをプライベートで永続的なオフラインアクセス可能な形式で保存します。Obsidianの公式ブラウザ拡張機能です。"
+		"message": "Webコンテンツをプライベートで永続的なオフラインアクセス可能な形式で保存します。Logseqの公式ブラウザ拡張機能です。"
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Logseq Web Clipper"
 	},
 	"failedToCopyText": {
 		"message": "テキストのコピーに失敗しました"
@@ -400,7 +400,7 @@
 		"message": "プロパティをインポート"
 	},
 	"importPropertiesDescription": {
-		"message": "Obsidianからプロパティをインポートするには、保管庫内の$strong_2_start$.obsidian$strong_2_end$フォルダにある$strong_1_start$types.json$strong_1_end$ファイルを探してください。このフォルダは多くのOSでデフォルトで非表示になっています。",
+		"message": "Logseqからプロパティをインポートするには、保管庫内の$strong_2_start$.obsidian$strong_2_end$フォルダにある$strong_1_start$types.json$strong_1_end$ファイルを探してください。このフォルダは多くのOSでデフォルトで非表示になっています。",
 		"placeholders": {
 			"strong_1_end": {
 				"content": "</strong>"
