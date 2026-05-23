@@ -108,6 +108,14 @@ label {
 	align-items: center;
 }
 
+// Fork-owned. Logseq Capture form: in a `.mod-horizontal` row a long
+// description would flex-shrink the adjacent control, making that input's box
+// narrower than its short-description siblings'. Pin the controls so every text
+// input down the form is the same width.
+#logseq-capture-settings-form .setting-item-control {
+	flex-shrink: 0;
+}
+
 .setting-items {
 	background-color: var(--settings-items-backgroud);
 	border-radius: var(--radius-m);

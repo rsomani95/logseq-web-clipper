@@ -1,7 +1,7 @@
 {
 	"name": "@logseq-web-clipper/plugin",
 	"version": "0.1.0",
-	"description": "Companion Logseq plugin for the Web Clipper browser extension. Owns the #WebClipping tag schema.",
+	"description": "Companion Logseq plugin for the Web Clipper browser extension. Owns the #WebReference tag schema.",
 	"private": true,
 	"license": "MIT",
 	"logseq": {

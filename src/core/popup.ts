@@ -797,7 +797,12 @@ async function fillTemplateFieldValues(currentTabId: number, template: Template 
 
 	const noteContentField = document.getElementById('note-content-field') as HTMLTextAreaElement;
 	if (noteContentField) {
-		noteContentField.value = template.noteContentFormat ? formattedContent : '';
+		// "Capture page content" off: leave the content box empty so the clip is
+		// highlights-only. The box stays visible and editable (like the tags
+		// field), so the user can still type or paste content for this one clip;
+		// whatever's in it at clip time is what saves.
+		const capturePageContent = generalSettings.logseqCaptureSettings.capturePageContent;
+		noteContentField.value = capturePageContent && template.noteContentFormat ? formattedContent : '';
 	}
 
 	if (generalSettings.interpreterEnabled) {

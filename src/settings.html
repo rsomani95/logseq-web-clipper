@@ -581,6 +581,28 @@
 						<form id="logseq-capture-settings-form">
 							<div class="setting-group">
 								<div class="setting-items">
+									<div class="setting-item mod-horizontal mod-toggle">
+										<div class="setting-item-info">
+											<label for="logseq-capture-page-content">Capture page content</label>
+											<div class="setting-item-description">Save the article body as a <strong>Page Content</strong> block. Off: clip just your highlights — the content box starts empty, but you can still type or paste into it per clip.</div>
+										</div>
+										<div class="setting-item-control">
+											<div class="checkbox-container">
+												<input type="checkbox" id="logseq-capture-page-content" />
+											</div>
+										</div>
+									</div>
+
+									<div class="setting-item mod-horizontal">
+										<div class="setting-item-info">
+											<label for="logseq-capture-clip-tag">Reference tag</label>
+											<div class="setting-item-description">The tag added to every clipped page (its schema class in Logseq). Default <strong>#WebReference</strong>. Distinct from the per-page <strong>tags</strong> property. Must match the tag your companion Logseq plugin set up.</div>
+										</div>
+										<div class="setting-item-control">
+											<input type="text" id="logseq-capture-clip-tag" placeholder="WebReference" autocomplete="off" spellcheck="false" />
+										</div>
+									</div>
+
 									<div class="setting-item mod-horizontal">
 										<div class="setting-item-info">
 											<label for="logseq-capture-page-block">Page content block</label>

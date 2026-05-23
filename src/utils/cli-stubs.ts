@@ -12,6 +12,8 @@ export const generalSettings: Settings = {
 		highlightsBlockName: 'Highlights',
 		useHeadingMarkers: false,
 		populatePageTags: false,
+		capturePageContent: true,
+		clippingTag: 'WebReference',
 	},
 	logseqApiBaseUrl: 'http://127.0.0.1:12315',
 	logseqApiToken: '',

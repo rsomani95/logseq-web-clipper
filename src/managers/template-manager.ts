@@ -111,7 +111,7 @@ async function prepareTemplateForSave(template: Template): Promise<[string[], st
 }
 
 export function createDefaultTemplate(): Template {
-	// Property names match #WebClipping schema fields (see
+	// Property names match #WebReference schema fields (see
 	// @logseq-web-clipper/shared). authors/tags are node-typed (cardinality:many)
 	// — the page creator splits them on commas and creates one Logseq page per
 	// value, then links each via upsertBlockProperty.

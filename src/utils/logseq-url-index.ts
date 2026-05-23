@@ -1,19 +1,18 @@
 // URL-based dedupe index. Mirrors the zoterolocal plugin's `zotero-code-index`
 // pattern but keys on the shared `url` property (`:plugin.property.logseq-
-// zoterolocal-plugin/url`). Because 12 of the 13 #WebClipping fields reuse
+// zoterolocal-plugin/url`). Because 12 of the 13 #WebReference fields reuse
 // Zotero's property namespace, a page tagged #Zotero with the same URL is also
 // a hit — re-clipping a page already imported from Zotero won't dupe.
 //
-// Strategy: 1 datascript call to list candidate pages (tagged #WebClipping or
+// Strategy: 1 datascript call to list candidate pages (tagged the clip tag or
 // #Zotero, minus recycled), then 1 `getPageProperties` per candidate in
 // parallel to read the URL value. N+1 calls per save, but `Promise.all` keeps
 // wall-clock to ~one round trip for typical graphs.
 
-import { ident } from '@logseq-web-clipper/shared'
+import { WEB_CLIPPING_TAG, ident } from '@logseq-web-clipper/shared'
 
 import type { LogseqAPI } from './logseq-api'
 
-export const WEB_CLIPPING_TAG_NAME = 'WebClipping'
 export const ZOTERO_TAG_NAME = 'Zotero'
 
 /** A graph page that already carries a `url` property. */
@@ -44,18 +43,20 @@ interface PulledPage {
 	name?: string
 }
 
-// Pages tagged either #WebClipping or #Zotero. Both can carry the shared
-// `url` property, so either is a candidate for dedupe. `block/title` here is
-// the *tag* page's display name — DB graphs store tag identity by entity, but
-// matching against the tag page's title is what the zoterolocal plugin does
-// and works in production.
-const QUERY_CANDIDATE_PAGES = `
+// Pages tagged either the clip tag (configurable; #WebReference by default) or
+// #Zotero. Both can carry the shared `url` property, so either is a candidate
+// for dedupe. `block/title` here is the *tag* page's display name — DB graphs
+// store tag identity by entity, but matching against the tag page's title is
+// what the zoterolocal plugin does and works in production.
+function candidatePagesQuery(clipTag: string): string {
+	return `
 [:find (pull ?p [:block/uuid :block/title :block/name])
  :where
  [?p :block/tags ?t]
- (or [?t :block/title "${WEB_CLIPPING_TAG_NAME}"]
+ (or [?t :block/title "${clipTag}"]
      [?t :block/title "${ZOTERO_TAG_NAME}"])]
 `
+}
 
 // Recycled (soft-deleted) pages. Logseq DB keeps them around for 30 days; their
 // tags and properties survive, so they'd otherwise count as in-graph dupes.
@@ -127,12 +128,15 @@ function readUrlFromProps(props: Record<string, unknown> | null | undefined): st
  * graph. Empty on any failure (logged, not thrown) — callers then fall through
  * to create-as-normal, which is still correct, just not dedupe-protected.
  */
-export async function buildClipUrlIndex(api: LogseqAPI): Promise<Map<string, UrlIndexedPage>> {
+export async function buildClipUrlIndex(
+	api: LogseqAPI,
+	clipTag: string = WEB_CLIPPING_TAG,
+): Promise<Map<string, UrlIndexedPage>> {
 	const index = new Map<string, UrlIndexedPage>()
 
 	try {
 		const [pagesRaw, recycledRaw] = await Promise.all([
-			api.datascriptQuery<unknown[]>(QUERY_CANDIDATE_PAGES),
+			api.datascriptQuery<unknown[]>(candidatePagesQuery(clipTag)),
 			api.datascriptQuery<unknown[]>(QUERY_RECYCLED_PAGE_UUIDS),
 		])
 
@@ -152,7 +156,7 @@ export async function buildClipUrlIndex(api: LogseqAPI): Promise<Map<string, Url
 			)
 
 		console.log(
-			`[logseq-web-clipper] url-index: ${candidates.length} candidate page(s) tagged #WebClipping or #Zotero ` +
+			`[logseq-web-clipper] url-index: ${candidates.length} candidate page(s) tagged #${clipTag} or #${ZOTERO_TAG_NAME} ` +
 				`(${recycledUuids.size} recycled excluded). URL ident in use: "${URL_IDENT}".`,
 		)
 
@@ -213,6 +217,7 @@ export async function buildClipUrlIndex(api: LogseqAPI): Promise<Map<string, Url
 export async function findPageByUrl(
 	api: LogseqAPI,
 	url: string,
+	clipTag: string = WEB_CLIPPING_TAG,
 ): Promise<UrlIndexedPage | null> {
 	const normalized = normalizeUrl(url)
 	if (!normalized) {
@@ -220,7 +225,7 @@ export async function findPageByUrl(
 		return null
 	}
 	console.log(`[logseq-web-clipper] dedupe: looking up URL "${normalized}"`)
-	const index = await buildClipUrlIndex(api)
+	const index = await buildClipUrlIndex(api, clipTag)
 	const hit = index.get(normalized) ?? null
 	if (hit) {
 		console.log(`[logseq-web-clipper] dedupe: MATCH — existing page "${hit.title}" (uuid=${hit.uuid})`)

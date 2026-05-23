@@ -42,10 +42,24 @@ describe('highlightToBlock', () => {
 })
 
 describe('buildClipBlocks', () => {
-	test('always wraps content under a Page Content block', () => {
+	test('wraps non-empty content under a Page Content block', () => {
 		expect(buildClipBlocks('Hello.', [])).toEqual([
 			{ content: 'Page Content', children: [{ content: 'Hello.' }] },
 		])
+	})
+
+	test('omits the Page Content block when the body is empty (highlights-only clip)', () => {
+		expect(buildClipBlocks('', [{ text: 'just this' }])).toEqual([
+			{ content: 'Highlights', children: [{ content: 'just this' }] },
+		])
+	})
+
+	test('omits the Page Content block when the body is whitespace-only', () => {
+		expect(buildClipBlocks('   \n\n', [{ text: 'h' }]).some((b) => b.content === 'Page Content')).toBe(false)
+	})
+
+	test('returns no blocks when there is neither content nor highlights', () => {
+		expect(buildClipBlocks('', [])).toEqual([])
 	})
 
 	test('adds a Highlights section, with notes nested, when highlights exist', () => {

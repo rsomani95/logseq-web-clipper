@@ -1,10 +1,10 @@
-// Single source of truth for the #WebClipping tag schema. Imported by both the
+// Single source of truth for the #WebReference tag schema. Imported by both the
 // browser extension (which writes values via the Logseq HTTP API) and the
 // companion Logseq plugin (which creates the properties + tag via the SDK).
 //
 // Unification with zoterolocal: shared fields (everything except `excerpt`)
 // reuse the Zotero plugin's properties directly — same `:db/ident`, same
-// display name. A page tagged #WebClipping and a page tagged #Zotero share
+// display name. A page tagged #WebReference and a page tagged #Zotero share
 // the same `title`, `authors`, etc., so queries union naturally.
 //
 // Assumption: the user runs zoterolocal's "Add Zotero schema to Logseq"
@@ -15,7 +15,11 @@
 
 export const PLUGIN_ID = 'logseq-web-clipper'
 export const ZOTERO_PLUGIN_ID = 'logseq-zoterolocal-plugin'
-export const WEB_CLIPPING_TAG = 'WebClipping'
+// The tag every clipped page carries. This is the DEFAULT and the value the
+// companion plugin registers the property schema on; the extension also exposes
+// it as a runtime "Reference tag" setting. Both must agree for the tag to carry
+// that schema — change here (and rebuild the plugin) to move the default.
+export const WEB_CLIPPING_TAG = 'WebReference'
 
 // Qualified namespaces. `upsertProperty('foo', ...)` from inside our plugin
 // creates `:plugin.property.logseq-web-clipper/foo`. Shared fields write/read
@@ -42,7 +46,7 @@ export interface PropertyDef {
 	ownedBy: PropertyOwner
 }
 
-// Order matters: it determines the order properties appear on the #WebClipping
+// Order matters: it determines the order properties appear on the #WebReference
 // tag in Logseq. The first few are the at-a-glance fields a user wants to see
 // without scrolling. Mirrors zoterolocal's PROP_PRIORITY_ORDER pattern.
 export const PROPERTIES = [
@@ -177,7 +181,7 @@ export function kebab(name: string): string {
 
 /**
  * Returns the fully qualified Logseq property `:db/ident` for a schema field.
- * Shared fields resolve to the Zotero plugin's namespace so #WebClipping and
+ * Shared fields resolve to the Zotero plugin's namespace so #WebReference and
  * #Zotero pages share the same property entities.
  */
 export function ident(name: PropertyName): string {

@@ -93,6 +93,9 @@ export interface LogseqCaptureOptions {
 	highlightsBlockName?: string
 	/** Keep Markdown `#` markers on heading blocks. Default true. */
 	useHeadingMarkers?: boolean
+	/** The tag every clipped page carries (its schema class). A leading `#` is
+	 * stripped; a blank value falls back to the shared `WEB_CLIPPING_TAG`. */
+	clippingTag?: string
 }
 
 // Defaults for the block names above; also the dedupe anchor for re-imports.
@@ -137,9 +140,15 @@ export function highlightToBlock(h: ClipHighlight, useHeadingMarkers: boolean = 
 }
 
 /**
- * Builds the page body: a "Page Content" wrapper around the clipped article
- * (always present, so re-imports have a stable shape to merge into), plus a
- * "Highlights" section when there are any highlights.
+ * Builds the page body: a "Page Content" wrapper around the clipped article,
+ * plus a "Highlights" section when there are any highlights.
+ *
+ * The Page Content block is emitted only when the article body is non-empty. It
+ * is empty when the user turned off "Capture page content" (the popup leaves the
+ * content box blank) or cleared the box for this clip — a highlights-only
+ * capture. Emitting it anyway would leave a bare, childless "Page Content"
+ * block. Re-import doesn't depend on its presence: mergeHighlightsIntoExisting-
+ * Page finds the Highlights block by name and creates it if absent.
  */
 export function buildClipBlocks(
 	contentMarkdown: string,
@@ -149,12 +158,11 @@ export function buildClipBlocks(
 	const pageContentName = options.pageContentBlockName?.trim() || PAGE_CONTENT_HEADING
 	const highlightsName = options.highlightsBlockName?.trim() || HIGHLIGHTS_HEADING
 	const useHeadingMarkers = options.useHeadingMarkers ?? true
-	const blocks: BatchBlock[] = [
-		{
-			content: pageContentName,
-			children: markdownToBatchBlocks(contentMarkdown, { useHeadingMarkers }),
-		},
-	]
+	const blocks: BatchBlock[] = []
+	const pageChildren = markdownToBatchBlocks(contentMarkdown, { useHeadingMarkers })
+	if (pageChildren.length > 0) {
+		blocks.push({ content: pageContentName, children: pageChildren })
+	}
 	if (highlights.length > 0) {
 		blocks.push({ content: highlightsName, children: highlights.map((h) => highlightToBlock(h, useHeadingMarkers)) })
 	}
@@ -247,6 +255,12 @@ export async function saveToLogseq(
 		throw new Error(`Graph "${graph.name}" is a file graph — Web Clipper requires a DB graph.`)
 	}
 
+	// The tag every clipped page carries (its schema class in Logseq). Configurable
+	// via the Logseq Capture tab; a leading `#` is stripped and a blank value falls
+	// back to the shared default. The companion plugin registers the property schema
+	// on this same name, so the two must agree for the tag to carry that schema.
+	const clipTag = (options.clippingTag ?? '').replace(/^#/, '').trim() || WEB_CLIPPING_TAG
+
 	// URL-based dedupe. The `url` property is shared with logseq-zoterolocal-
 	// plugin (same `:db/ident`), so this also catches the case where the user
 	// imported the page via Zotero before clipping it here. Pattern mirrors
@@ -258,7 +272,7 @@ export async function saveToLogseq(
 	const urlProp = properties.find((p) => p.name === 'url')
 	const normalizedUrl = normalizeUrl(urlProp?.value)
 	if (normalizedUrl) {
-		const existing = await findPageByUrl(api, normalizedUrl)
+		const existing = await findPageByUrl(api, normalizedUrl, clipTag)
 		if (existing) {
 			// Don't duplicate the page — but if this clip carries highlights the
 			// existing page doesn't have yet (e.g. it was clipped before they were
@@ -289,7 +303,7 @@ export async function saveToLogseq(
 		throw new Error('Logseq returned no uuid from createPage — page may already exist')
 	}
 
-	await api.addBlockTag(page.uuid, WEB_CLIPPING_TAG)
+	await api.addBlockTag(page.uuid, clipTag)
 
 	// Property writes are best-effort per field. One bad value (a malformed
 	// date, an unset schema entry) shouldn't abort the whole save — the page

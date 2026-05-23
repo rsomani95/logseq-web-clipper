@@ -8,9 +8,9 @@ import {
 	kebab,
 } from '@logseq-web-clipper/shared'
 
-// Sets up the #WebClipping tag and its properties. Mirrors zoterolocal's
+// Sets up the #WebReference tag and its properties. Mirrors zoterolocal's
 // setLogseqDbSchema for our own (web-owned) fields, and reuses Zotero's
-// existing properties for everything else — keeping #WebClipping and #Zotero
+// existing properties for everything else — keeping #WebReference and #Zotero
 // pages on the same underlying property entities so cross-tag queries unify.
 //
 // Assumes the user has already run zoterolocal's "Add Zotero schema to
@@ -79,7 +79,7 @@ export async function setLogseqDbSchema(): Promise<void> {
 	logseq.UI.closeMsg(settingUpMsg)
 
 	// Drop the user on the tag page so they can see what was just created
-	// (schema panel + any existing #WebClipping items). pushState resolves by
+	// (schema panel + any existing #WebReference items). pushState resolves by
 	// the lowercased page name — same convention as `logseq.Editor.openPage`.
 	await logseq.App.pushState('page', { name: WEB_CLIPPING_TAG.toLowerCase() })
 

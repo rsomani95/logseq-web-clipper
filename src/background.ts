@@ -713,6 +713,7 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 						pageContentBlockName: generalSettings.logseqCaptureSettings.pageContentBlockName,
 						highlightsBlockName: generalSettings.logseqCaptureSettings.highlightsBlockName,
 						useHeadingMarkers: generalSettings.logseqCaptureSettings.useHeadingMarkers,
+						clippingTag: generalSettings.logseqCaptureSettings.clippingTag,
 					});
 					sendResponse({ success: true, result });
 				} catch (err) {

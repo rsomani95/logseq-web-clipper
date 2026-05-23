@@ -84,6 +84,17 @@ export interface LogseqCaptureSettings {
 	 * the popup (so you can tag manually), it just starts empty. Set via the
 	 * Logseq Capture tab. */
 	populatePageTags: boolean;
+	/** Capture the article body as a "Page Content" block. On by default. Off →
+	 * the popup's content box starts empty so a clip carries just highlights; the
+	 * box stays editable (like the tags field), so content typed in for a single
+	 * clip still saves. Set via the Logseq Capture tab. */
+	capturePageContent: boolean;
+	/** The tag every clipped page carries (its schema class in Logseq). Default
+	 * #WebReference (the shared `WEB_CLIPPING_TAG`). A leading `#` is stripped and
+	 * a blank value falls back to that default. Set via the Logseq Capture tab.
+	 * The companion Logseq plugin registers the property schema on this same name,
+	 * so a custom value only carries that schema if the plugin is rebuilt to match. */
+	clippingTag: string;
 }
 
 export interface Settings {

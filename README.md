@@ -9,8 +9,8 @@ Targets the **DB graph** version of Logseq only. Talks to Logseq via its local H
 Phase 1 — **foundation only**. The clip pipeline isn't wired up yet. What's in:
 
 - Monorepo scaffolded with bun workspaces.
-- `logseq-shared` — single source of truth for the `#WebClipping` tag schema (11 fields, named to mirror the `logseq-zoterolocal-plugin` Essentials preset so Zotero + Web sources can be unified later).
-- `logseq-plugin` — companion Logseq plugin that owns the `#WebClipping` tag and the `Web Clipper: Set up schema` command.
+- `logseq-shared` — single source of truth for the `#WebReference` tag schema (11 fields, named to mirror the `logseq-zoterolocal-plugin` Essentials preset so Zotero + Web sources can be unified later).
+- `logseq-plugin` — companion Logseq plugin that owns the `#WebReference` tag and the `Web Clipper: Set up schema` command.
 - Extension manifest renamed; upstream's clip flow (writer + frontmatter) still points at Obsidian and will be swapped in Phase 2.
 
 ## Repo layout
@@ -38,7 +38,7 @@ cd logseq-plugin && bun run dev
 # → dist/ — load as unpacked in Logseq's Plugins dashboard (developer mode on)
 ```
 
-Open Logseq's command palette, run **Web Clipper: Set up schema** once per graph to create the `#WebClipping` tag and its properties.
+Open Logseq's command palette, run **Web Clipper: Set up schema** once per graph to create the `#WebReference` tag and its properties.
 
 ## Architecture
 

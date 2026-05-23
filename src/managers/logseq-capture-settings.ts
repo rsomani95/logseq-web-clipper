@@ -13,6 +13,19 @@ export async function initializeLogseqCaptureSettings(): Promise<void> {
 
 	await loadSettings();
 
+	const clipTagInput = document.getElementById('logseq-capture-clip-tag') as HTMLInputElement | null;
+	if (clipTagInput) {
+		clipTagInput.value = generalSettings.logseqCaptureSettings.clippingTag;
+		clipTagInput.addEventListener('input', debounce(() => {
+			// Store the raw value; saveToLogseq strips a leading '#' and falls back
+			// to the shared default when blank, so an empty field can't untag clips.
+			saveSettings({
+				...generalSettings,
+				logseqCaptureSettings: { ...generalSettings.logseqCaptureSettings, clippingTag: clipTagInput.value },
+			});
+		}, 400));
+	}
+
 	const pageBlockInput = document.getElementById('logseq-capture-page-block') as HTMLInputElement | null;
 	if (pageBlockInput) {
 		pageBlockInput.value = generalSettings.logseqCaptureSettings.pageContentBlockName;
@@ -55,6 +68,17 @@ export async function initializeLogseqCaptureSettings(): Promise<void> {
 			saveSettings({
 				...generalSettings,
 				logseqCaptureSettings: { ...generalSettings.logseqCaptureSettings, populatePageTags: checked },
+			});
+		},
+	);
+
+	initializeSettingToggle(
+		'logseq-capture-page-content',
+		generalSettings.logseqCaptureSettings.capturePageContent,
+		(checked) => {
+			saveSettings({
+				...generalSettings,
+				logseqCaptureSettings: { ...generalSettings.logseqCaptureSettings, capturePageContent: checked },
 			});
 		},
 	);
