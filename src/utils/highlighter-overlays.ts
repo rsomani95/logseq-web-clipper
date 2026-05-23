@@ -16,7 +16,7 @@ import {
 	groupHighlights,
 } from './highlighter';
 import { openNoteBox } from './note-input';
-import { syncNoteIndicators, removeNoteIndicators, editNoteInMargin, setHoveredHighlight, NoteItem, NoteRect } from './note-indicators';
+import { syncNoteIndicators, removeNoteIndicators, editNoteInMargin, setHoveredHighlight, rectsToNoteRect, NoteItem, NoteRect } from './note-indicators';
 import { generalSettings } from './storage-utils';
 import {
 	AnchorContext,
@@ -736,18 +736,7 @@ function getGroupNoteRect(group: AnyHighlightData[]): NoteRect | null {
 			}
 		}
 	}
-	if (rects.length === 0) return null;
-	let top = Infinity, bottom = -Infinity, left = Infinity, right = -Infinity;
-	let last = rects[0];
-	for (const r of rects) {
-		if (r.top < top) top = r.top;
-		if (r.bottom > bottom) bottom = r.bottom;
-		if (r.left < left) left = r.left;
-		if (r.right > right) right = r.right;
-		// "Last" line = lowest, then rightmost — where the inline icon sits.
-		if (r.bottom > last.bottom || (r.bottom === last.bottom && r.right > last.right)) last = r;
-	}
-	return { top, bottom, left, right, endRight: last.right, endTop: last.top, endBottom: last.bottom };
+	return rectsToNoteRect(rects);
 }
 
 // Maps each highlight piece id → its note's representative id (group[0].id), so

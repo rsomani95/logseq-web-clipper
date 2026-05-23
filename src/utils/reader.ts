@@ -8,7 +8,7 @@ import { getDomain } from './string-utils';
 import type { HighlighterAPI } from './highlighter';
 import * as localHighlighter from './highlighter';
 import { removeExistingHighlights as localRemoveExistingHighlights, deleteHighlightById as localDeleteHighlightById } from './highlighter-overlays';
-import { editNoteInMargin as localEditNoteInMargin } from './note-indicators';
+import { editNoteInMargin as localEditNoteInMargin, rectsToNoteRect } from './note-indicators';
 
 // Bridge: on a live page with reader mode (case 2), content.js already loaded
 // and owns the highlighter module. reader-script.js delegates to it via this
@@ -2424,10 +2424,16 @@ export class Reader {
 				else hl().deleteHighlightById(id);
 			};
 			const revert = () => hl().deleteHighlightById(id);
+			// Align the margin card to the highlight's TOP (first line), the same way
+			// getGroupNoteRect does for the committed highlight — otherwise the card
+			// is written aligned to the selection's last line and jumps up to the
+			// first line on commit (re-render swaps this rect for the highlight's).
+			// Bounding rect is only a fallback for a range with no client rects.
 			const getRect = () => {
-				const rs = range.getClientRects();
-				const l = rs.length > 0 ? rs[rs.length - 1] : range.getBoundingClientRect();
-				return { top: l.top, bottom: l.bottom, left: l.left, right: l.right, endRight: l.right, endTop: l.top, endBottom: l.bottom };
+				const merged = rectsToNoteRect(range.getClientRects());
+				if (merged) return merged;
+				const b = range.getBoundingClientRect();
+				return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, endRight: b.right, endTop: b.top, endBottom: b.bottom };
 			};
 			// Route via the bridge so on a live page it reaches the content-script
 			// instance that owns the margin cards. Falls back to the floating box

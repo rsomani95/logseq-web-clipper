@@ -30,6 +30,28 @@ export interface NoteRect {
 	endBottom: number;
 }
 
+// Merge viewport-space rects — a highlight's per-line boxes, or a selection's
+// client rects — into one NoteRect: the bounding box plus the "last line"
+// (lowest, then rightmost) where the inline icon sits. Null for an empty set.
+// Both the committed highlight geometry (highlighter-overlays' getGroupNoteRect)
+// and the note-on-selection editor (reader.ts) feed this, so a margin card lands
+// at the same place while the note is being written and after it commits.
+export function rectsToNoteRect(rects: ArrayLike<DOMRect>): NoteRect | null {
+	if (rects.length === 0) return null;
+	let top = Infinity, bottom = -Infinity, left = Infinity, right = -Infinity;
+	let last = rects[0];
+	for (let i = 0; i < rects.length; i++) {
+		const r = rects[i];
+		if (r.top < top) top = r.top;
+		if (r.bottom > bottom) bottom = r.bottom;
+		if (r.left < left) left = r.left;
+		if (r.right > right) right = r.right;
+		// "Last" line = lowest, then rightmost — where the inline icon sits.
+		if (r.bottom > last.bottom || (r.bottom === last.bottom && r.right > last.right)) last = r;
+	}
+	return { top, bottom, left, right, endRight: last.right, endTop: last.top, endBottom: last.bottom };
+}
+
 export interface NoteItem {
 	/** Highlight id the note edit targets (the group's first member). */
 	id: string;
