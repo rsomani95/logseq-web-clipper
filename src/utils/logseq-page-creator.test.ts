@@ -62,11 +62,10 @@ describe('buildClipBlocks', () => {
 		expect(buildClipBlocks('', [])).toEqual([])
 	})
 
-	test('adds a Highlights section, with notes nested, when highlights exist', () => {
+	test('adds a Highlights section first, with notes nested, when highlights exist', () => {
 		expect(
 			buildClipBlocks('Body.', [{ text: 'first' }, { text: 'second', note: 'note 2' }]),
 		).toEqual([
-			{ content: 'Page Content', children: [{ content: 'Body.' }] },
 			{
 				content: 'Highlights',
 				children: [
@@ -74,6 +73,7 @@ describe('buildClipBlocks', () => {
 					{ content: 'second', children: [{ content: 'note 2' }] },
 				],
 			},
+			{ content: 'Page Content', children: [{ content: 'Body.' }] },
 		])
 	})
 
@@ -88,8 +88,8 @@ describe('buildClipBlocks', () => {
 				highlightsBlockName: 'Notes',
 			}),
 		).toEqual([
-			{ content: 'Article', children: [{ content: 'Body.' }] },
 			{ content: 'Notes', children: [{ content: 'h' }] },
+			{ content: 'Article', children: [{ content: 'Body.' }] },
 		])
 	})
 
@@ -109,8 +109,8 @@ describe('buildClipBlocks', () => {
 		expect(
 			buildClipBlocks('Body.', [{ text: '## Quoted heading' }], { useHeadingMarkers: false }),
 		).toEqual([
-			{ content: 'Page Content', children: [{ content: 'Body.' }] },
 			{ content: 'Highlights', children: [{ content: '**Quoted heading**' }] },
+			{ content: 'Page Content', children: [{ content: 'Body.' }] },
 		])
 	})
 })

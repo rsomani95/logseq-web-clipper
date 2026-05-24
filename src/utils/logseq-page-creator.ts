@@ -140,8 +140,10 @@ export function highlightToBlock(h: ClipHighlight, useHeadingMarkers: boolean = 
 }
 
 /**
- * Builds the page body: a "Page Content" wrapper around the clipped article,
- * plus a "Highlights" section when there are any highlights.
+ * Builds the page body: a "Highlights" section (when the clip carries any)
+ * followed by a "Page Content" wrapper around the clipped article. Highlights
+ * lead — they're the reason the user clipped — so they sit at the top, above
+ * the full-article body.
  *
  * The Page Content block is emitted only when the article body is non-empty. It
  * is empty when the user turned off "Capture page content" (the popup leaves the
@@ -159,12 +161,12 @@ export function buildClipBlocks(
 	const highlightsName = options.highlightsBlockName?.trim() || HIGHLIGHTS_HEADING
 	const useHeadingMarkers = options.useHeadingMarkers ?? true
 	const blocks: BatchBlock[] = []
+	if (highlights.length > 0) {
+		blocks.push({ content: highlightsName, children: highlights.map((h) => highlightToBlock(h, useHeadingMarkers)) })
+	}
 	const pageChildren = markdownToBatchBlocks(contentMarkdown, { useHeadingMarkers })
 	if (pageChildren.length > 0) {
 		blocks.push({ content: pageContentName, children: pageChildren })
-	}
-	if (highlights.length > 0) {
-		blocks.push({ content: highlightsName, children: highlights.map((h) => highlightToBlock(h, useHeadingMarkers)) })
 	}
 	return blocks
 }
