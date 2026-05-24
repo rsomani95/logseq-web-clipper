@@ -66,7 +66,8 @@
 			box-shadow .15s ease-in-out,
 			border .15s ease-in-out;
 	}
-	input[type=text] {
+	input[type=text],
+	textarea {
 		border: none;
 		background-color: transparent;
 		padding: 0;
@@ -78,6 +79,28 @@
 			box-shadow: none;
 		}
 	}
+}
+
+// Long-form fields (e.g. excerpt) render as a multi-line textarea. Top-align
+// the label/icon column so the key sits next to the value's first line rather
+// than floating in the vertical middle of a tall, wrapped value.
+.metadata-property--multiline {
+	align-items: flex-start;
+}
+
+// The textarea auto-grows to its content (see autoSizeTextarea) up to ~4 lines,
+// then `max-height` caps it and it scrolls vertically — instead of an <input>
+// that clips a long excerpt to one line and scrolls horizontally. Overrides the
+// global `textarea` defaults (3rem min-height, vertical resize handle, padding).
+.metadata-property-value textarea {
+	min-height: var(--input-height);
+	line-height: 1.45;
+	padding-block: 0.25rem;
+	max-height: calc(1.45em * 4 + 0.5rem);
+	overflow-y: auto;
+	overflow-x: hidden;
+	overflow-wrap: anywhere;
+	resize: none;
 }
 .metadata-property-key {
 	display: flex;

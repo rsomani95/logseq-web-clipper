@@ -76,6 +76,15 @@ export function adjustNoteNameHeight(textarea: HTMLTextAreaElement): void {
 	textarea.style.minHeight = textarea.scrollHeight + 'px';
 }
 
+// Grow a textarea to fit its content. A CSS `max-height` (if set) caps the
+// growth, after which the browser shows a vertical scrollbar. Used by the
+// multi-line property fields (e.g. excerpt) so a long value renders up to N
+// lines then scrolls vertically instead of clipping to a single line.
+export function autoSizeTextarea(textarea: HTMLTextAreaElement): void {
+	textarea.style.height = 'auto';
+	textarea.style.height = textarea.scrollHeight + 'px';
+}
+
 export function initializeSettingToggle(
 	toggleId: string,
 	initialValue: boolean,

@@ -14,7 +14,7 @@ import browser from '../utils/browser-polyfill';
 import { addBrowserClassToHtml, detectBrowser } from '../utils/browser-detection';
 import { createElementWithClass } from '../utils/dom-utils';
 import { initializeInterpreter, handleInterpreterUI, collectPromptVariables } from '../utils/interpreter';
-import { adjustNoteNameHeight } from '../utils/ui-utils';
+import { adjustNoteNameHeight, autoSizeTextarea } from '../utils/ui-utils';
 import { debugLog } from '../utils/debug';
 import { showVariables, initializeVariablesPanel, updateVariablesPanel } from '../managers/inspect-variables';
 import { isBlankPage, isValidUrl, isRestrictedUrl } from '../utils/active-tab-manager';
@@ -24,6 +24,12 @@ import { sanitizeFileName } from '../utils/string-utils';
 import { saveFile } from '../utils/file-utils';
 import { translatePage, getMessage, setupLanguageAndDirection } from '../utils/i18n';
 import { formatPropertyValue } from '../utils/shared';
+import { displayName } from '@logseq-web-clipper/shared';
+
+// Properties whose values are long-form prose. These render as a multi-line,
+// vertically-scrolling textarea (capped at a few lines via CSS) instead of a
+// single-line input that clips and scrolls horizontally.
+const MULTILINE_PROPERTIES = new Set(['excerpt']);
 
 interface ReaderModeResponse {
 	success: boolean;
@@ -61,7 +67,7 @@ const memoizedGenerateFrontmatter = memoizeWithExpiration(
 );
 
 function getPropertiesFromDOM(): Property[] {
-	return Array.from(document.querySelectorAll('.metadata-property input')).map(input => {
+	return Array.from(document.querySelectorAll('.metadata-property input, .metadata-property textarea')).map(input => {
 		const inputElement = input as HTMLInputElement;
 		return {
 			id: inputElement.dataset.id || Date.now().toString() + Math.random().toString(36).slice(2, 11),
@@ -678,7 +684,7 @@ function buildTemplateFieldsSkeleton(template: Template | null) {
 
 			const propertyLabel = document.createElement('label');
 			propertyLabel.setAttribute('for', property.name);
-			propertyLabel.textContent = property.name;
+			propertyLabel.textContent = displayName(property.name);
 
 			metadataPropertyKey.appendChild(propertyIconSpan);
 			metadataPropertyKey.appendChild(propertyLabel);
@@ -687,13 +693,26 @@ function buildTemplateFieldsSkeleton(template: Template | null) {
 			const metadataPropertyValue = document.createElement('div');
 			metadataPropertyValue.className = 'metadata-property-value';
 
-			const inputElement = document.createElement('input');
-			inputElement.id = property.name;
-			inputElement.setAttribute('data-type', propertyType);
-			inputElement.setAttribute('data-template-value', property.value);
-			inputElement.type = propertyType === 'checkbox' ? 'checkbox' : 'text';
-
-			metadataPropertyValue.appendChild(inputElement);
+			// Long-form fields (e.g. excerpt) get a multi-line textarea that
+			// auto-grows up to a few lines then scrolls vertically; everything
+			// else stays a single-line input.
+			if (MULTILINE_PROPERTIES.has(property.name)) {
+				propertyDiv.classList.add('metadata-property--multiline');
+				const textarea = document.createElement('textarea');
+				textarea.id = property.name;
+				textarea.rows = 1;
+				textarea.setAttribute('data-type', propertyType);
+				textarea.setAttribute('data-template-value', property.value);
+				textarea.addEventListener('input', () => autoSizeTextarea(textarea));
+				metadataPropertyValue.appendChild(textarea);
+			} else {
+				const inputElement = document.createElement('input');
+				inputElement.id = property.name;
+				inputElement.setAttribute('data-type', propertyType);
+				inputElement.setAttribute('data-template-value', property.value);
+				inputElement.type = propertyType === 'checkbox' ? 'checkbox' : 'text';
+				metadataPropertyValue.appendChild(inputElement);
+			}
 
 			propertyDiv.appendChild(metadataPropertyKey);
 			propertyDiv.appendChild(metadataPropertyValue);
@@ -787,6 +806,13 @@ async function fillTemplateFieldValues(currentTabId: number, template: Template 
 		} else {
 			inputElement.value = value;
 		}
+	}
+
+	// Multi-line fields (e.g. excerpt) were just filled — size them to their
+	// content so a long excerpt shows several lines instead of a clipped one.
+	for (const name of MULTILINE_PROPERTIES) {
+		const field = document.getElementById(name);
+		if (field instanceof HTMLTextAreaElement) autoSizeTextarea(field);
 	}
 
 	const noteNameField = document.getElementById('note-name-field') as HTMLTextAreaElement;

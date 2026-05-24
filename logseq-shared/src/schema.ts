@@ -196,3 +196,19 @@ export function getProperty(name: PropertyName): PropertyDef {
 	if (!found) throw new Error(`Unknown property: ${name}`)
 	return found
 }
+
+/**
+ * User-facing label for a property name. Schema fields return their registered
+ * `display` (so the extension popup matches Logseq's capitalized property UI —
+ * `dateAdded` → "Date Added", `url` → "URL"); names not in the schema (e.g. a
+ * custom template field) fall back to a humanized camelCase → Title Case form.
+ */
+export function displayName(name: string): string {
+	const def = PROPERTIES.find((p) => p.name === name)
+	if (def) return def.display
+	const spaced = name
+		.replace(/[-_]+/g, ' ')
+		.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+		.trim()
+	return spaced.charAt(0).toUpperCase() + spaced.slice(1)
+}
