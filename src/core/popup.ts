@@ -14,7 +14,7 @@ import browser from '../utils/browser-polyfill';
 import { addBrowserClassToHtml, detectBrowser } from '../utils/browser-detection';
 import { createElementWithClass } from '../utils/dom-utils';
 import { initializeInterpreter, handleInterpreterUI, collectPromptVariables } from '../utils/interpreter';
-import { adjustNoteNameHeight, autoSizeTextarea } from '../utils/ui-utils';
+import { adjustNoteNameHeight, autoSizeTextarea, sizeAndPinMultilineField } from '../utils/ui-utils';
 import { debugLog } from '../utils/debug';
 import { showVariables, initializeVariablesPanel, updateVariablesPanel } from '../managers/inspect-variables';
 import { isBlankPage, isValidUrl, isRestrictedUrl } from '../utils/active-tab-manager';
@@ -808,11 +808,14 @@ async function fillTemplateFieldValues(currentTabId: number, template: Template 
 		}
 	}
 
-	// Multi-line fields (e.g. excerpt) were just filled — size them to their
-	// content so a long excerpt shows several lines instead of a clipped one.
+	// Multi-line fields (e.g. excerpt) were just filled — size each to its
+	// content (capped to a few lines by CSS, then scrolls) and pin it to the
+	// first line so a long excerpt opens at its start, not mid-scroll.
 	for (const name of MULTILINE_PROPERTIES) {
 		const field = document.getElementById(name);
-		if (field instanceof HTMLTextAreaElement) autoSizeTextarea(field);
+		if (field instanceof HTMLTextAreaElement) {
+			sizeAndPinMultilineField(field);
+		}
 	}
 
 	const noteNameField = document.getElementById('note-name-field') as HTMLTextAreaElement;

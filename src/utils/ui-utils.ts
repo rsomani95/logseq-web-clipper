@@ -85,6 +85,29 @@ export function autoSizeTextarea(textarea: HTMLTextAreaElement): void {
 	textarea.style.height = textarea.scrollHeight + 'px';
 }
 
+// Size a freshly-filled multi-line property field to its content and pin it to
+// the first line. Two things conspire to park it mid-scroll otherwise:
+//   1. Setting a textarea's `.value` scrolls it to the caret (the end), so a
+//      long excerpt opens scrolled to the bottom.
+//   2. The extension popup re-lays-out a frame or two after first paint — Chrome
+//      resizes the popup to fit its content, and a web font can swap in — and
+//      that reflow re-parks a filled textarea's scroll.
+// A single synchronous reset loses to #2, so we re-pin (and re-size, since the
+// final width settles over those frames) on the next two animation frames.
+export function sizeAndPinMultilineField(textarea: HTMLTextAreaElement): void {
+	const pin = () => {
+		autoSizeTextarea(textarea);
+		textarea.scrollTop = 0;
+	};
+	// Caret at the start so any later scroll-to-caret lands at the top, not end.
+	try { textarea.setSelectionRange(0, 0); } catch { /* selection isn't always settable */ }
+	pin();
+	requestAnimationFrame(() => {
+		pin();
+		requestAnimationFrame(pin);
+	});
+}
+
 export function initializeSettingToggle(
 	toggleId: string,
 	initialValue: boolean,
