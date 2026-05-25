@@ -55,6 +55,8 @@ export async function loadTemplates(): Promise<Template[]> {
 			await saveTemplateSettings();
 		}
 
+		templates = templates.map(migrateAbstractField);
+
 		// After loading templates, update global property types
 		await updateGlobalPropertyTypes(templates);
 
@@ -110,6 +112,22 @@ async function prepareTemplateForSave(template: Template): Promise<[string[], st
 	return [chunks, null];
 }
 
+// One-time field rename. The abstract used to be a template property named
+// `excerpt` (and was written as a Logseq property); it's now page content — its
+// own "Abstract" block — so stored templates that still carry `excerpt` are
+// migrated to `abstract` on load. Idempotent, and if a template somehow already
+// has an `abstract` property the legacy `excerpt` one is dropped rather than
+// duplicated (two same-named fields would collide on DOM id in the popup).
+function migrateAbstractField(template: Template): Template {
+	if (!Array.isArray(template.properties)) return template;
+	if (!template.properties.some(p => p.name === 'excerpt')) return template;
+	const hasAbstract = template.properties.some(p => p.name === 'abstract');
+	template.properties = template.properties
+		.filter(p => !(hasAbstract && p.name === 'excerpt'))
+		.map(p => (p.name === 'excerpt' ? { ...p, name: 'abstract' } : p));
+	return template;
+}
+
 export function createDefaultTemplate(): Template {
 	// Property names match #WebReference schema fields (see
 	// @logseq-web-clipper/shared). authors/tags are node-typed (cardinality:many)
@@ -130,6 +148,10 @@ export function createDefaultTemplate(): Template {
 			{ id: newId(), name: 'date', value: '{{published}}' },
 			{ id: newId(), name: 'dateAdded', value: '{{date}}' },
 			{ id: newId(), name: 'tags', value: '{{meta:name:keywords}}' },
+			// Not a #WebReference property — the page creator routes this into a
+			// dedicated "Abstract" block, not a Logseq property write (see
+			// logseq-page-creator's buildClipBlocks).
+			{ id: newId(), name: 'abstract', value: '{{description}}' },
 		],
 		triggers: []
 	};

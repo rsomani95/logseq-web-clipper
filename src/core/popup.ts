@@ -26,10 +26,10 @@ import { translatePage, getMessage, setupLanguageAndDirection } from '../utils/i
 import { formatPropertyValue } from '../utils/shared';
 import { displayName } from '@logseq-web-clipper/shared';
 
-// Properties whose values are long-form prose. These render as a multi-line,
+// Fields whose values are long-form prose. These render as a multi-line,
 // vertically-scrolling textarea (capped at a few lines via CSS) instead of a
 // single-line input that clips and scrolls horizontally.
-const MULTILINE_PROPERTIES = new Set(['excerpt']);
+const MULTILINE_PROPERTIES = new Set(['abstract']);
 
 interface ReaderModeResponse {
 	success: boolean;
@@ -693,7 +693,7 @@ function buildTemplateFieldsSkeleton(template: Template | null) {
 			const metadataPropertyValue = document.createElement('div');
 			metadataPropertyValue.className = 'metadata-property-value';
 
-			// Long-form fields (e.g. excerpt) get a multi-line textarea that
+			// Long-form fields (e.g. abstract) get a multi-line textarea that
 			// auto-grows up to a few lines then scrolls vertically; everything
 			// else stays a single-line input.
 			if (MULTILINE_PROPERTIES.has(property.name)) {
@@ -808,9 +808,9 @@ async function fillTemplateFieldValues(currentTabId: number, template: Template 
 		}
 	}
 
-	// Multi-line fields (e.g. excerpt) were just filled — size each to its
+	// Multi-line fields (e.g. abstract) were just filled — size each to its
 	// content (capped to a few lines by CSS, then scrolls) and pin it to the
-	// first line so a long excerpt opens at its start, not mid-scroll.
+	// first line so a long abstract opens at its start, not mid-scroll.
 	for (const name of MULTILINE_PROPERTIES) {
 		const field = document.getElementById(name);
 		if (field instanceof HTMLTextAreaElement) {
@@ -1196,12 +1196,20 @@ async function handleClipLogseq(): Promise<void> {
 			}
 		}
 
-		const properties = getPropertiesFromDOM();
+		const allProperties = getPropertiesFromDOM();
+		// The abstract is page content (it lands as its own "Abstract" block), not a
+		// Logseq property — lift it out of the property list and send it as its own
+		// field. (Legacy stored templates spelled this field `excerpt`; loadTemplates
+		// migrates those to `abstract`, but accept either here defensively.)
+		const abstractProp = allProperties.find((p) => p.name === 'abstract' || p.name === 'excerpt');
+		const properties = allProperties.filter((p) => p !== abstractProp);
+		const abstract = typeof abstractProp?.value === 'string' ? abstractProp.value : '';
 
 		const payload: SaveToLogseqInput = {
 			noteName,
 			content: noteContentField.value,
 			properties,
+			abstract,
 			highlights: collectClipHighlights(),
 		};
 		const response = await browser.runtime.sendMessage({

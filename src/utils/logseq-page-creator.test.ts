@@ -113,6 +113,33 @@ describe('buildClipBlocks', () => {
 			{ content: 'Page Content', children: [{ content: 'Body.' }] },
 		])
 	})
+
+	test('leads with an Abstract block (summary as a single child) above Highlights and Page Content', () => {
+		expect(
+			buildClipBlocks('Body.', [{ text: 'h' }], {}, '  A short summary.  '),
+		).toEqual([
+			{ content: 'Abstract', children: [{ content: 'A short summary.' }] },
+			{ content: 'Highlights', children: [{ content: 'h' }] },
+			{ content: 'Page Content', children: [{ content: 'Body.' }] },
+		])
+	})
+
+	test('emits the Abstract block even for an abstract-only clip', () => {
+		expect(buildClipBlocks('', [], {}, 'Just the summary.')).toEqual([
+			{ content: 'Abstract', children: [{ content: 'Just the summary.' }] },
+		])
+	})
+
+	test('omits the Abstract block when the abstract is blank or whitespace', () => {
+		expect(buildClipBlocks('Body.', [], {}, '   ').some((b) => b.content === 'Abstract')).toBe(false)
+		expect(buildClipBlocks('Body.', []).some((b) => b.content === 'Abstract')).toBe(false)
+	})
+
+	test('uses a custom abstract block name from options', () => {
+		expect(buildClipBlocks('', [], { abstractBlockName: 'Summary' }, 'Text.')).toEqual([
+			{ content: 'Summary', children: [{ content: 'Text.' }] },
+		])
+	})
 })
 
 describe('normalizeHighlightText', () => {

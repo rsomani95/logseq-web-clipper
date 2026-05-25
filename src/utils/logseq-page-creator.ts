@@ -28,6 +28,10 @@ export interface SaveToLogseqInput {
 	properties: Property[]
 	/** Highlights captured for this clip, in document order. */
 	highlights?: ClipHighlight[]
+	/** The page's abstract/summary (the parsed page description). Rendered as its
+	 * own "Abstract" block leading the page body; omitted when blank. It is page
+	 * content, not a Logseq property — see `buildClipBlocks`. */
+	abstract?: string
 }
 
 export interface SaveToLogseqResult {
@@ -93,6 +97,8 @@ function toJournalDate(value: string): string | null {
  * generalSettings.logseqCaptureSettings via the background worker.
  */
 export interface LogseqCaptureOptions {
+	/** Block the abstract/summary nests under. Default "Abstract". */
+	abstractBlockName?: string
 	/** Block the clipped article body nests under. Default "Page Content". */
 	pageContentBlockName?: string
 	/** Block highlights nest under. Default "Highlights". */
@@ -105,6 +111,7 @@ export interface LogseqCaptureOptions {
 }
 
 // Defaults for the block names above; also the dedupe anchor for re-imports.
+const ABSTRACT_HEADING = 'Abstract'
 const PAGE_CONTENT_HEADING = 'Page Content'
 const HIGHLIGHTS_HEADING = 'Highlights'
 
@@ -146,27 +153,35 @@ export function highlightToBlock(h: ClipHighlight, useHeadingMarkers: boolean = 
 }
 
 /**
- * Builds the page body: a "Highlights" section (when the clip carries any)
- * followed by a "Page Content" wrapper around the clipped article. Highlights
- * lead — they're the reason the user clipped — so they sit at the top, above
- * the full-article body.
+ * Builds the page body, top to bottom: an "Abstract" section (the page's own
+ * summary), then "Highlights" (when the clip carries any), then a "Page Content"
+ * wrapper around the clipped article. The abstract leads as the shortest
+ * orienting context for what the page is; highlights follow as the reason the
+ * user clipped; the full body sits last.
  *
- * The Page Content block is emitted only when the article body is non-empty. It
- * is empty when the user turned off "Capture page content" (the popup leaves the
- * content box blank) or cleared the box for this clip — a highlights-only
- * capture. Emitting it anyway would leave a bare, childless "Page Content"
- * block. Re-import doesn't depend on its presence: mergeHighlightsIntoExisting-
- * Page finds the Highlights block by name and creates it if absent.
+ * Each section is emitted only when it has content. Abstract: when `abstract` is
+ * non-blank — its trimmed text becomes a single indented child block (it's page
+ * content, not a Logseq property). Highlights: when ≥1 highlight. Page Content:
+ * when the article body is non-empty — empty when the user turned off "Capture
+ * page content" (the popup leaves the content box blank) or cleared the box for
+ * this clip. Re-import doesn't depend on any being present: mergeHighlightsInto-
+ * ExistingPage finds the Highlights block by name and creates it if absent.
  */
 export function buildClipBlocks(
 	contentMarkdown: string,
 	highlights: ClipHighlight[],
 	options: LogseqCaptureOptions = {},
+	abstract: string = '',
 ): BatchBlock[] {
+	const abstractName = options.abstractBlockName?.trim() || ABSTRACT_HEADING
 	const pageContentName = options.pageContentBlockName?.trim() || PAGE_CONTENT_HEADING
 	const highlightsName = options.highlightsBlockName?.trim() || HIGHLIGHTS_HEADING
 	const useHeadingMarkers = options.useHeadingMarkers ?? true
 	const blocks: BatchBlock[] = []
+	const abstractText = abstract.trim()
+	if (abstractText) {
+		blocks.push({ content: abstractName, children: [{ content: abstractText }] })
+	}
 	if (highlights.length > 0) {
 		blocks.push({ content: highlightsName, children: highlights.map((h) => highlightToBlock(h, useHeadingMarkers)) })
 	}
@@ -411,7 +426,7 @@ export async function saveToLogseq(
 		)
 	}
 
-	const blocks = buildClipBlocks(content, input.highlights ?? [], options)
+	const blocks = buildClipBlocks(content, input.highlights ?? [], options, input.abstract ?? '')
 	if (blocks.length > 0) {
 		await api.insertBatchBlock(page.uuid, blocks)
 	}

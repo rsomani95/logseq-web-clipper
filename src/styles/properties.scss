@@ -35,8 +35,8 @@
 	flex-shrink: 1;
 	gap: var(--metadata-gap);
 	// Tall enough to show the default property set with a full-height (6-line)
-	// excerpt (~57% of the popup) without the list itself scrolling; longer
-	// excerpts scroll inside their own field, and extra properties still scroll
+	// abstract (~57% of the popup) without the list itself scrolling; longer
+	// abstracts scroll inside their own field, and extra properties still scroll
 	// here. The page-content box below takes the remainder and scrolls.
 	max-height: 58%;
 	overflow-y: scroll;
@@ -51,7 +51,7 @@
 	display: flex;
 	flex-direction: row;
 	// Never let a row compress: a textarea's intrinsic min-height is tiny (it
-	// scrolls), so flex would otherwise squash the multi-line excerpt down to a
+	// scrolls), so flex would otherwise squash the multi-line abstract down to a
 	// couple of clipped lines. Rows keep their height; the list scrolls instead.
 	flex-shrink: 0;
 	gap: 2px;
@@ -89,7 +89,7 @@
 	}
 }
 
-// Long-form fields (e.g. excerpt) render as a multi-line textarea. Top-align
+// Long-form fields (e.g. abstract) render as a multi-line textarea. Top-align
 // the label/icon column so the key sits next to the value's first line rather
 // than floating in the vertical middle of a tall, wrapped value.
 .metadata-property--multiline {
@@ -103,9 +103,9 @@
 }
 
 // The textarea auto-grows to its content (see autoSizeTextarea): a one-line
-// excerpt stays one line, and it grows line-by-line up to the 6-line cap below,
+// abstract stays one line, and it grows line-by-line up to the 6-line cap below,
 // after which `max-height` holds it and it scrolls vertically — instead of an
-// <input> that clips a long excerpt to one line and scrolls horizontally.
+// <input> that clips a long abstract to one line and scrolls horizontally.
 // Overrides the global `textarea` defaults (3rem min-height, resize handle,
 // padding). 6 lines × line-height + the 0.5rem vertical padding (border-box).
 .metadata-property-value textarea {

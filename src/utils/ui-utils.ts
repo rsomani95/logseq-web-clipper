@@ -78,7 +78,7 @@ export function adjustNoteNameHeight(textarea: HTMLTextAreaElement): void {
 
 // Grow a textarea to fit its content. A CSS `max-height` (if set) caps the
 // growth, after which the browser shows a vertical scrollbar. Used by the
-// multi-line property fields (e.g. excerpt) so a long value renders up to N
+// multi-line property fields (e.g. abstract) so a long value renders up to N
 // lines then scrolls vertically instead of clipping to a single line.
 export function autoSizeTextarea(textarea: HTMLTextAreaElement): void {
 	textarea.style.height = 'auto';
@@ -88,7 +88,7 @@ export function autoSizeTextarea(textarea: HTMLTextAreaElement): void {
 // Size a freshly-filled multi-line property field to its content and pin it to
 // the first line. Two things conspire to park it mid-scroll otherwise:
 //   1. Setting a textarea's `.value` scrolls it to the caret (the end), so a
-//      long excerpt opens scrolled to the bottom.
+//      long abstract opens scrolled to the bottom.
 //   2. The extension popup re-lays-out a frame or two after first paint — Chrome
 //      resizes the popup to fit its content, and a web font can swap in — and
 //      that reflow re-parks a filled textarea's scroll.
