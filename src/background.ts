@@ -7,6 +7,7 @@ import { Settings } from './types/types';
 import { debugLog } from './utils/debug';
 import { createLogseqAPI } from './utils/logseq-api';
 import { saveToLogseq, SaveToLogseqInput } from './utils/logseq-page-creator';
+import { resolveLogseqCaptureSettings } from './utils/logseq-remote-settings';
 import { loadSettings, generalSettings } from './utils/storage-utils';
 
 const YOUTUBE_EMBED_RULE_ID = 9001;
@@ -709,11 +710,15 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 						return;
 					}
 					const api = createLogseqAPI({ baseUrl, token });
+					// Capture config (block names, heading style, clip tag) is owned by the
+					// companion plugin's settings and read live over HTTP; falls back to
+					// cache → defaults if the plugin / Logseq is unreachable.
+					const capture = await resolveLogseqCaptureSettings(api);
 					const result = await saveToLogseq(api, payload, {
-						pageContentBlockName: generalSettings.logseqCaptureSettings.pageContentBlockName,
-						highlightsBlockName: generalSettings.logseqCaptureSettings.highlightsBlockName,
-						useHeadingMarkers: generalSettings.logseqCaptureSettings.useHeadingMarkers,
-						clippingTag: generalSettings.logseqCaptureSettings.clippingTag,
+						pageContentBlockName: capture.pageContentBlockName,
+						highlightsBlockName: capture.highlightsBlockName,
+						useHeadingMarkers: capture.useHeadingMarkers,
+						clippingTag: capture.clippingTag,
 					});
 					sendResponse({ success: true, result });
 				} catch (err) {

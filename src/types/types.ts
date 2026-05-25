@@ -68,9 +68,14 @@ export interface ReaderSettings {
 	customCss: string;
 }
 
-// Logseq-specific capture config, surfaced in the "Logseq Capture" settings
-// tab. Controls how a clip is shaped in the graph (block names, heading style)
-// — distinct from the API connection settings (logseqApiBaseUrl/Token).
+// Logseq-specific capture config: how a clip is shaped in the graph (block
+// names, heading style, clip tag, pre-fill toggles) — distinct from the API
+// connection settings (logseqApiBaseUrl/Token), which stay extension-owned.
+//
+// No longer an editable extension setting: it's RESOLVED at runtime from the
+// companion plugin's live settings over the HTTP API (see
+// `logseq-remote-settings.ts`); this interface is the resolver's return shape.
+// Editing happens in the plugin's setup UI.
 export interface LogseqCaptureSettings {
 	/** Name of the block the clipped article body nests under. */
 	pageContentBlockName: string;
@@ -81,19 +86,18 @@ export interface LogseqCaptureSettings {
 	useHeadingMarkers: boolean;
 	/** Pre-fill the `tags` field from the page's own keywords. Off by default —
 	 * page keywords are usually noise. When off the `tags` field still shows in
-	 * the popup (so you can tag manually), it just starts empty. Set via the
-	 * Logseq Capture tab. */
+	 * the popup (so you can tag manually), it just starts empty. */
 	populatePageTags: boolean;
 	/** Capture the article body as a "Page Content" block. On by default. Off →
 	 * the popup's content box starts empty so a clip carries just highlights; the
 	 * box stays editable (like the tags field), so content typed in for a single
-	 * clip still saves. Set via the Logseq Capture tab. */
+	 * clip still saves. */
 	capturePageContent: boolean;
-	/** The tag every clipped page carries (its schema class in Logseq). Default
-	 * #WebReference (the shared `WEB_CLIPPING_TAG`). A leading `#` is stripped and
-	 * a blank value falls back to that default. Set via the Logseq Capture tab.
-	 * The companion Logseq plugin registers the property schema on this same name,
-	 * so a custom value only carries that schema if the plugin is rebuilt to match. */
+	/** The tag every clipped page carries (its schema class in Logseq). Read from
+	 * the plugin's `webTag`; a leading `#` is stripped and a blank value falls back
+	 * to the shared `WEB_CLIPPING_TAG`. The companion plugin owns the property
+	 * schema on this tag (its class must `extends` the shared base), so a tag the
+	 * plugin hasn't set up carries no schema and the clip aborts. */
 	clippingTag: string;
 }
 
@@ -120,7 +124,6 @@ export interface Settings {
 	defaultPromptContext: string;
 	propertyTypes: PropertyType[];
 	readerSettings: ReaderSettings;
-	logseqCaptureSettings: LogseqCaptureSettings;
 	stats: {
 		addToLogseq: number;
 		saveFile: number;

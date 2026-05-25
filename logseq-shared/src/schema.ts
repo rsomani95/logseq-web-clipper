@@ -8,9 +8,18 @@
 // `src/utils/logseq-schema-index.ts`. So this file only declares the field set
 // (camelCase `name` + user-facing `display`); type/cardinality come from Logseq.
 
-// The tag every clipped page carries (its schema class in Logseq). This is the
-// default; the extension also exposes it as a runtime "Reference tag" setting.
-export const WEB_CLIPPING_TAG = 'WebReference'
+// The id of the Logseq plugin that owns the shared schema + web-clip settings.
+// SINGLE SOURCE OF TRUTH — when the plugin is renamed, change this one line. It
+// must be the plugin's real `id` (kebab-case): the namespace every property
+// ident lives under (`:plugin.property.<id>/*`) and the key the extension reads
+// with getStateFromStore(['plugin/installed-plugins', <id>, 'settings']).
+export const LOGSEQ_PLUGIN_ID = 'logseq-reference-manager'
+
+// Emergency fallback for the clip tag, used ONLY when the plugin's live `webTag`
+// can't be read (Logseq unreachable / plugin absent) and nothing is cached. The
+// real tag is whatever the user set in the plugin — read at runtime, never
+// assumed. Kept aligned with the plugin's current `webTag` default.
+export const WEB_CLIPPING_TAG = 'Web'
 
 export interface PropertyDef {
 	/** camelCase key — what clip templates use and the popup renders. */

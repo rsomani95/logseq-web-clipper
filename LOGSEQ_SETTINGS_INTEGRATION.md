@@ -5,6 +5,21 @@ Capture" knobs + the clip tag) moves out of the extension and into the
 schema-provider plugin's settings UI. The extension **reads** that config from
 Logseq over the HTTP API at runtime and never assumes its contents.
 
+**Plugin side: implemented (2026-05-25).** The setup restructure, the dedicated
+web tag, and the settings-key contract (Part 2) are live in the plugin —
+branded **"Reference Manager"**, and the plugin `id` was **changed to
+`logseq-reference-manager`** (on 2026-05-25, from `logseq-zotero`). Deltas from
+the original handoff are flagged inline as **Implemented:** notes. The headline
+ones: the **id is `logseq-reference-manager`** (so `LOGSEQ_PLUGIN_ID` must
+match), the web tag default is **`Web`** (not `WebReference`), and the shared
+base class is named **`Reference`** (`zotTag`), with `Web` extending it.
+
+**Extension side: implemented (2026-05-25).** Part 1 is done — `LOGSEQ_PLUGIN_ID`,
+`LogseqAPI.getPluginSettings()`, the resolver + fallback chain, both consumers
+(background + popup) rewired, and the Logseq Capture tab deleted. tsc clean (bar
+the pre-existing `cli.ts` noise); `mapPluginSettings` is unit-tested. Extension
+deltas from the spec below are flagged inline as **Implemented (ext):** notes.
+
 This doc has two parts:
 
 - **Part 1 — Extension side** (this repo): what to build to read + consume the
@@ -52,8 +67,8 @@ it with a fallback chain.
 - The path must be a **vector** — `[["plugin/installed-plugins","<id>","settings"]]`
   (note the nested array). The flat string form `"a/b/c"` returns `null`.
 - The plugin-id segment is **kebab-case** — the plugin's real `id`
-  (`logseq-zotero`). The camelCase form seen in JSON output (`logseqZotero`)
-  returns `null`.
+  (`logseq-reference-manager`). The camelCase form seen in JSON output
+  (`logseqReferenceManager`) returns `null`.
 - Works even when the plugin is **disabled** (disabled plugins stay in
   `installed-plugins` with settings intact). Only an *uninstalled* plugin, or a
   closed/unreachable Logseq, fails — those hit the fallback.
@@ -91,11 +106,15 @@ extension-side writes.)
 
 ### 1. Single source of truth for the plugin id
 
-The plugin will be renamed in the next few days, then stay stable. Define its id
-**once** and import it everywhere. Put it in `logseq-shared` next to the tag
-fallback — that package is already the repo's home for cross-cutting Logseq
-constants, and keeping it there preserves the clean repo-root for upstream
-merges.
+**Implemented:** the plugin was rebranded to "Reference Manager" and its `id`
+was **changed to `logseq-reference-manager`** (on 2026-05-25, from
+`logseq-zotero`; the testing graph is fresh, so no ident migration). So
+`LOGSEQ_PLUGIN_ID` must be **`'logseq-reference-manager'`** — it's the kebab id
+every property ident namespaces under (`:plugin.property.logseq-reference-manager/*`)
+and the key `getStateFromStore` reads. Define it **once** and import it
+everywhere. Put it in `logseq-shared` next to the tag fallback — that package is
+already the repo's home for cross-cutting Logseq constants, and keeping it there
+preserves the clean repo-root for upstream merges.
 
 ```ts
 // logseq-shared/src/schema.ts  (export it from logseq-shared/src/index.ts)
@@ -107,7 +126,7 @@ merges.
  * Must be the plugin's real `id` (kebab-case) — the key used in
  * getStateFromStore(['plugin/installed-plugins', <id>, 'settings']).
  */
-export const LOGSEQ_PLUGIN_ID = 'logseq-zotero'
+export const LOGSEQ_PLUGIN_ID = 'logseq-reference-manager'
 ```
 
 Nothing else in the repo may hardcode the id. (`logseq-shared` already exports
@@ -204,6 +223,16 @@ export async function resolveLogseqCaptureSettings(api: LogseqAPI): Promise<Logs
 }
 ```
 
+**Implemented (ext):** split into two files so the mapping stays unit-testable.
+`browser-polyfill` re-exports `webextension-polyfill`, which throws at import in
+node — and every unit-tested util here is deliberately browser-free. So the pure
+`mapPluginSettings` + `DEFAULT_CAPTURE_SETTINGS` + the key contract live in
+`logseq-capture-mapping.ts` (no browser/SDK imports → tested directly), while
+`logseq-remote-settings.ts` owns the I/O (`browser.storage` cache + the
+`api.getPluginSettings()` read) with a *static* `browser-polyfill` import
+(MV3-service-worker-safe — no dynamic-import chunk). Shared-package import is
+`@logseq-web-clipper/shared`, not `logseq-shared`.
+
 ### 4. The clip tag is *read*, never assumed
 
 This is the load-bearing requirement: the operative tag is whatever the user set
@@ -223,6 +252,10 @@ as an argument end to end**, so this is just feeding it a different value:
 when no live read and no cache exist (it's already the `||` fallback at
 `logseq-page-creator.ts:285` and the `DEFAULTS.clippingTag` above). It is no
 longer the source of truth.
+
+**Implemented:** the plugin's live `webTag` default is now **`Web`**. If you want
+the emergency fallback to match, set `WEB_CLIPPING_TAG = 'Web'` — but it only
+fires when the plugin is unreachable, so it's not load-bearing.
 
 (Dev-phase note: URL dedupe is keyed on the current clip tag, so changing
 `webTag` means pages clipped under the old tag no longer dedupe. No users / no
@@ -268,14 +301,14 @@ so **delete the "Logseq Capture" tab outright**: the nav item
 
 ### 7. Files to touch (checklist)
 
-- [ ] `logseq-shared/src/schema.ts` — add `LOGSEQ_PLUGIN_ID`; export from `index.ts`.
-- [ ] `src/utils/logseq-api.ts` — add `getPluginSettings()`.
-- [ ] `src/utils/logseq-remote-settings.ts` — **new**: `resolveLogseqCaptureSettings()` + mapping + cache.
-- [ ] `src/background.ts` — read via resolver instead of `generalSettings.logseqCaptureSettings`.
-- [ ] `src/core/popup.ts` — resolve on popup open for pre-fill (capturePageContent, populatePageTags).
-- [ ] `src/managers/logseq-capture-settings.ts` + `src/settings.html` — **delete** the Logseq Capture tab (nav item + section + manager); connection settings live in their own tab and stay.
-- [ ] `src/utils/storage-utils.ts` — drop the stored `logseqCaptureSettings` field/defaults (superseded by the resolver); keep connection defaults.
-- [ ] Tests — unit-test `mapPluginSettings` (defensive coercion, missing keys → defaults, `#`-strip on tag) the way `logseq-schema-index.test.ts` tests pure parsers.
+- [x] `logseq-shared/src/schema.ts` — add `LOGSEQ_PLUGIN_ID`; export from `index.ts`.
+- [x] `src/utils/logseq-api.ts` — add `getPluginSettings()`.
+- [x] `src/utils/logseq-remote-settings.ts` — **new**: `resolveLogseqCaptureSettings()` + mapping + cache.
+- [x] `src/background.ts` — read via resolver instead of `generalSettings.logseqCaptureSettings`.
+- [x] `src/core/popup.ts` — resolve on popup open for pre-fill (capturePageContent, populatePageTags).
+- [x] `src/managers/logseq-capture-settings.ts` + `src/settings.html` — **delete** the Logseq Capture tab (nav item + section + manager); connection settings live in their own tab and stay.
+- [x] `src/utils/storage-utils.ts` — drop the stored `logseqCaptureSettings` field/defaults (superseded by the resolver); keep connection defaults.
+- [x] Tests — unit-test `mapPluginSettings` (defensive coercion, missing keys → defaults, `#`-strip on tag) the way `logseq-schema-index.test.ts` tests pure parsers.
 
 ### 8. Failure behavior (what the user sees)
 
@@ -300,49 +333,54 @@ editing surface, which is the intent.)
 
 ### A. Settings UI: three tabs
 
-Restructure the setup hub into three top-level tabs:
+**Implemented** as a grouped left-nav in the setup hub (`Reference Manager:
+Settings`), three groups:
 
-1. **Schema** — the shared property schema, common to both Zotero and Web
-   imports. This is the set of properties that *both* the Zotero class and the
-   Web class inherit (today this lives inside `LibrarySection`: preset,
-   `PropertyPicker`, Apply schema). Pull it out as its own tab since it's shared.
-2. **Zotero** — the Zotero-specific config: connection (`ConnectSection`),
-   Library specifics, Import formats (`FormatsSection`), Tag rules
-   (`TagRulesSection`).
-3. **Web references** — the dedicated web-clip tag + the capture knobs the
-   extension reads (the table in section C).
+1. **Schema** (`SchemaSection`, renamed from `LibrarySection`) — the shared
+   property schema both sources inherit: the base tag name (`zotTag`), preset,
+   `PropertyPicker`, **Apply schema**, Danger zone. Presets live here, not under
+   Zotero, since both classes inherit them.
+2. **Zotero** — connection (`ConnectSection`), Import formats
+   (`FormatsSection`), Tag rules (`TagRulesSection`). (No "Library" sub-section:
+   it was entirely schema, now under Schema.)
+3. **Web references** (`WebSection`) — the web tag + the capture knobs the
+   extension reads (the table in section C), plus a **Set up web tag** button.
+   The plugin does **not** clip the web; this section only stores config the
+   extension reads back.
 
 ### B. The dedicated web tag — and it must carry the shared schema
 
-Add a user-editable **web tag** (proposed key `webTag`, see table). Two
-requirements:
+**Implemented.** The web tag (key `webTag`, default **`Web`**) is a class that
+`extends` the **base tag** — `zotTag`, default **`Reference`** — which is the
+single class the shared properties live on. The base is no longer "Zotero":
+Zotero imports are tagged with `Reference` directly, and `Web` extends it
+(single base, single inheritance level — no `extends Zotero` chain).
 
-- The user can set it to anything; the extension reads that value and uses it as
-  the clip tag. **Do not assume it stays `WebReference`.**
-- **Critical:** whatever tag/class the user names here must **carry the shared
-  schema properties by inheritance** — i.e. its class must `extends` the same
-  base class the Zotero properties live on (today `#WebReference` works because
-  it `extends` the `:plugin.class.<id>/Zotero` class, so it inherits all the
-  shared properties). When the user sets or changes `webTag`, ensure that class
-  exists and extends the shared schema. If it doesn't carry the properties, the
+- The user can set `webTag` to anything; the extension reads that value and uses
+  it as the clip tag. **Do not assume `Web`** — read it live.
+- The wiring (`createTag` if missing + `addTagExtends(webTag, baseTag)`) is done
+  by `ensureWebTagExtendsBase` (`services/set-web-schema.ts`), run **both** by
+  the Schema section's **Apply schema** and by the Web section's **Set up web
+  tag** button. It's idempotent; a `webTag` equal to the base is a no-op.
+- If the web class doesn't carry the properties (schema never applied), the
   extension's schema discovery finds nothing and **aborts the clip** with
-  "Schema not set up" (by design — it never writes to guessed idents).
-
-So "Apply schema" (or an equivalent step on the Web tab) needs to: create the
-web class if missing, and make it extend the shared property class.
+  "Schema not set up" (by design — it never writes to guessed idents). So the
+  user must run Apply schema (or Set up web tag) once.
 
 ### C. Settings-key contract (what the extension reads)
 
 Register these keys in your `SettingSchemaDesc` (same `HIDDEN_KEYS` +
 setup-hub-control pattern you already use), edited in the **Web references** tab.
 The extension's resolver maps **exactly these keys** — if you rename one, tell
-the extension dev so the mapping in `logseq-remote-settings.ts` matches. Names
-are proposed to parallel your existing `zotTag` convention; adjust if you
-prefer, but keep them agreed.
+the extension dev so the mapping in `logseq-remote-settings.ts` matches.
+
+**Implemented:** all six keys are registered exactly as below. The only default
+that changed from the original proposal is `webTag` — **`Web`**, not
+`WebReference`.
 
 | Plugin setting key | Type | Default | Meaning (how the extension uses it) |
 |---|---|---|---|
-| `webTag` | string | `WebReference` | The tag every clipped page carries (its schema class). Read as the clip tag; drives schema discovery, URL dedupe, and the page's tag. |
+| `webTag` | string | `Web` | The tag every clipped page carries (its schema class — `extends` the base `Reference` tag). Read as the clip tag; drives schema discovery, URL dedupe, and the page's tag. |
 | `webCapturePageContent` | boolean | `true` | Whether to capture the article body as a "Page Content" block (and pre-fill the popup's content box). |
 | `webPageContentBlockName` | string | `Page Content` | Name of the block the article body nests under. |
 | `webHighlightsBlockName` | string | `Highlights` | Name of the block highlights nest under. |
@@ -376,31 +414,41 @@ holds.)
 
 ### E. How to verify the handoff works
 
-With the plugin built and a web tag configured, from a shell:
+With the plugin built and Apply schema / Set up web tag run, from a shell
+(concrete values: id `logseq-reference-manager`, `webTag` `Web`, base tag `Reference`):
 
 ```bash
 curl -sS -X POST http://127.0.0.1:12315/api \
   -H "Authorization: Bearer <token>" -H 'Content-Type: application/json' \
   -d '{"method":"logseq.App.getStateFromStore",
-       "args":[["plugin/installed-plugins","<your-plugin-id>","settings"]]}' | python3 -m json.tool
+       "args":[["plugin/installed-plugins","logseq-reference-manager","settings"]]}' | python3 -m json.tool
 ```
 
-Confirm the response contains `webTag` (+ the other keys) with the user's values.
-Then confirm a page tagged with that `webTag` carries the shared schema:
+Confirm the response contains `webTag` (+ the other five keys) with the user's
+values. Then confirm the web class carries the shared schema by inheritance:
 
 ```bash
 curl -sS -X POST http://127.0.0.1:12315/api \
   -H "Authorization: Bearer <token>" -H 'Content-Type: application/json' \
-  -d '{"method":"logseq.DB.datascriptQuery","args":["[:find (pull ?t [:block/title {:logseq.property.class/properties [:db/ident :block/title]} {:logseq.property.class/extends ...}]) :where [?t :block/title \"<webTag>\"]]"]}' \
+  -d '{"method":"logseq.DB.datascriptQuery","args":["[:find (pull ?t [:block/title {:logseq.property.class/properties [:db/ident :block/title]} {:logseq.property.class/extends ...}]) :where [?t :block/title \"Web\"]]"]}' \
   | python3 -m json.tool
 ```
 
-If that returns the inherited properties, the extension's `buildTagPropertyIndex`
-will resolve them and clipping will populate values.
+The `Web` class should show `:logseq.property.class/extends` → `Reference`, and
+the recursive pull should surface `Reference`'s properties. If so, the
+extension's `buildTagPropertyIndex` will resolve them and clipping will populate
+values.
 
 ---
 
 ## Appendix — verified probe session (2026-05-25)
+
+This session **predates the plugin-side implementation** — it shows the old
+single-tag state (id `logseq-zotero`, `zotTag:"Zotero"`, no `web*` keys; the
+probe strings below reflect that). Post-implementation, the id is
+`logseq-reference-manager` and the same read on a fresh graph returns
+`zotTag:"Reference"`, `webTag:"Web"`, and the other four `web*` keys. The
+mechanics (vector path, kebab id) are unchanged.
 
 ```
 # the read that powers all of this:

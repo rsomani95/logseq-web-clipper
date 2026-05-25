@@ -8,6 +8,8 @@ import { compileTemplate } from '../utils/template-compiler';
 import { initializeIcons, getPropertyTypeIcon } from '../icons/icons';
 import { findMatchingTemplate, initializeTriggers } from '../utils/triggers';
 import { getLocalStorage, setLocalStorage, loadSettings, generalSettings, Settings } from '../utils/storage-utils';
+import { createLogseqAPI } from '../utils/logseq-api';
+import { resolveLogseqCaptureSettings } from '../utils/logseq-remote-settings';
 import { escapeHtml, unescapeValue } from '../utils/string-utils';
 import { loadTemplates, createDefaultTemplate } from '../managers/template-manager';
 import browser from '../utils/browser-polyfill';
@@ -773,6 +775,14 @@ async function fillTemplateFieldValues(currentTabId: number, template: Template 
 
 	if (!Array.isArray(template.properties)) return;
 
+	// Capture config (clip tag, pre-fill toggles) is owned by the companion Logseq
+	// plugin and read live over HTTP, so pre-fill here honors the user's "Capture
+	// page content" / "Populate tags" choices. Falls back to cache → defaults when
+	// Logseq is unreachable.
+	const capture = await resolveLogseqCaptureSettings(
+		createLogseqAPI({ baseUrl: generalSettings.logseqApiBaseUrl, token: generalSettings.logseqApiToken }),
+	);
+
 	// Compile all templates in parallel
 	const [compiledPropertyValues, formattedNoteName, formattedContent] = await Promise.all([
 		Promise.all(template.properties.map(property =>
@@ -793,7 +803,7 @@ async function fillTemplateFieldValues(currentTabId: number, template: Template 
 		// "Populate tags from page" off (default): leave the tags field empty so the
 		// user can add tags manually, instead of pre-filling it from page keywords.
 		// The field is still built in the skeleton, so it stays visible and editable.
-		if (property.name === 'tags' && !generalSettings.logseqCaptureSettings.populatePageTags) continue;
+		if (property.name === 'tags' && !capture.populatePageTags) continue;
 
 		let value = compiledPropertyValues[i];
 		const propertyType = inputElement.getAttribute('data-type') || 'text';
@@ -830,7 +840,7 @@ async function fillTemplateFieldValues(currentTabId: number, template: Template 
 		// highlights-only. The box stays visible and editable (like the tags
 		// field), so the user can still type or paste content for this one clip;
 		// whatever's in it at clip time is what saves.
-		const capturePageContent = generalSettings.logseqCaptureSettings.capturePageContent;
+		const capturePageContent = capture.capturePageContent;
 		noteContentField.value = capturePageContent && template.noteContentFormat ? formattedContent : '';
 	}
 

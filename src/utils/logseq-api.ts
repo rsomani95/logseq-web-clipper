@@ -11,6 +11,8 @@
 // extension still declares `host_permissions` for 127.0.0.1:12315 to keep
 // MV3 fetches in the service worker out of CORS preflight quirks.
 
+import { LOGSEQ_PLUGIN_ID } from '@logseq-web-clipper/shared'
+
 export interface LogseqAPIConfig {
 	/** e.g. `http://127.0.0.1:12315` — no trailing slash. */
 	baseUrl: string
@@ -120,6 +122,22 @@ export class LogseqAPI {
 		if (!graph?.name) throw new LogseqAPIError(0, 'getCurrentGraph', 'no current graph')
 		const isDbGraph = await this.checkCurrentIsDbGraph()
 		return { graphName: graph.name, isDbGraph }
+	}
+
+	/**
+	 * The companion plugin's live `logseq.settings`, read from Logseq's app store
+	 * by the plugin's kebab `id` (LOGSEQ_PLUGIN_ID). The clipper reads its capture
+	 * config from here (it can read plugin settings but not write them). Returns
+	 * null when the plugin is uninstalled, Logseq is unreachable, or the internal
+	 * state path changes — callers must fall back (see resolveLogseqCaptureSettings).
+	 *
+	 * NOTE: the path is a *vector* and the id is kebab-case; the flat string path
+	 * (`"a/b/c"`) and the camelCased id both return null. Verified empirically.
+	 */
+	getPluginSettings<T = Record<string, unknown>>(): Promise<T | null> {
+		return this.call<T | null>('logseq.App.getStateFromStore', [
+			['plugin/installed-plugins', LOGSEQ_PLUGIN_ID, 'settings'],
+		])
 	}
 
 	// — Page / block ops —

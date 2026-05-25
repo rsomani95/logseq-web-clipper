@@ -91,10 +91,10 @@ function toJournalDate(value: string): string | null {
 }
 
 /**
- * Logseq-specific capture config (surfaced in the "Logseq Capture" settings
- * tab). Optional everywhere with sane defaults, so the pure builders stay
- * usable standalone in tests; real values flow from
- * generalSettings.logseqCaptureSettings via the background worker.
+ * Logseq-specific capture config. Optional everywhere with sane defaults, so the
+ * pure builders stay usable standalone in tests; real values are resolved from
+ * the companion plugin's settings (logseq-remote-settings.ts) and passed in by
+ * the background worker.
  */
 export interface LogseqCaptureOptions {
 	/** Block the abstract/summary nests under. Default "Abstract". */
