@@ -11,6 +11,16 @@ Working end-to-end: clip a page → it lands in your DB graph as a `#WebReferenc
 - `logseq-shared` — the field set the clipper populates (`title`, `authors`, `url`, `date`, …), each with a display title.
 - Property idents aren't stored here — the extension **discovers** them from the clip tag at save time and writes to whatever the schema provider created.
 
+## Install
+
+Distributed outside the Chrome Web Store, so it installs in **developer mode**:
+
+1. Download `logseq-web-clipper-<version>-chrome.zip` from the [latest release](https://github.com/rsomani95/logseq-web-clipper/releases) and unzip it.
+2. Open `chrome://extensions` and turn on **Developer mode** (top-right).
+3. Click **Load unpacked** and select the unzipped folder.
+
+There's no auto-update for developer-mode extensions — to upgrade, download the new zip and repeat. You'll also need the `#WebReference` schema set up in your graph (see [Develop](#develop)).
+
 ## Repo layout
 
 ```
@@ -44,6 +54,23 @@ At save time the extension discovers which properties the clip tag carries (its 
 - SingleFile snapshot capture; append-to-journal mode.
 - Zotero translator catalog (Embedded Metadata + a translator engine) for richer scholarly metadata.
 - React-ify the popup for a Logseq-native UI (block editing, property chips).
+
+## Releases & versioning
+
+This fork has its **own** semver line, independent of obsidian-clipper's — it has diverged enough (Logseq-only, note-taking, the schema-discovery write path; no vaults/paths/`obsidian://`) that upstream's number no longer predicts its behaviour. The obsidian-clipper version it descends from is recorded as *provenance*, not mirrored:
+
+- the Chrome manifest's `version_name` surfaces it in `chrome://extensions` — e.g. `0.1.0 (forked off obsidian-clipper 1.6.2)`;
+- and here: **based on obsidian-clipper v1.6.2** — bump this line when you merge a newer upstream release.
+
+To cut a release:
+
+```bash
+./scripts/bump-version.sh <X.Y.Z>     # updates package.json + manifests + version_name
+git commit -am "release: v<X.Y.Z>"
+git tag v<X.Y.Z> && git push origin v<X.Y.Z>
+```
+
+The `v*` tag triggers [`.github/workflows/release.yml`](.github/workflows/release.yml), which builds the Chrome zip and drafts a GitHub Release with it attached. Tags are **`v`-prefixed** so fork releases stay distinct from the inherited upstream tags (`0.9.x`–`1.6.2`) — a bare `1.6.2`-style tag won't trigger the workflow. For the first release at the current `0.1.0`, skip the bump and just tag `v0.1.0`. Optionally run `./scripts/generate-changelog.sh` first to write `changelogs/<version>.md`, which the workflow folds into the release notes.
 
 ## Upstream sync
 

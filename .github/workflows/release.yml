@@ -1,0 +1,68 @@
+name: Release
+
+# Builds the Chrome extension and drafts a GitHub Release whenever a v* tag is pushed.
+# Distribution is "load unpacked" (no Chrome Web Store), so the only artifact is the zip.
+# Tags are v-prefixed on purpose: it keeps fork releases distinct from the inherited
+# upstream tags (0.9.x–1.6.2) and means a bare upstream-style tag won't trigger this.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write   # gh release create needs write access via github.token
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        # Pin with `bun-version: <x.y.z>` here if you want fully reproducible CI builds.
+
+      - name: Install dependencies
+        # package-lock.json is the committed source of truth; bun.lock is gitignored
+        # (local-only workspace plumbing), so bun migrates package-lock.json on install.
+        run: bun install
+
+      - name: Build Chrome extension (production) and validate version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          VERSION="${TAG#v}"
+          PKG_VERSION="$(jq -r .version package.json)"
+          if [ "$VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Tag $TAG (version $VERSION) does not match package.json ($PKG_VERSION). Run ./scripts/bump-version.sh $VERSION, commit, then tag."
+            exit 1
+          fi
+          bun run build:chrome
+          ZIP="builds/logseq-web-clipper-${VERSION}-chrome.zip"
+          if [ ! -f "$ZIP" ]; then
+            echo "::error::$ZIP not found after build"; ls -la builds || true; exit 1
+          fi
+          echo "ZIP=$ZIP" >> "$GITHUB_ENV"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Assemble release notes
+        run: |
+          set -euo pipefail
+          NOTES=/tmp/release-notes.md
+          : > "$NOTES"
+          if [ -f "changelogs/${VERSION}.md" ]; then
+            cat "changelogs/${VERSION}.md" >> "$NOTES"
+            printf '\n' >> "$NOTES"
+          fi
+          cat .github/release-install-notes.md >> "$NOTES"
+
+      - name: Draft GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          gh release create "$TAG" "$ZIP" \
+            --draft \
+            --title "$TAG" \
+            --notes-file /tmp/release-notes.md
