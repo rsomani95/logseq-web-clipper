@@ -6,19 +6,16 @@ Targets the **DB graph** version of Logseq only. Talks to Logseq via its local H
 
 ## Status
 
-Phase 1 — **foundation only**. The clip pipeline isn't wired up yet. What's in:
+Working end-to-end: clip a page → it lands in your DB graph as a `#WebReference` page with metadata properties, optional highlights (with per-highlight notes), and the article body. Re-clipping a URL dedupes (and merges any new highlights).
 
-- Monorepo scaffolded with bun workspaces.
-- `logseq-shared` — single source of truth for the `#WebReference` tag schema (11 fields, named to mirror the `logseq-zoterolocal-plugin` Essentials preset so Zotero + Web sources can be unified later).
-- `logseq-plugin` — companion Logseq plugin that owns the `#WebReference` tag and the `Web Clipper: Set up schema` command.
-- Extension manifest renamed; upstream's clip flow (writer + frontmatter) still points at Obsidian and will be swapped in Phase 2.
+- `logseq-shared` — the field set the clipper populates (`title`, `authors`, `url`, `date`, …), each with a display title.
+- Property idents aren't stored here — the extension **discovers** them from the clip tag at save time and writes to whatever the schema provider created.
 
 ## Repo layout
 
 ```
 .                       — extension (fork of obsidianmd/obsidian-clipper, npm/webpack)
-logseq-plugin/          — companion Logseq DB plugin (bun/vite)
-logseq-shared/          — schema definitions used by both sides
+logseq-shared/          — the field set the clipper populates (camelCase name + display title)
 ```
 
 The extension lives at the repo root so future `git pull upstream main` syncs stay clean.
@@ -31,26 +28,22 @@ bun install
 
 # Extension (webpack, watch mode)
 npm run dev:chrome
-# → build/chrome — load as unpacked in chrome://extensions
-
-# Companion Logseq plugin (vite, watch mode)
-cd logseq-plugin && bun run dev
-# → dist/ — load as unpacked in Logseq's Plugins dashboard (developer mode on)
+# → dev/ — load as unpacked in chrome://extensions
 ```
 
-Open Logseq's command palette, run **Web Clipper: Set up schema** once per graph to create the `#WebReference` tag and its properties.
+Schema setup (creating the `#WebReference` tag and its properties) is **not** done here — a separate Logseq plugin owns it (today, [logseq-zotero](https://github.com/rsomani95/logseq-zotero)). Set that up in your graph first; the clipper discovers the tag's properties at save time and writes to them.
 
 ## Architecture
 
-Two pieces. The extension does the clipping; the plugin owns the Logseq-side schema. They talk indirectly: the plugin creates properties under `:plugin.property.logseq-web-clipper/*`, and the extension (Phase 2) writes values to those same idents over the HTTP API.
+The extension does all the clipping and talks to Logseq over the local HTTP API. It does **not** create properties — over the HTTP API the caller is namespaced as `_test_plugin`, so it can only set values on properties that already exist. Schema setup is owned by a separate Logseq plugin.
 
-Why two pieces: properties created via `Editor.upsertProperty` get namespaced to the calling plugin's id. If the extension created them directly, the namespace would be unpredictable and unifying with Zotero's filter/view experience wouldn't work cleanly.
+At save time the extension discovers which properties the clip tag carries (its own + everything inherited via class `extends`) in one datascript query, matches each field by display title to a real `:db/ident`, and writes to it. Sharing the provider's namespace (today `:plugin.property.logseq-zotero/*`) means `#WebReference` and `#Zotero` pages carry the same property entities — so queries union and URL dedupe spans both.
 
 ## Roadmap
 
-- **Phase 2** — Logseq HTTP API client, page creator (replaces `obsidian-note-creator.ts`), metadata extractor (`og:` / JSON-LD / `citation_*`), settings UI for the HTTP API token. End-to-end "click → page in Logseq" working.
-- **Phase 3** — port the highlighter, add SingleFile snapshot capture, append-to-journal mode, schema unification with `logseq-zoterolocal-plugin`.
-- **Phase 4+** — Zotero translator catalog (Embedded Metadata + a translator engine) for richer scholarly metadata, React-ify the popup, polish.
+- SingleFile snapshot capture; append-to-journal mode.
+- Zotero translator catalog (Embedded Metadata + a translator engine) for richer scholarly metadata.
+- React-ify the popup for a Logseq-native UI (block editing, property chips).
 
 ## Upstream sync
 
@@ -60,7 +53,7 @@ git merge upstream/main
 # resolve conflicts in src/manifest.*.json, src/utils/obsidian-note-creator.ts → logseq-page-creator.ts, etc.
 ```
 
-Our additions (`logseq-plugin/`, `logseq-shared/`, this README) live in their own directories and never conflict.
+Our additions (`logseq-shared/`, this README) live in their own directories and never conflict.
 
 ## License
 

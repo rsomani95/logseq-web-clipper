@@ -1242,6 +1242,19 @@ async function handleClipLogseq(): Promise<void> {
 			return;
 		}
 
+		// Page created, but the reference tag was missing schema properties we tried
+		// to write — surface that instead of silently closing, since the page landed
+		// with incomplete metadata.
+		const missing = response.result.missingProperties ?? [];
+		if (missing.length > 0) {
+			showError(
+				`Saved "${response.result.pageName}", but its schema looks incomplete — ` +
+					`not written: ${missing.map(displayName).join(', ')}. ` +
+					`Check the reference tag's schema in Logseq.`,
+			);
+			return;
+		}
+
 		if (!isSidePanel) {
 			setTimeout(() => window.close(), 500);
 		}

@@ -8,7 +8,6 @@
 		"url": "git+https://github.com/rsomani95/logseq-web-clipper.git"
 	},
 	"workspaces": [
-		"logseq-plugin",
 		"logseq-shared"
 	],
 	"bin": {
@@ -38,9 +37,7 @@
 		"test:watch": "vitest",
 		"update-locales": "ts-node --project scripts/tsconfig.json scripts/update-locales.ts",
 		"check-strings": "ts-node --project scripts/tsconfig.json scripts/check-unused-strings.ts",
-		"add-locale": "ts-node --project scripts/tsconfig.json scripts/add-locale.ts",
-		"plugin:dev": "cd logseq-plugin && bun run dev",
-		"plugin:build": "cd logseq-plugin && bun run build"
+		"add-locale": "ts-node --project scripts/tsconfig.json scripts/add-locale.ts"
 	},
 	"devDependencies": {
 		"@types/chrome": "^0.0.270",

@@ -130,7 +130,6 @@ export function createDefaultTemplate(): Template {
 			{ id: newId(), name: 'date', value: '{{published}}' },
 			{ id: newId(), name: 'dateAdded', value: '{{date}}' },
 			{ id: newId(), name: 'tags', value: '{{meta:name:keywords}}' },
-			{ id: newId(), name: 'excerpt', value: '{{description}}' },
 		],
 		triggers: []
 	};

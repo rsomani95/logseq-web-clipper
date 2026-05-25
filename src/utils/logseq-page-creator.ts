@@ -6,10 +6,11 @@
 // Node-typed properties (authors, tags) get one Logseq page per comma-separated
 // value, linked via numeric page.id — mirrors the zoterolocal pattern.
 
-import { PROPERTIES, WEB_CLIPPING_TAG, getProperty, ident, type PropertyName } from '@logseq-web-clipper/shared'
+import { PROPERTIES, WEB_CLIPPING_TAG, displayName, type PropertyName } from '@logseq-web-clipper/shared'
 
 import type { Property } from '../types/types'
 import type { LogseqAPI, LogseqBlockEntity } from './logseq-api'
+import { buildTagPropertyIndex } from './logseq-schema-index'
 import { findPageByUrl, normalizeUrl } from './logseq-url-index'
 import { markdownToBatchBlocks, styleHeadingLines, type BatchBlock } from './markdown-to-outliner'
 
@@ -44,6 +45,11 @@ export interface SaveToLogseqResult {
 	status: 'created' | 'exists' | 'updated'
 	/** For `updated`: number of new highlights appended to the existing page. */
 	addedHighlightCount?: number
+	/**
+	 * Schema fields the clip tried to write but the reference tag doesn't carry —
+	 * a schema-setup gap. Only populated on `created`; the popup warns when non-empty.
+	 */
+	missingProperties?: string[]
 }
 
 const SCHEMA_NAME_SET = new Set<string>(PROPERTIES.map((p) => p.name))
@@ -263,6 +269,22 @@ export async function saveToLogseq(
 	// on this same name, so the two must agree for the tag to carry that schema.
 	const clipTag = (options.clippingTag ?? '').replace(/^#/, '').trim() || WEB_CLIPPING_TAG
 
+	// Discover the properties #clipTag actually carries — its own plus everything
+	// inherited via class `extends` — each mapped to the real `:db/ident`. We write
+	// to discovered idents instead of deriving them from a plugin id + kebab guess:
+	// whoever set up the schema owns the namespace, and we write to what exists.
+	const schemaIndex = await buildTagPropertyIndex(api, clipTag)
+	if (schemaIndex.size === 0) {
+		// The tag carries no properties at all — the schema-setup plugin hasn't run
+		// (or the tag doesn't exist / doesn't extend the schema class). Bail before
+		// creating an orphan page; the popup shows this message verbatim.
+		throw new Error(
+			`Schema not set up — the "${clipTag}" tag carries no properties. ` +
+				`Set up its schema in Logseq, then clip again.`,
+		)
+	}
+	const urlIdent = schemaIndex.resolve(displayName('url'))?.ident
+
 	// URL-based dedupe. The `url` property is shared with logseq-zoterolocal-
 	// plugin (same `:db/ident`), so this also catches the case where the user
 	// imported the page via Zotero before clipping it here. Pattern mirrors
@@ -274,7 +296,7 @@ export async function saveToLogseq(
 	const urlProp = properties.find((p) => p.name === 'url')
 	const normalizedUrl = normalizeUrl(urlProp?.value)
 	if (normalizedUrl) {
-		const existing = await findPageByUrl(api, normalizedUrl, clipTag)
+		const existing = await findPageByUrl(api, normalizedUrl, clipTag, urlIdent)
 		if (existing) {
 			// Don't duplicate the page — but if this clip carries highlights the
 			// existing page doesn't have yet (e.g. it was clipped before they were
@@ -307,16 +329,24 @@ export async function saveToLogseq(
 
 	await api.addBlockTag(page.uuid, clipTag)
 
-	// Property writes are best-effort per field. One bad value (a malformed
-	// date, an unset schema entry) shouldn't abort the whole save — the page
-	// + tag already exist, the user can fix the field manually.
+	// Property writes are best-effort per field, each targeting the discovered
+	// ident. A field the tag doesn't carry is skipped (collected below), never
+	// invented: an unknown ident errors ("Plugins can only upsert its own
+	// properties") and a bare name would fork the value into the caller's
+	// `_test_plugin` namespace. One bad value shouldn't abort the save — the page
+	// + tag already exist, so the user can fix any field by hand.
 	let matched = 0
+	const skipped: string[] = []
 	for (const prop of properties) {
 		if (!isSchemaName(prop.name)) continue
 		if (!prop.value || prop.value.trim() === '') continue
-		const def = getProperty(prop.name)
+		const discovered = schemaIndex.resolve(displayName(prop.name))
+		if (!discovered) {
+			skipped.push(prop.name)
+			continue
+		}
 
-		if (def.type === 'node') {
+		if (discovered.type === 'node') {
 			const values = splitNodeValues(prop.value)
 			if (values.length === 0) continue
 			let anySet = false
@@ -327,7 +357,7 @@ export async function saveToLogseq(
 						console.warn(`[logseq-web-clipper] node page for ${prop.name}="${v}" returned no id`)
 						continue
 					}
-					await api.upsertBlockProperty(page.uuid, ident(prop.name), nodePage.id)
+					await api.upsertBlockProperty(page.uuid, discovered.ident, nodePage.id)
 					anySet = true
 				} catch (err) {
 					console.warn(`[logseq-web-clipper] failed to link node property ${prop.name}="${v}":`, err)
@@ -340,7 +370,7 @@ export async function saveToLogseq(
 		// Date-typed properties in Logseq-DB are *references to journal pages*,
 		// not strings. Create/fetch the journal page for the day, then write
 		// `page.id` — same pattern as zoterolocal's `handle-zot-db.ts`.
-		if (def.type === 'date') {
+		if (discovered.type === 'date') {
 			const ymd = toJournalDate(prop.value)
 			if (!ymd) {
 				console.warn(`[logseq-web-clipper] could not parse ${prop.name} as date: "${prop.value}"`)
@@ -359,7 +389,7 @@ export async function saveToLogseq(
 					console.warn(`[logseq-web-clipper] createJournalPage(${ymd}) returned no id for ${prop.name}`)
 					continue
 				}
-				await api.upsertBlockProperty(page.uuid, ident(prop.name), journalPage.id)
+				await api.upsertBlockProperty(page.uuid, discovered.ident, journalPage.id)
 				matched++
 			} catch (err) {
 				console.warn(`[logseq-web-clipper] failed to set date property ${prop.name}:`, err)
@@ -368,11 +398,17 @@ export async function saveToLogseq(
 		}
 
 		try {
-			await api.upsertBlockProperty(page.uuid, ident(prop.name), prop.value)
+			await api.upsertBlockProperty(page.uuid, discovered.ident, prop.value)
 			matched++
 		} catch (err) {
 			console.warn(`[logseq-web-clipper] failed to set ${prop.name}:`, err)
 		}
+	}
+	if (skipped.length > 0) {
+		console.warn(
+			`[logseq-web-clipper] ${skipped.length} field(s) not written — #${clipTag} doesn't carry: ` +
+				`${skipped.join(', ')}. Is the schema set up for this tag?`,
+		)
 	}
 
 	const blocks = buildClipBlocks(content, input.highlights ?? [], options)
@@ -393,5 +429,6 @@ export async function saveToLogseq(
 		graphName: graph.name,
 		matchedPropertyCount: matched,
 		status: 'created',
+		missingProperties: skipped,
 	}
 }

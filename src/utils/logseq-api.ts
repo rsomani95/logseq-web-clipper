@@ -147,7 +147,7 @@ export class LogseqAPI {
 
 	/**
 	 * Reads every property on a page. Returns a record keyed by the full
-	 * property `:db/ident` (e.g. `:plugin.property.logseq-zoterolocal-plugin/url`),
+	 * property `:db/ident` (e.g. `:plugin.property.logseq-zotero/url`),
 	 * with values shaped according to the property type (scalars for default/url,
 	 * entity refs for node/date).
 	 */

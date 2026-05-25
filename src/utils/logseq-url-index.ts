@@ -9,7 +9,7 @@
 // parallel to read the URL value. N+1 calls per save, but `Promise.all` keeps
 // wall-clock to ~one round trip for typical graphs.
 
-import { WEB_CLIPPING_TAG, ident } from '@logseq-web-clipper/shared'
+import { WEB_CLIPPING_TAG } from '@logseq-web-clipper/shared'
 
 import type { LogseqAPI } from './logseq-api'
 
@@ -70,8 +70,6 @@ const QUERY_RECYCLED_PAGE_UUIDS = `
  [?p :block/uuid ?uuid]]
 `
 
-const URL_IDENT = ident('url')
-
 /**
  * Some Logseq builds return URL-typed property values as a bare string; others
  * wrap them in an entity-shaped object (`{ title: "https://…" }` or similar).
@@ -93,34 +91,15 @@ function extractUrlValue(raw: unknown): string | null {
 }
 
 /**
- * Looks up the URL value on a `getPageProperties` result, tolerating shape
- * variations across Logseq builds. The canonical key is the full ident
- * (`:plugin.property.logseq-zoterolocal-plugin/url`), but observed graphs have
- * also returned:
- *   - the same ident without the leading colon
- *   - the kebab name alone (`url`)
- *   - any key that ends with `/url`
- * Belt-and-suspenders so an ident-shape regression doesn't break dedupe.
+ * Reads the URL value off a `getPageProperties` result at the discovered url
+ * ident (the exact `:plugin.property.…/url` key Logseq returns). No key-guessing
+ * fallback: if the property isn't present under that ident, there's no URL to
+ * dedupe on. `extractUrlValue` still tolerates the value being a bare string or
+ * an entity-shaped object — that's a value-shape difference, not a key guess.
  */
-function readUrlFromProps(props: Record<string, unknown> | null | undefined): string | null {
-	if (!props) return null
-	const noColon = URL_IDENT.startsWith(':') ? URL_IDENT.slice(1) : URL_IDENT
-	const directKeys = [URL_IDENT, noColon, 'url']
-	for (const k of directKeys) {
-		const v = props[k]
-		const n = extractUrlValue(v)
-		if (n) return n
-	}
-	// Fallback: any key ending in `/url` (covers a different plugin id, or a
-	// case-shift in the ident). Doesn't risk false positives because `/url`
-	// is a property suffix, not a substring that appears in unrelated keys.
-	for (const [k, v] of Object.entries(props)) {
-		if (k.endsWith('/url') || k === 'url') {
-			const n = extractUrlValue(v)
-			if (n) return n
-		}
-	}
-	return null
+function readUrlFromProps(props: Record<string, unknown> | null | undefined, urlIdent?: string): string | null {
+	if (!props || !urlIdent) return null
+	return extractUrlValue(props[urlIdent])
 }
 
 /**
@@ -131,6 +110,7 @@ function readUrlFromProps(props: Record<string, unknown> | null | undefined): st
 export async function buildClipUrlIndex(
 	api: LogseqAPI,
 	clipTag: string = WEB_CLIPPING_TAG,
+	urlIdent?: string,
 ): Promise<Map<string, UrlIndexedPage>> {
 	const index = new Map<string, UrlIndexedPage>()
 
@@ -157,7 +137,7 @@ export async function buildClipUrlIndex(
 
 		console.log(
 			`[logseq-web-clipper] url-index: ${candidates.length} candidate page(s) tagged #${clipTag} or #${ZOTERO_TAG_NAME} ` +
-				`(${recycledUuids.size} recycled excluded). URL ident in use: "${URL_IDENT}".`,
+				`(${recycledUuids.size} recycled excluded). URL ident: "${urlIdent ?? '(none; matching any /url key)'}".`,
 		)
 
 		if (candidates.length === 0) return index
@@ -168,7 +148,7 @@ export async function buildClipUrlIndex(
 			candidates.map(async (page) => {
 				try {
 					const props = await api.getPageProperties(page.uuid)
-					const url = readUrlFromProps(props)
+					const url = readUrlFromProps(props, urlIdent)
 					return { page, url, props }
 				} catch (err) {
 					console.warn(`[logseq-web-clipper] url-index: getPageProperties failed for ${page.uuid}`, err)
@@ -218,6 +198,7 @@ export async function findPageByUrl(
 	api: LogseqAPI,
 	url: string,
 	clipTag: string = WEB_CLIPPING_TAG,
+	urlIdent?: string,
 ): Promise<UrlIndexedPage | null> {
 	const normalized = normalizeUrl(url)
 	if (!normalized) {
@@ -225,7 +206,7 @@ export async function findPageByUrl(
 		return null
 	}
 	console.log(`[logseq-web-clipper] dedupe: looking up URL "${normalized}"`)
-	const index = await buildClipUrlIndex(api, clipTag)
+	const index = await buildClipUrlIndex(api, clipTag, urlIdent)
 	const hit = index.get(normalized) ?? null
 	if (hit) {
 		console.log(`[logseq-web-clipper] dedupe: MATCH — existing page "${hit.title}" (uuid=${hit.uuid})`)

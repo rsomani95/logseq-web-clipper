@@ -25,5 +25,5 @@
 		"src/**/*",
 		"logseq-shared/src/**/*"
 	],
-	"exclude": ["node_modules", "dist", "logseq-plugin"]
+	"exclude": ["node_modules", "dist"]
 }
