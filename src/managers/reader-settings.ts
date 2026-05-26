@@ -73,7 +73,7 @@ function buildThemeGrid(
 
 		const body = document.createElement('div');
 		body.className = 'reader-theme-inner-body';
-		body.textContent = 'File over app is a philosophy: if you want to create digital artifacts that last, they must be files you can control, in formats that are easy to retrieve and read.';
+		body.textContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
 
 		inner.appendChild(title);
 		inner.appendChild(meta);
