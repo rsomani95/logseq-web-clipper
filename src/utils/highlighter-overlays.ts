@@ -712,6 +712,71 @@ export function removeExistingHighlights() {
 	removeNoteIndicators();
 }
 
+// Scroll the page to a clipped highlight, matched by its text. Used by the side
+// panel's highlights list (click an item → jump to it on the page). Matching is
+// by normalized text — the same basis as cross-view anchoring — so it resolves
+// in native and reader views alike, regardless of which DOM the highlight was
+// made in. Returns false when no rendered highlight matches (e.g. its text isn't
+// present in this view).
+export function scrollToHighlightByText(rawText: string): boolean {
+	const target = normalizeText(getQuoteText(rawText));
+	if (!target) return false;
+
+	const matches = (h: AnyHighlightData): boolean => {
+		const hay = normalizeText(getQuoteText(h.content));
+		if (!hay) return false;
+		// startsWith handles a grouped export whose text joins several pieces
+		// (the first piece is where we want to land); includes is the loose fallback.
+		return hay === target || target.startsWith(hay) || hay.startsWith(target)
+			|| target.includes(hay) || hay.includes(target);
+	};
+
+	// Prefer an exact match; otherwise the first containment match in document order.
+	const match =
+		highlights.find(h => normalizeText(getQuoteText(h.content)) === target) ??
+		highlights.find(matches);
+	if (!match) return false;
+
+	const rect = highlightRect(match.id);
+	if (!rect) return false;
+
+	const top = (window.pageYOffset || document.documentElement.scrollTop) + rect.top - window.innerHeight * 0.3;
+	window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+	flashRect(rect);
+	return true;
+}
+
+// Viewport-space bounding rect of a rendered highlight by id — text pieces from
+// their stored Range, element pieces from their overlay. Null when nothing for
+// that id is currently rendered.
+function highlightRect(id: string): DOMRect | null {
+	const ranges = textHighlightRanges.get(id);
+	if (ranges && ranges.length) {
+		const r = ranges[0].getBoundingClientRect();
+		if (r.width || r.height) return r;
+	}
+	const overlay = document.querySelector(`.obsidian-highlight-overlay[data-highlight-id="${id}"]`) as HTMLElement | null;
+	return overlay ? overlay.getBoundingClientRect() : null;
+}
+
+// A brief accent pulse at the highlight's location to confirm the jump landed.
+// Self-contained (a transient node + inline styles), so it needs no injected CSS
+// and works on live pages and the reader alike.
+function flashRect(rect: DOMRect): void {
+	const top = (window.pageYOffset || document.documentElement.scrollTop) + rect.top - 4;
+	const left = (window.pageXOffset || document.documentElement.scrollLeft) + rect.left - 4;
+	const flash = document.createElement('div');
+	flash.className = 'obsidian-highlight-flash';
+	flash.style.cssText =
+		`position:absolute; top:${top}px; left:${left}px; width:${rect.width + 8}px; height:${rect.height + 8}px;`
+		+ ` border-radius:6px; border:2px solid var(--color-accent, hsl(196 70% 45%));`
+		+ ` box-shadow:0 0 0 4px hsla(196,70%,45%,0.18); pointer-events:none; z-index:2147483646;`
+		+ ` opacity:1; transition:opacity 1.1s ease-out;`;
+	document.body.appendChild(flash);
+	requestAnimationFrame(() => { flash.style.opacity = '0'; });
+	setTimeout(() => flash.remove(), 1200);
+}
+
 // Bounding geometry of a (possibly multi-block) highlight group's rendered
 // region, in viewport coordinates. Text pieces come from the stored Ranges;
 // element pieces from their overlay (falling back to the live element). Null

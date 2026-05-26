@@ -63,13 +63,16 @@
 	transition:
 		box-shadow .15s ease-in-out,
 		border .15s ease-in-out;
+	// A faint background tint on hover instead of a 1px ring, and a single hairline
+	// (was 2px) on focus — keeps rows reading as calm fields rather than boxed-in
+	// outlines, while preserving a clear keyboard-focus cue.
 	@media (hover: hover) {
 		&:hover {
-			box-shadow: 0 0 0 1px var(--background-modifier-border);
+			background-color: var(--background-modifier-hover);
 		}
 	}
 	&:focus-within {
-		box-shadow: 0 0 0 2px var(--background-modifier-border-focus);
+		box-shadow: 0 0 0 1px var(--background-modifier-border-focus);
 		transition:
 			box-shadow .15s ease-in-out,
 			border .15s ease-in-out;

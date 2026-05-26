@@ -1,6 +1,6 @@
 import browser from './utils/browser-polyfill';
 import * as highlighter from './utils/highlighter';
-import { removeExistingHighlights, deleteHighlightById } from './utils/highlighter-overlays';
+import { removeExistingHighlights, deleteHighlightById, scrollToHighlightByText } from './utils/highlighter-overlays';
 import { editNoteInMargin } from './utils/note-indicators';
 import { loadSettings, generalSettings } from './utils/storage-utils';
 import { getDomain } from './utils/string-utils';
@@ -380,6 +380,9 @@ declare global {
 			}
 			updateHasHighlights();
 			sendResponse({ success: true });
+		} else if (request.action === "scrollToHighlight") {
+			// Side panel → "click a highlight in the list, jump to it on the page".
+			sendResponse({ success: scrollToHighlightByText(request.text) });
 		} else if (request.action === "clearHighlights") {
 			highlighter.clearHighlights();
 			updateHasHighlights();

@@ -6,6 +6,7 @@ import { getFontCss } from '../utils/font-utils';
 import { getDomain } from '../utils/string-utils';
 import { extractContentBySelector as extractContentBySelectorShared } from '../utils/shared';
 import { setPageUrl, setPageTitle, updatePageDomainSettings, getHighlightsData, repositionHighlights } from '../utils/highlighter';
+import { scrollToHighlightByText } from '../utils/highlighter-overlays';
 import { throttle } from '../utils/throttle';
 import { loadSettings } from '../utils/storage-utils';
 import Defuddle from 'defuddle';
@@ -414,6 +415,12 @@ async function setupReaderPageMessageHandler(articleUrl: string, defuddleResult:
 
 		if (message.action === 'getReaderModeState') {
 			sendResponse({ isActive: true });
+			return true;
+		}
+
+		if (message.action === 'scrollToHighlight') {
+			// Side panel → "click a highlight in the list, jump to it" (reader page).
+			sendResponse({ success: scrollToHighlightByText(message.text) });
 			return true;
 		}
 

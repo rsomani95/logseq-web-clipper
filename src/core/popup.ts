@@ -671,6 +671,11 @@ function buildTemplateFieldsSkeleton(template: Template | null) {
 
 	if (Array.isArray(template.properties)) {
 		for (const property of template.properties) {
+			// Abstract is page content (it lands as its own "Abstract" block), not a
+			// key/value property — it renders in its own labeled block
+			// (#abstract-container, wired below), never as a row in the property grid.
+			if (property.name === 'abstract' || property.name === 'excerpt') continue;
+
 			const propertyDiv = createElementWithClass('div', 'metadata-property');
 			const propertyType = generalSettings.propertyTypes.find(p => p.name === property.name)?.type || 'text';
 
@@ -739,6 +744,27 @@ function buildTemplateFieldsSkeleton(template: Template | null) {
 	const noteContentField = document.getElementById('note-content-field') as HTMLTextAreaElement;
 	if (noteContentField) {
 		noteContentField.setAttribute('data-template-value', template.noteContentFormat || '');
+	}
+
+	// Abstract renders as its own labeled content block (not a property row). Show
+	// the block only when the template defines an abstract; the value itself is
+	// filled in fillTemplateFieldValues, keyed by element id like every field.
+	const abstractContainer = document.getElementById('abstract-container');
+	const abstractField = document.getElementById('abstract') as HTMLTextAreaElement | null;
+	const abstractProperty = template.properties?.find(
+		p => p.name === 'abstract' || p.name === 'excerpt',
+	);
+	if (abstractContainer && abstractField) {
+		if (abstractProperty) {
+			abstractField.setAttribute('data-template-value', abstractProperty.value);
+			if (!abstractField.dataset.autosizeBound) {
+				abstractField.addEventListener('input', () => autoSizeTextarea(abstractField));
+				abstractField.dataset.autosizeBound = 'true';
+			}
+			abstractContainer.style.display = '';
+		} else {
+			abstractContainer.style.display = 'none';
+		}
 	}
 
 	// Show/hide interpreter section based on template prompt variables
@@ -843,6 +869,13 @@ async function fillTemplateFieldValues(currentTabId: number, template: Template 
 		const capturePageContent = capture.capturePageContent;
 		noteContentField.value = capturePageContent && template.noteContentFormat ? formattedContent : '';
 	}
+
+	// The popup no longer shows the body for editing — render the capture manifest
+	// (page content + highlights/notes) from the value we just set. Runs on every
+	// fill, so the live highlight refresh (refreshFields) keeps it current too.
+	renderCaptureSummary();
+	// Side panel only: the clickable highlights + notes list (no-op in the popup).
+	renderHighlightsList();
 
 	if (generalSettings.interpreterEnabled) {
 		await initializeInterpreter(template, variables, currentTabId!, currentUrl);
@@ -1172,6 +1205,128 @@ function collectClipHighlights(): ClipHighlight[] {
 	}
 }
 
+// Render the "Capturing" manifest that replaced the raw-markdown body box: one
+// row each for page content (with an approximate word count), highlights, and
+// notes — only the rows that apply. The whole section hides when page-content
+// capture is off (empty body) AND there are no highlights, so a highlights-only
+// or empty clip shows nothing rather than an empty bordered box.
+function renderCaptureSummary(): void {
+	const container = document.getElementById('note-content-container');
+	const summary = document.getElementById('capture-summary');
+	if (!container || !summary) return;
+
+	const contentField = document.getElementById('note-content-field') as HTMLTextAreaElement | null;
+	const body = contentField?.value.trim() ?? '';
+	const wordCount = body ? body.split(/\s+/).filter(Boolean).length : 0;
+
+	const highlights = collectClipHighlights();
+	const highlightCount = highlights.length;
+	const noteCount = highlights.filter(h => !!h.note && h.note.trim().length > 0).length;
+
+	const rows: { icon: string; label: string; value: string }[] = [];
+	if (wordCount > 0) {
+		rows.push({ icon: 'file-text', label: 'Page content', value: `~${wordCount.toLocaleString()} words` });
+	}
+	// In the side panel, highlights + notes are shown as their own clickable list
+	// below (renderHighlightsList), so the manifest there carries only the
+	// page-content indication. The toolbar popup shows all three as counts.
+	if (!isSidePanel) {
+		if (highlightCount > 0) {
+			rows.push({ icon: 'highlighter', label: highlightCount === 1 ? 'Highlight' : 'Highlights', value: highlightCount.toLocaleString() });
+		}
+		if (noteCount > 0) {
+			rows.push({ icon: 'pencil-line', label: noteCount === 1 ? 'Note' : 'Notes', value: noteCount.toLocaleString() });
+		}
+	}
+
+	summary.textContent = '';
+	if (rows.length === 0) {
+		container.style.display = 'none';
+		return;
+	}
+
+	for (const row of rows) {
+		const rowEl = createElementWithClass('div', 'capture-summary-row');
+
+		const iconEl = createElementWithClass('span', 'capture-summary-icon');
+		const icon = document.createElement('i');
+		icon.setAttribute('data-lucide', row.icon);
+		iconEl.appendChild(icon);
+
+		const labelEl = createElementWithClass('span', 'capture-summary-label');
+		labelEl.textContent = row.label;
+
+		const valueEl = createElementWithClass('span', 'capture-summary-value');
+		valueEl.textContent = row.value;
+
+		rowEl.appendChild(iconEl);
+		rowEl.appendChild(labelEl);
+		rowEl.appendChild(valueEl);
+		summary.appendChild(rowEl);
+	}
+
+	initializeIcons(summary);
+	container.style.display = '';
+}
+
+// Side-panel only: the page's highlights + notes as a clickable list. Clicking
+// an item asks the page (native or reader) to scroll to that highlight, matched
+// by text. No-op in the toolbar popup, which has no #highlights-list element.
+function renderHighlightsList(): void {
+	const container = document.getElementById('highlights-list-container');
+	const list = document.getElementById('highlights-list');
+	if (!container || !list) return;
+
+	const highlights = collectClipHighlights();
+	const countEl = document.getElementById('highlights-list-count');
+	if (countEl) countEl.textContent = highlights.length ? highlights.length.toLocaleString() : '';
+
+	list.textContent = '';
+	if (highlights.length === 0) {
+		container.style.display = 'none';
+		return;
+	}
+
+	for (const h of highlights) {
+		const item = createElementWithClass('button', 'highlight-item') as HTMLButtonElement;
+		item.type = 'button';
+		item.title = 'Scroll to this highlight on the page';
+
+		const text = createElementWithClass('div', 'highlight-item-text');
+		text.textContent = h.text;
+		item.appendChild(text);
+
+		if (h.note) {
+			const note = createElementWithClass('div', 'highlight-item-note');
+			const icon = document.createElement('i');
+			icon.setAttribute('data-lucide', 'pencil-line');
+			const noteText = document.createElement('span');
+			noteText.textContent = h.note;
+			note.appendChild(icon);
+			note.appendChild(noteText);
+			item.appendChild(note);
+		}
+
+		item.addEventListener('click', () => scrollToClippedHighlight(h.text));
+		list.appendChild(item);
+	}
+
+	initializeIcons(list);
+	container.style.display = '';
+}
+
+// Ask the active tab (native page or reader) to scroll to the highlight whose
+// text matches. Routed through the background, which forwards to the content
+// script or the reader extension page as appropriate (see routeMessageToTab).
+function scrollToClippedHighlight(text: string): void {
+	if (currentTabId == null) return;
+	browser.runtime.sendMessage({
+		action: 'sendMessageToTab',
+		tabId: currentTabId,
+		message: { action: 'scrollToHighlight', text },
+	}).catch(() => { /* tab may not have a content script yet */ });
+}
+
 async function handleClipLogseq(): Promise<void> {
 	if (!currentTemplate) return;
 
@@ -1206,14 +1361,13 @@ async function handleClipLogseq(): Promise<void> {
 			}
 		}
 
-		const allProperties = getPropertiesFromDOM();
 		// The abstract is page content (it lands as its own "Abstract" block), not a
-		// Logseq property — lift it out of the property list and send it as its own
-		// field. (Legacy stored templates spelled this field `excerpt`; loadTemplates
-		// migrates those to `abstract`, but accept either here defensively.)
-		const abstractProp = allProperties.find((p) => p.name === 'abstract' || p.name === 'excerpt');
-		const properties = allProperties.filter((p) => p !== abstractProp);
-		const abstract = typeof abstractProp?.value === 'string' ? abstractProp.value : '';
+		// Logseq property — it lives in its own labeled block outside the property
+		// grid, so getPropertiesFromDOM already excludes it. Read it straight from
+		// that field and send it as its own payload key.
+		const properties = getPropertiesFromDOM();
+		const abstractField = document.getElementById('abstract') as HTMLTextAreaElement | null;
+		const abstract = abstractField?.value ?? '';
 
 		const payload: SaveToLogseqInput = {
 			noteName,

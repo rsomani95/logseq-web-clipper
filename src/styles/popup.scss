@@ -124,25 +124,176 @@
 		}
 	}
 
-	#note-content-container {
+	// Content sections below the property grid (Abstract, the "Capturing"
+	// manifest). A quiet top divider + a small muted label so the popup reads as
+	// calm stacked zones rather than boxed-in fields. Each divider rides on its
+	// own section, so hiding an empty section leaves no orphan line.
+	.clip-section {
 		border-top: 1px solid var(--divider-color);
-		display: flex;
-		flex-grow: 1;
-		#note-content-field {
-			background-color: transparent;
-			border-radius: 0;
+		padding: 0.625rem var(--popup-padding);
+	}
+	.clip-section-label {
+		font-size: var(--font-ui-smaller);
+		font-weight: 500;
+		color: var(--text-muted);
+		margin-bottom: 0.375rem;
+		user-select: none;
+		-webkit-user-select: none;
+	}
+
+	// Abstract: the page summary rendered as content (full-width prose), not a
+	// key/value property. Auto-grows to a few lines then scrolls; clearing it
+	// drops the Abstract block on save.
+	#abstract-container .abstract-field {
+		width: 100%;
+		border: none;
+		background-color: transparent;
+		padding: 0;
+		border-radius: 0;
+		resize: none;
+		font-size: var(--font-ui-smaller);
+		line-height: 1.5;
+		color: var(--text-normal);
+		min-height: 1.5em;
+		max-height: calc(1.5em * 6);
+		overflow-y: auto;
+		overflow-x: hidden;
+		overflow-wrap: anywhere;
+		&:hover,
+		&:active,
+		&:focus {
 			border: none;
-			padding: 10px var(--popup-padding);
-			resize: none;
-			&:active,
-			&:focus {
+			box-shadow: none;
+		}
+	}
+
+	// "Capturing" manifest: what this clip will carry. Compact rows with the
+	// count right-aligned (tabular figures keep the numbers in a clean column).
+	.capture-summary {
+		display: flex;
+		flex-direction: column;
+		gap: 0.375rem;
+	}
+	.capture-summary-row {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: var(--font-ui-smaller);
+	}
+	.capture-summary-icon {
+		display: flex;
+		align-items: center;
+		color: var(--text-accent);
+		svg {
+			width: 15px;
+			height: 15px;
+		}
+	}
+	.capture-summary-label {
+		color: var(--text-normal);
+	}
+	.capture-summary-value {
+		margin-inline-start: auto;
+		color: var(--text-muted);
+		font-variant-numeric: tabular-nums;
+	}
+
+	// Side panel: the highlights + notes list is the persistent companion's main
+	// region, so it grows to fill and scrolls internally while its label stays put.
+	.clip-section--grow {
+		flex: 1 1 auto;
+		min-height: 6rem;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
+	.highlights-list-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.highlights-list-count {
+		color: var(--text-faint);
+		font-weight: 400;
+		font-variant-numeric: tabular-nums;
+	}
+	.highlights-list {
+		flex: 1 1 auto;
+		min-height: 0;
+		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
+		// Flush rows: items are separated by a single hairline (below), not gaps,
+		// so the divider reads as a clean rule rather than a floating line.
+		gap: 0;
+	}
+	// Each highlight is a <button> (click → scroll to it on the page). Override the
+	// global button chrome (transparent, no shadow, auto height, wrapping). Flat
+	// list rows: no left bar (it read as a muddy, ornamental ladder) — a single
+	// hairline separates items, the quote leads, and a full-row tint on hover is
+	// the only, intentional, clickability cue.
+	.highlight-item {
+		width: 100%;
+		height: auto;
+		justify-content: flex-start;
+		align-items: stretch;
+		text-align: start;
+		white-space: normal;
+		cursor: pointer;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		padding: 0.625rem 0.5rem;
+		border: none;
+		border-radius: 0;
+		background-color: transparent;
+		box-shadow: none;
+		transition: background-color var(--duration-fast) ease-in-out;
+		&:not(:last-child) {
+			border-bottom: 1px solid var(--divider-color);
+		}
+		@media (hover: hover) {
+			&:hover {
+				background-color: var(--background-modifier-hover);
 				box-shadow: none;
 			}
+		}
+		// Inset so the keyboard-focus ring isn't clipped by the row's overflow.
+		&:active,
+		&:focus-visible {
+			box-shadow: inset 0 0 0 1px var(--background-modifier-border-focus);
+		}
+	}
+	.highlight-item-text {
+		font-size: var(--font-ui-smaller);
+		line-height: 1.45;
+		color: var(--text-normal);
+		// Clamp long highlights to a few lines in the list.
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.highlight-item-note {
+		display: flex;
+		gap: 0.375rem;
+		font-size: var(--font-ui-smaller);
+		color: var(--text-muted);
+		svg {
+			width: 13px;
+			height: 13px;
+			flex-shrink: 0;
+			margin-top: 0.15rem;
+			color: var(--text-accent);
 		}
 	}
 
 	.clipper-footer {
 		width: 100%;
+		// Pin the action button to the bottom now that no content box grows to fill
+		// the gap — the abstract/manifest sit just under the properties and the rest
+		// is calm breathing room above the button.
+		margin-top: auto;
 		display: flex;
 		flex-direction: column;
 		gap: 0.625rem;

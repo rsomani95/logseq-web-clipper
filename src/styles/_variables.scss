@@ -6,9 +6,15 @@
 	--safe-area-inset-left: env(safe-area-inset-left);
 	--safe-area-inset-right: env(safe-area-inset-right);
 
-	--accent-h: 258;
-	--accent-s: 88%;
-	--accent-l: 66%;
+	// Logseq-native teal. Hue 196 matches the Logseq DB app's own UI
+	// (background ≈ hsl(197, 58%, 13%)) and the extension's teal mark; this
+	// replaced Obsidian's violet (was 258, 88%, 66%). Kept deep (l 40%) so white
+	// text on the accent fill (CTA button, toggles, "Clip highlights" pill) stays
+	// legible — a petrol teal, not a neon cyan. Single source of truth: every
+	// accent surface derives from these three values via --color-accent* below.
+	--accent-h: 196;
+	--accent-s: 70%;
+	--accent-l: 40%;
 
 	--background-primary: var(--color-base-00);
 	--background-primary-alt: var(--color-base-10);

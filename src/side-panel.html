@@ -48,9 +48,24 @@
 				<i data-lucide="chevron-down"></i>
 			</div>
 			<div class="metadata-properties"></div>
-			<div id="note-content-container">
-				<textarea id="note-content-field" rows="4" data-i18n="notesAboutPage"></textarea>
+			<div id="abstract-container" class="clip-section" style="display: none;">
+				<div class="clip-section-label">Abstract</div>
+				<textarea id="abstract" class="abstract-field" rows="1"></textarea>
 			</div>
+			<div id="note-content-container" class="clip-section" style="display: none;">
+				<div class="clip-section-label">Capturing</div>
+				<div id="capture-summary" class="capture-summary"></div>
+			</div>
+			<div id="highlights-list-container" class="clip-section clip-section--grow" style="display: none;">
+				<div class="clip-section-label highlights-list-header">
+					<span>Highlights &amp; notes</span>
+					<span id="highlights-list-count" class="highlights-list-count"></span>
+				</div>
+				<div id="highlights-list" class="highlights-list"></div>
+			</div>
+			<!-- The page body is no longer edited here (you do that in Logseq); it
+			     rides hidden into the save payload and the copy/save-file actions. -->
+			<textarea id="note-content-field" hidden></textarea>
 			<div class="clipper-footer">
 				<div id="interpreter" style="display: none;">
 					<textarea id="prompt-context" rows="3"></textarea>
