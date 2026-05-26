@@ -12,7 +12,7 @@ Targets the **DB graph** version of Logseq only. Talks to Logseq via its local H
 
 Distributed outside the Chrome Web Store, so it installs in **developer mode**:
 
-1. Download `logseq-web-clipper-<version>-chrome.zip` from the [latest release](https://github.com/rsomani95/logseq-web-clipper/releases) and unzip it.
+1. Download the [latest release](https://github.com/rsomani95/logseq-web-clipper/releases) and unzip it.
 2. Open `chrome://extensions` and turn on **Developer mode** (top-right).
 3. Click **Load unpacked** and select the unzipped folder.
 
@@ -20,9 +20,13 @@ There's no auto-update for developer-mode extensions — to upgrade, download th
 
 ### Logseq Setup
 
-Needs the [`logseq-reference-manager`](https://github.com/rsomani95/logseq-reference-manager) plugin to setup the tag + properties to enable import.
+Needs the [`logseq-reference-manager`](https://github.com/rsomani95/logseq-reference-manager) plugin to setup the tag + properties to enable import. See that project's README for getting the Logseq side set up.
 
-Additionally, you need to start the HTTP server from Logseq, create a token, and paste that in the extension's settings.
+Additionally, you'll need to start the HTTP server from Logseq, create a token, and paste that in the extension's settings:
+![](./docs/logseq-api-server-setup.jpg)
+
+Then, click on the extension's icon and go to the settings, and paste it in here:
+![](./docs/clipper-token-setup.jpg)
 
 ## Configuration
 
