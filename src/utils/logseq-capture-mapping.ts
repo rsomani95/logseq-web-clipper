@@ -7,6 +7,7 @@
 
 import { WEB_CLIPPING_TAG } from '@logseq-web-clipper/shared'
 import type { LogseqCaptureSettings } from '../types/types'
+import { DEFAULT_CREATOR_SEPARATOR, DEFAULT_CREATOR_TEMPLATE } from './author-format'
 import { parseSectionOrder, WEB_SECTION_DEFAULT_ORDER } from './web-sections'
 
 // Last-resort defaults, used only when neither a live plugin read nor a cached
@@ -27,6 +28,8 @@ export const DEFAULT_CAPTURE_SETTINGS: LogseqCaptureSettings = {
 	foldPageContent: true,
 	sectionOrder: WEB_SECTION_DEFAULT_ORDER,
 	clippingTag: WEB_CLIPPING_TAG,
+	creatorNameTemplate: DEFAULT_CREATOR_TEMPLATE,
+	creatorSeparator: DEFAULT_CREATOR_SEPARATOR,
 }
 
 // The plugin's flat settings keys the extension reads. If the plugin renames a
@@ -44,6 +47,12 @@ export const PLUGIN_SETTING_KEYS = {
 	foldHighlights: 'webFoldHighlights',
 	foldPageContent: 'webFoldPageContent',
 	sectionOrder: 'webSectionOrder',
+	// Shared (not web-prefixed): the General → Authors panel applies to every
+	// source. `creatorsAsNodes` is deliberately absent — the extension reads its
+	// effect through the discovered `authors` property type (node vs default), not
+	// the key. See LOGSEQ_SETTINGS_INTEGRATION.md / settings.md "Author formatting".
+	creatorNameTemplate: 'creatorNameTemplate',
+	creatorSeparator: 'creatorSeparator',
 } as const
 
 /**
@@ -57,6 +66,9 @@ export const PLUGIN_SETTING_KEYS = {
 export function mapPluginSettings(raw: Record<string, unknown>): LogseqCaptureSettings {
 	const str = (v: unknown, d: string) => (typeof v === 'string' && v.trim() ? v.trim() : d)
 	const bool = (v: unknown, d: boolean) => (typeof v === 'boolean' ? v : d)
+	// Whitespace-significant variant: a separator like ", " must NOT be trimmed
+	// (trimming would drop the trailing space). Only an empty/non-string falls back.
+	const sep = (v: unknown, d: string) => (typeof v === 'string' && v.length > 0 ? v : d)
 	const K = PLUGIN_SETTING_KEYS
 	return {
 		clippingTag: str(raw[K.clippingTag], DEFAULT_CAPTURE_SETTINGS.clippingTag).replace(/^#/, ''),
@@ -71,5 +83,7 @@ export function mapPluginSettings(raw: Record<string, unknown>): LogseqCaptureSe
 		foldHighlights: bool(raw[K.foldHighlights], DEFAULT_CAPTURE_SETTINGS.foldHighlights),
 		foldPageContent: bool(raw[K.foldPageContent], DEFAULT_CAPTURE_SETTINGS.foldPageContent),
 		sectionOrder: parseSectionOrder(raw[K.sectionOrder]),
+		creatorNameTemplate: str(raw[K.creatorNameTemplate], DEFAULT_CAPTURE_SETTINGS.creatorNameTemplate),
+		creatorSeparator: sep(raw[K.creatorSeparator], DEFAULT_CAPTURE_SETTINGS.creatorSeparator),
 	}
 }

@@ -726,6 +726,8 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 						foldPageContent: capture.foldPageContent,
 						sectionOrder: capture.sectionOrder,
 						clippingTag: capture.clippingTag,
+						creatorNameTemplate: capture.creatorNameTemplate,
+						creatorSeparator: capture.creatorSeparator,
 					});
 					sendResponse({ success: true, result });
 				} catch (err) {

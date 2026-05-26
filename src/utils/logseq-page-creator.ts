@@ -3,12 +3,15 @@
 // instantiates it from settings.
 //
 // Pipeline: createPage → addBlockTag → per-property writes → insertBatchBlock.
-// Node-typed properties (authors, tags) get one Logseq page per comma-separated
-// value, linked via numeric page.id — mirrors the zoterolocal pattern.
+// Node-typed properties get one Logseq page per value, linked via numeric page.id
+// — mirrors the zoterolocal pattern. `tags` split on commas; `authors` are run
+// through the shared creator formatting (author-format.ts) so each name matches
+// what Zotero would write for the same person.
 
 import { PROPERTIES, WEB_CLIPPING_TAG, displayName, type PropertyName } from '@logseq-web-clipper/shared'
 
 import type { Property } from '../types/types'
+import { DEFAULT_CREATOR_SEPARATOR, formatAuthors } from './author-format'
 import type { LogseqAPI, LogseqBlockEntity } from './logseq-api'
 import { buildTagPropertyIndex } from './logseq-schema-index'
 import { findPageByUrl, normalizeUrl } from './logseq-url-index'
@@ -124,6 +127,13 @@ export interface LogseqCaptureOptions {
 	/** The tag every clipped page carries (its schema class). A leading `#` is
 	 * stripped; a blank value falls back to the shared `WEB_CLIPPING_TAG`. */
 	clippingTag?: string
+	/** Template for each author's display name (the plugin's shared
+	 * `creatorNameTemplate`). Default "<% firstName %> <% lastName %>". Applied to
+	 * the `authors` field only, in both node and text mode — see author-format.ts. */
+	creatorNameTemplate?: string
+	/** Separator joining author names when `authors` is a `default` (text) property.
+	 * Default ", ". Unused in node mode (one page per author). */
+	creatorSeparator?: string
 }
 
 /** What `buildClipBlocks` returns: the ordered top-level section blocks, plus a
@@ -445,7 +455,11 @@ export async function saveToLogseq(
 		}
 
 		if (discovered.type === 'node') {
-			const values = splitNodeValues(prop.value)
+			// `authors` is run through the shared creator formatting (split the flat
+			// byline → format each name); every other node property (e.g. `tags`) is a
+			// plain comma split. One page per resulting value, linked by id.
+			const values =
+				prop.name === 'authors' ? formatAuthors(prop.value, options.creatorNameTemplate) : splitNodeValues(prop.value)
 			if (values.length === 0) continue
 			let anySet = false
 			for (const v of values) {
@@ -495,8 +509,16 @@ export async function saveToLogseq(
 			continue
 		}
 
+		// Scalar (`default`/`url`/…). A plain-text `authors` property still gets the
+		// creator formatting — format each name, then join with the separator.
+		let scalarValue = prop.value
+		if (prop.name === 'authors') {
+			const names = formatAuthors(prop.value, options.creatorNameTemplate)
+			if (names.length === 0) continue
+			scalarValue = names.join(options.creatorSeparator ?? DEFAULT_CREATOR_SEPARATOR)
+		}
 		try {
-			await api.upsertBlockProperty(page.uuid, discovered.ident, prop.value)
+			await api.upsertBlockProperty(page.uuid, discovered.ident, scalarValue)
 			matched++
 		} catch (err) {
 			console.warn(`[logseq-web-clipper] failed to set ${prop.name}:`, err)

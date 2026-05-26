@@ -17,10 +17,14 @@ const fullPluginSettings = {
 	webFoldHighlights: false,
 	webFoldPageContent: true,
 	webSectionOrder: 'abstract,highlights,pageContent',
+	// shared (not web-prefixed) creator formatting from the General → Authors panel
+	creatorNameTemplate: '<% firstName %> <% lastName %>',
+	creatorSeparator: ', ',
 	// keys the plugin also stores that the clipper must ignore
 	zotTag: 'Reference',
 	propertyPreset: 'Essentials',
 	tagRules: '[]',
+	creatorsAsNodes: true, // deliberately NOT read — type-driven; must be ignored
 }
 
 describe('mapPluginSettings', () => {
@@ -38,6 +42,8 @@ describe('mapPluginSettings', () => {
 			foldHighlights: false,
 			foldPageContent: true,
 			sectionOrder: ['abstract', 'highlights', 'pageContent'],
+			creatorNameTemplate: '<% firstName %> <% lastName %>',
+			creatorSeparator: ', ',
 		})
 	})
 
@@ -56,6 +62,8 @@ describe('mapPluginSettings', () => {
 				webFoldHighlights: true,
 				webFoldPageContent: false,
 				webSectionOrder: 'pageContent,highlights,abstract',
+				creatorNameTemplate: '<% lastName %>, <% firstName %>',
+				creatorSeparator: '; ',
 			}),
 		).toEqual({
 			clippingTag: 'Clippings',
@@ -70,6 +78,8 @@ describe('mapPluginSettings', () => {
 			foldHighlights: true,
 			foldPageContent: false,
 			sectionOrder: ['pageContent', 'highlights', 'abstract'],
+			creatorNameTemplate: '<% lastName %>, <% firstName %>',
+			creatorSeparator: '; ',
 		})
 	})
 
@@ -128,6 +138,19 @@ describe('mapPluginSettings', () => {
 			foldHighlights: 'webFoldHighlights',
 			foldPageContent: 'webFoldPageContent',
 			sectionOrder: 'webSectionOrder',
+			creatorNameTemplate: 'creatorNameTemplate',
+			creatorSeparator: 'creatorSeparator',
 		})
+	})
+
+	test('the separator is whitespace-significant — ", " is NOT trimmed to ","', () => {
+		expect(mapPluginSettings({ creatorSeparator: ', ' }).creatorSeparator).toBe(', ')
+		expect(mapPluginSettings({ creatorSeparator: ' · ' }).creatorSeparator).toBe(' · ')
+		// an empty separator is treated as unset → default
+		expect(mapPluginSettings({ creatorSeparator: '' }).creatorSeparator).toBe(DEFAULT_CAPTURE_SETTINGS.creatorSeparator)
+	})
+
+	test('creatorsAsNodes is ignored (its effect is the discovered property type, not a key)', () => {
+		expect('creatorsAsNodes' in mapPluginSettings({ creatorsAsNodes: false })).toBe(false)
 	})
 })

@@ -399,6 +399,28 @@ Notes:
   hardcoded extension-side. If you want it configurable too, add e.g.
   `webAbstractBlockName` and tell the extension dev — otherwise leave it out.)
 
+#### Shared author formatting (General → Authors panel)
+
+Two **non-`web`-prefixed** keys from the shared Authors panel are also read (they
+apply to every source, so a web clip renders authors the way a Zotero import
+does). **Implemented (ext, 2026-05-26):** mapped in `logseq-capture-mapping.ts`
+and applied to the `authors` property in `logseq-page-creator.ts` via the pure
+`author-format.ts` (which splits the flat web byline into names and infers
+first/last, then renders each through the same template the plugin uses).
+
+| Plugin setting key | Type | Default | Meaning (how the extension uses it) |
+|---|---|---|---|
+| `creatorNameTemplate` | string | `<% firstName %> <% lastName %>` | Per-author name format. Applied to each name parsed out of the byline; mirrors the plugin's `applyCreatorTemplate`. |
+| `creatorSeparator` | string | `, ` | Joins author names **only** when `authors` is plain text (`default` type). Whitespace-significant — not trimmed. Irrelevant in node mode (one page per author). |
+
+- **`creatorsAsNodes` is deliberately NOT read.** Its effect reaches the
+  extension as the discovered `authors`/`creators` property *type* (the web tag
+  `extends` the base, so it inherits `node`-vs-`default`); the extension honors
+  that type. Don't add it to the contract.
+- The byline → first/last inference is heuristic (the web gives no structured
+  names). `author-format.test.ts` is the spec; the one known gap is multiple
+  `Surname, Given` authors separated by bare commas (use `;`, which is handled).
+
 ### D. Plugin mechanics to keep in mind
 
 (From your own `LOGSEQ_SDK_NOTES.md` / `settings.md` — restated so the contract

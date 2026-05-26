@@ -114,6 +114,17 @@ export interface LogseqCaptureSettings {
 	 * schema on this tag (its class must `extends` the shared base), so a tag the
 	 * plugin hasn't set up carries no schema and the clip aborts. */
 	clippingTag: string;
+	/** How each author's display name is rendered, from the plugin's shared
+	 * General → Authors panel (`creatorNameTemplate`); `<% firstName %>` /
+	 * `<% lastName %>` placeholders, e.g. "<% lastName %>, <% firstName %>". Applied
+	 * to the flat web byline by splitting it into names and inferring first/last —
+	 * see author-format.ts. (The companion `creatorsAsNodes` is NOT read here: its
+	 * effect arrives through the discovered `authors` property type — node vs default.) */
+	creatorNameTemplate: string;
+	/** Joins formatted author names when the `authors` property is plain text
+	 * (`default` type). Whitespace-significant (e.g. ", "). Irrelevant when authors
+	 * are nodes — each is its own linked page. From the plugin's `creatorSeparator`. */
+	creatorSeparator: string;
 }
 
 export interface Settings {
