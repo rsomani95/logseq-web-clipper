@@ -37,6 +37,10 @@ export interface LogseqPageEntity {
 export interface LogseqBlockEntity {
 	id?: number
 	uuid: string
+	/** Parent entity id. `insertBatchBlock` returns a flat, pre-order array of
+	 * every created block, so the top-level section blocks are the ones whose
+	 * `parent` is the page's entity id. */
+	parent?: number
 	/** Block text. DB graphs expose `title`; older/file builds use `content`. Read whichever is present. */
 	content?: string
 	title?: string
@@ -213,8 +217,20 @@ export class LogseqAPI {
 		parentUuid: string,
 		blocks: LogseqBatchBlock[],
 		opts: { sibling?: boolean; before?: boolean; keepUUID?: boolean } = {},
-	): Promise<unknown> {
-		return this.call('logseq.Editor.insertBatchBlock', [parentUuid, blocks, opts])
+	): Promise<LogseqBlockEntity[] | null> {
+		return this.call('logseq.Editor.insertBatchBlock', [parentUuid, blocks, opts]) as Promise<
+			LogseqBlockEntity[] | null
+		>
+	}
+
+	/**
+	 * Sets a block's folded/collapsed state (`:block/collapsed?`). Verified to
+	 * work over the HTTP API on DB graphs (caller `_test_plugin`): a plain boolean
+	 * crosses the JSON boundary and persists immediately, no settle delay needed.
+	 * (`getPageBlocksTree` does NOT report `collapsed?` — read it via `getBlock`.)
+	 */
+	setBlockCollapsed(uuid: string, flag: boolean): Promise<unknown> {
+		return this.call('logseq.Editor.setBlockCollapsed', [uuid, { flag }])
 	}
 
 	appendBlockInPage(

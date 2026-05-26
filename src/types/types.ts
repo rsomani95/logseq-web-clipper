@@ -1,3 +1,5 @@
+import type { WebSectionId } from '../utils/web-sections';
+
 export interface Template {
 	id: string;
 	name: string;
@@ -77,6 +79,8 @@ export interface ReaderSettings {
 // `logseq-remote-settings.ts`); this interface is the resolver's return shape.
 // Editing happens in the plugin's setup UI.
 export interface LogseqCaptureSettings {
+	/** Name of the block the abstract/summary nests under. */
+	abstractBlockName: string;
 	/** Name of the block the clipped article body nests under. */
 	pageContentBlockName: string;
 	/** Name of the block highlights nest under. */
@@ -93,6 +97,17 @@ export interface LogseqCaptureSettings {
 	 * box stays editable (like the tags field), so content typed in for a single
 	 * clip still saves. */
 	capturePageContent: boolean;
+	/** Capture the page's own summary as an "Abstract" block. On by default; off
+	 * → the abstract block is never written even when the page carries a summary. */
+	captureAbstract: boolean;
+	/** Import each section collapsed (`:block/collapsed?`). The companion plugin's
+	 * Page template defaults: Page Content folded, Abstract/Highlights open. */
+	foldAbstract: boolean;
+	foldHighlights: boolean;
+	foldPageContent: boolean;
+	/** Order the section blocks are written in. Defensively parsed from the
+	 * plugin's `webSectionOrder`, so it always lists all three ids exactly once. */
+	sectionOrder: WebSectionId[];
 	/** The tag every clipped page carries (its schema class in Logseq). Read from
 	 * the plugin's `webTag`; a leading `#` is stripped and a blank value falls back
 	 * to the shared `WEB_CLIPPING_TAG`. The companion plugin owns the property

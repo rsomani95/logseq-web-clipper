@@ -715,9 +715,16 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 					// cache → defaults if the plugin / Logseq is unreachable.
 					const capture = await resolveLogseqCaptureSettings(api);
 					const result = await saveToLogseq(api, payload, {
+						abstractBlockName: capture.abstractBlockName,
 						pageContentBlockName: capture.pageContentBlockName,
 						highlightsBlockName: capture.highlightsBlockName,
 						useHeadingMarkers: capture.useHeadingMarkers,
+						captureAbstract: capture.captureAbstract,
+						capturePageContent: capture.capturePageContent,
+						foldAbstract: capture.foldAbstract,
+						foldHighlights: capture.foldHighlights,
+						foldPageContent: capture.foldPageContent,
+						sectionOrder: capture.sectionOrder,
 						clippingTag: capture.clippingTag,
 					});
 					sendResponse({ success: true, result });

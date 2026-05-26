@@ -43,28 +43,28 @@ describe('highlightToBlock', () => {
 
 describe('buildClipBlocks', () => {
 	test('wraps non-empty content under a Page Content block', () => {
-		expect(buildClipBlocks('Hello.', [])).toEqual([
+		expect(buildClipBlocks('Hello.', []).blocks).toEqual([
 			{ content: 'Page Content', children: [{ content: 'Hello.' }] },
 		])
 	})
 
 	test('omits the Page Content block when the body is empty (highlights-only clip)', () => {
-		expect(buildClipBlocks('', [{ text: 'just this' }])).toEqual([
+		expect(buildClipBlocks('', [{ text: 'just this' }]).blocks).toEqual([
 			{ content: 'Highlights', children: [{ content: 'just this' }] },
 		])
 	})
 
 	test('omits the Page Content block when the body is whitespace-only', () => {
-		expect(buildClipBlocks('   \n\n', [{ text: 'h' }]).some((b) => b.content === 'Page Content')).toBe(false)
+		expect(buildClipBlocks('   \n\n', [{ text: 'h' }]).blocks.some((b) => b.content === 'Page Content')).toBe(false)
 	})
 
 	test('returns no blocks when there is neither content nor highlights', () => {
-		expect(buildClipBlocks('', [])).toEqual([])
+		expect(buildClipBlocks('', [])).toEqual({ blocks: [], fold: [] })
 	})
 
 	test('adds a Highlights section first, with notes nested, when highlights exist', () => {
 		expect(
-			buildClipBlocks('Body.', [{ text: 'first' }, { text: 'second', note: 'note 2' }]),
+			buildClipBlocks('Body.', [{ text: 'first' }, { text: 'second', note: 'note 2' }]).blocks,
 		).toEqual([
 			{
 				content: 'Highlights',
@@ -78,7 +78,7 @@ describe('buildClipBlocks', () => {
 	})
 
 	test('omits the Highlights section when there are none', () => {
-		expect(buildClipBlocks('Body.', []).some((b) => b.content === 'Highlights')).toBe(false)
+		expect(buildClipBlocks('Body.', []).blocks.some((b) => b.content === 'Highlights')).toBe(false)
 	})
 
 	test('uses custom block names from options', () => {
@@ -86,7 +86,7 @@ describe('buildClipBlocks', () => {
 			buildClipBlocks('Body.', [{ text: 'h' }], {
 				pageContentBlockName: 'Article',
 				highlightsBlockName: 'Notes',
-			}),
+			}).blocks,
 		).toEqual([
 			{ content: 'Notes', children: [{ content: 'h' }] },
 			{ content: 'Article', children: [{ content: 'Body.' }] },
@@ -95,19 +95,19 @@ describe('buildClipBlocks', () => {
 
 	test('falls back to defaults when option block names are blank', () => {
 		expect(
-			buildClipBlocks('Body.', [], { pageContentBlockName: '  ', highlightsBlockName: '' }),
+			buildClipBlocks('Body.', [], { pageContentBlockName: '  ', highlightsBlockName: '' }).blocks,
 		).toEqual([{ content: 'Page Content', children: [{ content: 'Body.' }] }])
 	})
 
 	test('passes useHeadingMarkers through to the outliner (off → bold)', () => {
-		expect(buildClipBlocks('# Title', [], { useHeadingMarkers: false })).toEqual([
+		expect(buildClipBlocks('# Title', [], { useHeadingMarkers: false }).blocks).toEqual([
 			{ content: 'Page Content', children: [{ content: '**Title**' }] },
 		])
 	})
 
 	test('applies the heading rule to highlight blocks too', () => {
 		expect(
-			buildClipBlocks('Body.', [{ text: '## Quoted heading' }], { useHeadingMarkers: false }),
+			buildClipBlocks('Body.', [{ text: '## Quoted heading' }], { useHeadingMarkers: false }).blocks,
 		).toEqual([
 			{ content: 'Highlights', children: [{ content: '**Quoted heading**' }] },
 			{ content: 'Page Content', children: [{ content: 'Body.' }] },
@@ -116,7 +116,7 @@ describe('buildClipBlocks', () => {
 
 	test('leads with an Abstract block (summary as a single child) above Highlights and Page Content', () => {
 		expect(
-			buildClipBlocks('Body.', [{ text: 'h' }], {}, '  A short summary.  '),
+			buildClipBlocks('Body.', [{ text: 'h' }], {}, '  A short summary.  ').blocks,
 		).toEqual([
 			{ content: 'Abstract', children: [{ content: 'A short summary.' }] },
 			{ content: 'Highlights', children: [{ content: 'h' }] },
@@ -125,20 +125,68 @@ describe('buildClipBlocks', () => {
 	})
 
 	test('emits the Abstract block even for an abstract-only clip', () => {
-		expect(buildClipBlocks('', [], {}, 'Just the summary.')).toEqual([
+		expect(buildClipBlocks('', [], {}, 'Just the summary.').blocks).toEqual([
 			{ content: 'Abstract', children: [{ content: 'Just the summary.' }] },
 		])
 	})
 
 	test('omits the Abstract block when the abstract is blank or whitespace', () => {
-		expect(buildClipBlocks('Body.', [], {}, '   ').some((b) => b.content === 'Abstract')).toBe(false)
-		expect(buildClipBlocks('Body.', []).some((b) => b.content === 'Abstract')).toBe(false)
+		expect(buildClipBlocks('Body.', [], {}, '   ').blocks.some((b) => b.content === 'Abstract')).toBe(false)
+		expect(buildClipBlocks('Body.', []).blocks.some((b) => b.content === 'Abstract')).toBe(false)
 	})
 
 	test('uses a custom abstract block name from options', () => {
-		expect(buildClipBlocks('', [], { abstractBlockName: 'Summary' }, 'Text.')).toEqual([
+		expect(buildClipBlocks('', [], { abstractBlockName: 'Summary' }, 'Text.').blocks).toEqual([
 			{ content: 'Summary', children: [{ content: 'Text.' }] },
 		])
+	})
+
+	// — fold flags —
+	test('fold is all-false by default, index-aligned with the emitted sections', () => {
+		expect(buildClipBlocks('Body.', [{ text: 'h' }], {}, 'Summary.').fold).toEqual([false, false, false])
+	})
+
+	test('a per-section fold flag maps to that section only', () => {
+		const r = buildClipBlocks('Body.', [{ text: 'h' }], { foldAbstract: true, foldPageContent: true }, 'Summary.')
+		expect(r.blocks.map((b) => b.content)).toEqual(['Abstract', 'Highlights', 'Page Content'])
+		expect(r.fold).toEqual([true, false, true])
+	})
+
+	test('fold flags track which sections are actually present', () => {
+		// highlights-only clip: a single section, a single fold flag
+		const r = buildClipBlocks('', [{ text: 'h' }], { foldHighlights: true, foldPageContent: true })
+		expect(r.blocks.map((b) => b.content)).toEqual(['Highlights'])
+		expect(r.fold).toEqual([true])
+	})
+
+	// — section order —
+	test('sectionOrder reorders the emitted blocks and their fold flags together', () => {
+		const r = buildClipBlocks(
+			'Body.',
+			[{ text: 'h' }],
+			{ sectionOrder: ['pageContent', 'abstract', 'highlights'], foldPageContent: true },
+			'Summary.',
+		)
+		expect(r.blocks.map((b) => b.content)).toEqual(['Page Content', 'Abstract', 'Highlights'])
+		expect(r.fold).toEqual([true, false, false])
+	})
+
+	// — capture toggles —
+	test('captureAbstract:false drops the Abstract even when a summary is present', () => {
+		expect(
+			buildClipBlocks('Body.', [], { captureAbstract: false }, 'Summary.').blocks.map((b) => b.content),
+		).toEqual(['Page Content'])
+	})
+
+	test('capturePageContent:false drops the Page Content even when a body is present', () => {
+		expect(
+			buildClipBlocks('Body.', [{ text: 'h' }], { capturePageContent: false }).blocks.map((b) => b.content),
+		).toEqual(['Highlights'])
+	})
+
+	test('Highlights has no capture toggle — always emitted when present', () => {
+		const r = buildClipBlocks('Body.', [{ text: 'h' }], { captureAbstract: false, capturePageContent: false }, 'S.')
+		expect(r.blocks.map((b) => b.content)).toEqual(['Highlights'])
 	})
 })
 

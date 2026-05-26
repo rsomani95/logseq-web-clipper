@@ -13,6 +13,7 @@ import type { LogseqAPI, LogseqBlockEntity } from './logseq-api'
 import { buildTagPropertyIndex } from './logseq-schema-index'
 import { findPageByUrl, normalizeUrl } from './logseq-url-index'
 import { markdownToBatchBlocks, styleHeadingLines, type BatchBlock } from './markdown-to-outliner'
+import { WEB_SECTION_DEFAULT_ORDER, type WebSectionId } from './web-sections'
 
 /** A highlight captured for a clip, ready to render into the Highlights section. */
 export interface ClipHighlight {
@@ -105,9 +106,33 @@ export interface LogseqCaptureOptions {
 	highlightsBlockName?: string
 	/** Keep Markdown `#` markers on heading blocks. Default true. */
 	useHeadingMarkers?: boolean
+	/** Include the Abstract section. Default true (omitted when the summary is
+	 * blank regardless). */
+	captureAbstract?: boolean
+	/** Include the Page Content section. Default true (omitted when the body is
+	 * empty regardless). */
+	capturePageContent?: boolean
+	/** Import each section collapsed (`:block/collapsed?`). Default false per
+	 * section; the product defaults (Page Content folded) ride in from settings. */
+	foldAbstract?: boolean
+	foldHighlights?: boolean
+	foldPageContent?: boolean
+	/** Order the section blocks are written in. Defaults to Abstract → Highlights
+	 * → Page Content. Any section the array omits is skipped from ordering but
+	 * `buildClipBlocks` falls back to the canonical order when unset. */
+	sectionOrder?: WebSectionId[]
 	/** The tag every clipped page carries (its schema class). A leading `#` is
 	 * stripped; a blank value falls back to the shared `WEB_CLIPPING_TAG`. */
 	clippingTag?: string
+}
+
+/** What `buildClipBlocks` returns: the ordered top-level section blocks, plus a
+ * parallel `fold` array (`fold[i]` ⇒ collapse `blocks[i]` on import). The two
+ * arrays are index-aligned so the save path can map each created top-level block
+ * to its fold flag. */
+export interface ClipBlocks {
+	blocks: BatchBlock[]
+	fold: boolean[]
 }
 
 // Defaults for the block names above; also the dedupe anchor for re-imports.
@@ -153,43 +178,101 @@ export function highlightToBlock(h: ClipHighlight, useHeadingMarkers: boolean = 
 }
 
 /**
- * Builds the page body, top to bottom: an "Abstract" section (the page's own
- * summary), then "Highlights" (when the clip carries any), then a "Page Content"
- * wrapper around the clipped article. The abstract leads as the shortest
- * orienting context for what the page is; highlights follow as the reason the
- * user clipped; the full body sits last.
+ * Builds the page body as up to three top-level section blocks — Abstract (the
+ * page's own summary), Highlights (when the clip carries any), and a Page Content
+ * wrapper around the clipped article — emitted in `options.sectionOrder`
+ * (default: Abstract → Highlights → Page Content). The abstract orients (what the
+ * page is); highlights are the reason the user clipped; the full body sits last.
  *
- * Each section is emitted only when it has content. Abstract: when `abstract` is
- * non-blank — its trimmed text becomes a single indented child block (it's page
- * content, not a Logseq property). Highlights: when ≥1 highlight. Page Content:
- * when the article body is non-empty — empty when the user turned off "Capture
- * page content" (the popup leaves the content box blank) or cleared the box for
- * this clip. Re-import doesn't depend on any being present: mergeHighlightsInto-
+ * Each section is emitted only when it has content AND is enabled. Abstract: when
+ * `abstract` is non-blank and `captureAbstract` isn't false — its trimmed text
+ * becomes a single indented child block (it's page content, not a Logseq
+ * property). Highlights: when ≥1 highlight (always enabled — no capture toggle).
+ * Page Content: when the article body is non-empty and `capturePageContent` isn't
+ * false. Re-import doesn't depend on any being present: mergeHighlightsInto-
  * ExistingPage finds the Highlights block by name and creates it if absent.
+ *
+ * Returns the ordered blocks plus an index-aligned `fold` array — `fold[i]` means
+ * collapse the i-th emitted section on import (the save path resolves each
+ * top-level block's uuid and calls `setBlockCollapsed`).
  */
 export function buildClipBlocks(
 	contentMarkdown: string,
 	highlights: ClipHighlight[],
 	options: LogseqCaptureOptions = {},
 	abstract: string = '',
-): BatchBlock[] {
+): ClipBlocks {
 	const abstractName = options.abstractBlockName?.trim() || ABSTRACT_HEADING
 	const pageContentName = options.pageContentBlockName?.trim() || PAGE_CONTENT_HEADING
 	const highlightsName = options.highlightsBlockName?.trim() || HIGHLIGHTS_HEADING
 	const useHeadingMarkers = options.useHeadingMarkers ?? true
-	const blocks: BatchBlock[] = []
+	const order = options.sectionOrder ?? WEB_SECTION_DEFAULT_ORDER
+
 	const abstractText = abstract.trim()
-	if (abstractText) {
-		blocks.push({ content: abstractName, children: [{ content: abstractText }] })
-	}
-	if (highlights.length > 0) {
-		blocks.push({ content: highlightsName, children: highlights.map((h) => highlightToBlock(h, useHeadingMarkers)) })
-	}
 	const pageChildren = markdownToBatchBlocks(contentMarkdown, { useHeadingMarkers })
-	if (pageChildren.length > 0) {
-		blocks.push({ content: pageContentName, children: pageChildren })
+
+	// Each section → its block + fold flag, or null when it has no content / is
+	// disabled. Built once, then emitted in `order`.
+	const build = (id: WebSectionId): { block: BatchBlock; fold: boolean } | null => {
+		switch (id) {
+			case 'abstract':
+				if (options.captureAbstract === false || !abstractText) return null
+				return {
+					block: { content: abstractName, children: [{ content: abstractText }] },
+					fold: options.foldAbstract ?? false,
+				}
+			case 'highlights':
+				if (highlights.length === 0) return null
+				return {
+					block: { content: highlightsName, children: highlights.map((h) => highlightToBlock(h, useHeadingMarkers)) },
+					fold: options.foldHighlights ?? false,
+				}
+			case 'pageContent':
+				if (options.capturePageContent === false || pageChildren.length === 0) return null
+				return {
+					block: { content: pageContentName, children: pageChildren },
+					fold: options.foldPageContent ?? false,
+				}
+		}
 	}
-	return blocks
+
+	const blocks: BatchBlock[] = []
+	const fold: boolean[] = []
+	for (const id of order) {
+		const made = build(id)
+		if (made) {
+			blocks.push(made.block)
+			fold.push(made.fold)
+		}
+	}
+	return { blocks, fold }
+}
+
+/**
+ * Collapse the section blocks flagged in `fold`. `created` is `insertBatchBlock`'s
+ * flat, pre-order return; the top-level sections are the entries whose `parent` is
+ * the page's entity id, in insertion order — so they align with `fold` index-for-
+ * index. Best-effort: a `setBlockCollapsed` failure logs and is skipped (the page
+ * and its blocks already exist; an un-folded section is a cosmetic miss).
+ */
+async function foldSectionBlocks(
+	api: LogseqAPI,
+	pageId: number | undefined,
+	created: LogseqBlockEntity[] | null,
+	fold: boolean[],
+): Promise<void> {
+	if (!fold.some(Boolean) || !created || typeof pageId !== 'number') return
+	const topLevel = created.filter((b) => b.parent === pageId)
+	for (let i = 0; i < topLevel.length && i < fold.length; i++) {
+		if (!fold[i]) continue
+		const uuid = topLevel[i]?.uuid
+		if (!uuid) continue
+		try {
+			await api.setBlockCollapsed(uuid, true)
+		} catch (err) {
+			console.warn(`[logseq-web-clipper] failed to fold section block ${uuid}:`, err)
+		}
+	}
 }
 
 function blockText(b: LogseqBlockEntity): string {
@@ -426,9 +509,10 @@ export async function saveToLogseq(
 		)
 	}
 
-	const blocks = buildClipBlocks(content, input.highlights ?? [], options, input.abstract ?? '')
+	const { blocks, fold } = buildClipBlocks(content, input.highlights ?? [], options, input.abstract ?? '')
 	if (blocks.length > 0) {
-		await api.insertBatchBlock(page.uuid, blocks)
+		const created = await api.insertBatchBlock(page.uuid, blocks)
+		await foldSectionBlocks(api, page.id, created, fold)
 	}
 
 	// Focus the new page so the user lands on it. Non-fatal if it fails.

@@ -870,6 +870,19 @@ async function fillTemplateFieldValues(currentTabId: number, template: Template 
 		noteContentField.value = capturePageContent && template.noteContentFormat ? formattedContent : '';
 	}
 
+	// "Capture abstract" off: clear and hide the Abstract block. Mirrors the body
+	// gating above, but the abstract is a *visible* labeled block (not the hidden
+	// body field), so an empty box would look broken — hide it outright. The
+	// skeleton showed it when the template defines an abstract; this overrides
+	// that when the user has turned the section off. The save path drops a blank
+	// abstract regardless, so this is purely so the popup matches what's written.
+	const abstractContainer = document.getElementById('abstract-container');
+	const abstractField = document.getElementById('abstract') as HTMLTextAreaElement | null;
+	if (abstractContainer && abstractField && !capture.captureAbstract) {
+		abstractField.value = '';
+		abstractContainer.style.display = 'none';
+	}
+
 	// The popup no longer shows the body for editing — render the capture manifest
 	// (page content + highlights/notes) from the value we just set. Runs on every
 	// fill, so the live highlight refresh (refreshFields) keeps it current too.

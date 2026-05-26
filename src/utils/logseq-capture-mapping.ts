@@ -7,16 +7,25 @@
 
 import { WEB_CLIPPING_TAG } from '@logseq-web-clipper/shared'
 import type { LogseqCaptureSettings } from '../types/types'
+import { parseSectionOrder, WEB_SECTION_DEFAULT_ORDER } from './web-sections'
 
 // Last-resort defaults, used only when neither a live plugin read nor a cached
-// value is available. clippingTag falls back to WEB_CLIPPING_TAG (kept aligned
+// value is available. Each MUST match the companion plugin's seed default for
+// the same key (see settings.md, Page template) so the two agree whether or not
+// a live read succeeds. clippingTag falls back to WEB_CLIPPING_TAG (kept aligned
 // with the plugin's `webTag` default).
 export const DEFAULT_CAPTURE_SETTINGS: LogseqCaptureSettings = {
+	abstractBlockName: 'Abstract',
 	pageContentBlockName: 'Page Content',
 	highlightsBlockName: 'Highlights',
 	useHeadingMarkers: false,
 	populatePageTags: false,
 	capturePageContent: true,
+	captureAbstract: true,
+	foldAbstract: false,
+	foldHighlights: false,
+	foldPageContent: true,
+	sectionOrder: WEB_SECTION_DEFAULT_ORDER,
 	clippingTag: WEB_CLIPPING_TAG,
 }
 
@@ -25,17 +34,25 @@ export const DEFAULT_CAPTURE_SETTINGS: LogseqCaptureSettings = {
 export const PLUGIN_SETTING_KEYS = {
 	clippingTag: 'webTag',
 	capturePageContent: 'webCapturePageContent',
+	captureAbstract: 'webCaptureAbstract',
+	abstractBlockName: 'webAbstractBlockName',
 	pageContentBlockName: 'webPageContentBlockName',
 	highlightsBlockName: 'webHighlightsBlockName',
 	useHeadingMarkers: 'webUseHeadingMarkers',
 	populatePageTags: 'webPopulatePageTags',
+	foldAbstract: 'webFoldAbstract',
+	foldHighlights: 'webFoldHighlights',
+	foldPageContent: 'webFoldPageContent',
+	sectionOrder: 'webSectionOrder',
 } as const
 
 /**
  * Map the plugin's raw settings object → the clipper's capture shape. Defensive:
  * a missing or wrong-typed key degrades to its default, so a partial or older
  * plugin never throws or yields garbage. A leading `#` on the tag is stripped
- * (saveToLogseq also strips/falls back, so either form is safe).
+ * (saveToLogseq also strips/falls back, so either form is safe). `sectionOrder`
+ * is parsed from the comma-separated `webSectionOrder` string and always yields
+ * all three section ids exactly once.
  */
 export function mapPluginSettings(raw: Record<string, unknown>): LogseqCaptureSettings {
 	const str = (v: unknown, d: string) => (typeof v === 'string' && v.trim() ? v.trim() : d)
@@ -44,9 +61,15 @@ export function mapPluginSettings(raw: Record<string, unknown>): LogseqCaptureSe
 	return {
 		clippingTag: str(raw[K.clippingTag], DEFAULT_CAPTURE_SETTINGS.clippingTag).replace(/^#/, ''),
 		capturePageContent: bool(raw[K.capturePageContent], DEFAULT_CAPTURE_SETTINGS.capturePageContent),
+		captureAbstract: bool(raw[K.captureAbstract], DEFAULT_CAPTURE_SETTINGS.captureAbstract),
+		abstractBlockName: str(raw[K.abstractBlockName], DEFAULT_CAPTURE_SETTINGS.abstractBlockName),
 		pageContentBlockName: str(raw[K.pageContentBlockName], DEFAULT_CAPTURE_SETTINGS.pageContentBlockName),
 		highlightsBlockName: str(raw[K.highlightsBlockName], DEFAULT_CAPTURE_SETTINGS.highlightsBlockName),
 		useHeadingMarkers: bool(raw[K.useHeadingMarkers], DEFAULT_CAPTURE_SETTINGS.useHeadingMarkers),
 		populatePageTags: bool(raw[K.populatePageTags], DEFAULT_CAPTURE_SETTINGS.populatePageTags),
+		foldAbstract: bool(raw[K.foldAbstract], DEFAULT_CAPTURE_SETTINGS.foldAbstract),
+		foldHighlights: bool(raw[K.foldHighlights], DEFAULT_CAPTURE_SETTINGS.foldHighlights),
+		foldPageContent: bool(raw[K.foldPageContent], DEFAULT_CAPTURE_SETTINGS.foldPageContent),
+		sectionOrder: parseSectionOrder(raw[K.sectionOrder]),
 	}
 }

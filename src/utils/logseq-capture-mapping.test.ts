@@ -7,10 +7,16 @@ import { DEFAULT_CAPTURE_SETTINGS, PLUGIN_SETTING_KEYS, mapPluginSettings } from
 const fullPluginSettings = {
 	webTag: 'Web',
 	webCapturePageContent: true,
+	webCaptureAbstract: true,
+	webAbstractBlockName: 'Abstract',
 	webPageContentBlockName: 'Page Content',
 	webHighlightsBlockName: 'Highlights',
 	webUseHeadingMarkers: false,
 	webPopulatePageTags: false,
+	webFoldAbstract: false,
+	webFoldHighlights: false,
+	webFoldPageContent: true,
+	webSectionOrder: 'abstract,highlights,pageContent',
 	// keys the plugin also stores that the clipper must ignore
 	zotTag: 'Reference',
 	propertyPreset: 'Essentials',
@@ -22,10 +28,16 @@ describe('mapPluginSettings', () => {
 		expect(mapPluginSettings(fullPluginSettings)).toEqual({
 			clippingTag: 'Web',
 			capturePageContent: true,
+			captureAbstract: true,
+			abstractBlockName: 'Abstract',
 			pageContentBlockName: 'Page Content',
 			highlightsBlockName: 'Highlights',
 			useHeadingMarkers: false,
 			populatePageTags: false,
+			foldAbstract: false,
+			foldHighlights: false,
+			foldPageContent: true,
+			sectionOrder: ['abstract', 'highlights', 'pageContent'],
 		})
 	})
 
@@ -34,18 +46,30 @@ describe('mapPluginSettings', () => {
 			mapPluginSettings({
 				webTag: 'Clippings',
 				webCapturePageContent: false,
+				webCaptureAbstract: false,
+				webAbstractBlockName: 'Summary',
 				webPageContentBlockName: 'Body',
 				webHighlightsBlockName: 'Quotes',
 				webUseHeadingMarkers: true,
 				webPopulatePageTags: true,
+				webFoldAbstract: true,
+				webFoldHighlights: true,
+				webFoldPageContent: false,
+				webSectionOrder: 'pageContent,highlights,abstract',
 			}),
 		).toEqual({
 			clippingTag: 'Clippings',
 			capturePageContent: false,
+			captureAbstract: false,
+			abstractBlockName: 'Summary',
 			pageContentBlockName: 'Body',
 			highlightsBlockName: 'Quotes',
 			useHeadingMarkers: true,
 			populatePageTags: true,
+			foldAbstract: true,
+			foldHighlights: true,
+			foldPageContent: false,
+			sectionOrder: ['pageContent', 'highlights', 'abstract'],
 		})
 	})
 
@@ -94,10 +118,16 @@ describe('mapPluginSettings', () => {
 		expect(PLUGIN_SETTING_KEYS).toEqual({
 			clippingTag: 'webTag',
 			capturePageContent: 'webCapturePageContent',
+			captureAbstract: 'webCaptureAbstract',
+			abstractBlockName: 'webAbstractBlockName',
 			pageContentBlockName: 'webPageContentBlockName',
 			highlightsBlockName: 'webHighlightsBlockName',
 			useHeadingMarkers: 'webUseHeadingMarkers',
 			populatePageTags: 'webPopulatePageTags',
+			foldAbstract: 'webFoldAbstract',
+			foldHighlights: 'webFoldHighlights',
+			foldPageContent: 'webFoldPageContent',
+			sectionOrder: 'webSectionOrder',
 		})
 	})
 })
