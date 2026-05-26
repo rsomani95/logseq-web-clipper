@@ -3,8 +3,8 @@
 	"default_locale": "en",
 	"name": "Logseq Web Clipper",
 	"homepage_url": "https://github.com/rsomani95/logseq-web-clipper",
-	"version": "0.1.0",
-	"version_name": "0.1.0 (forked off obsidian-clipper 1.6.2)",
+	"version": "0.2.0",
+	"version_name": "0.2.0 (forked off obsidian-clipper 1.6.2)",
 	"description": "Clip web pages into a Logseq-DB graph. Forked from obsidian-clipper.",
 	"permissions": [
 		"activeTab",
