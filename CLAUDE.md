@@ -45,6 +45,8 @@ bunx tsc --noEmit         # typecheck extension
 
 **Pre-existing upstream noise** to ignore (not regressions): `src/cli.ts:208` reports TS1323 (dynamic import + es6 module) — the CLI builds with esbuild which has its own settings. Three `template-integration.test.ts` cases fail against upstream's fixtures.
 
+**Git workflow:** commit directly to `main` — this is a solo fork, so do **not** create feature branches (this overrides Claude's default "branch first on the default branch" behavior). The user verifies the build in Chrome (reload the extension, then reload the page) before each commit; hand off with reload+test steps rather than committing unverified.
+
 ## Editing surfaces
 
 The three most-likely modification entry points and where to look:
